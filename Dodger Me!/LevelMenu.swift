@@ -87,6 +87,7 @@ class LevelMenu: SKScene{
     
         let scene = StartGame(size: self.size)
         scene.stageLevel = level
+        scene.scorePass = level * 15000;
         view?.presentScene(scene)
         
     }

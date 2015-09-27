@@ -49,7 +49,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
     var score:Int = 0
     var timerCount:Int = 3
     
-    var interstitialAd:ADInterstitialAd = ADInterstitialAd()
+    var interstitialAds:ADInterstitialAd = ADInterstitialAd()
     var interstitialAdView: UIView = UIView()
     
     override func didMoveToView(view: SKView){
@@ -58,6 +58,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         for view in view.subviews {
             view.removeFromSuperview()
         }
+        print("startgame")
         
         // load ads
         loadiAd()
@@ -80,7 +81,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         pauseGameViewController.delegate = self
         
         //iAd Banner
-        self.appDelegate.adBannerView.delegate = self  // -> to avoid an error
+       // self.appDelegate.adBannerView.delegate = self  // -> to avoid an error
         
         //hide until ad loaded
         
@@ -93,7 +94,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         
         // iAD  Interstitial  -> pop up full screen iAds   ( Not fully working! )
         self.interstitialAdView.frame = self.view!.bounds
-        self.interstitialAd.delegate = self
+        self.interstitialAds.delegate = self
         self.interstitialAdView.hidden = true
         self.anchorPoint = CGPointMake(0.5, 0.5)
         view!.addSubview(self.interstitialAdView)
@@ -236,14 +237,13 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
     }
     
     func interstitialAdActionDidFinish(interstitialAd: ADInterstitialAd!) {
-        //  print("im called ( SUPER ID ) -> CLEANED")
-        if(self.interstitialAd.loaded){
-            print("lose scene called: \(self.interstitialAd.loaded)")
+          print("didFinish")
+        if(self.interstitialAds.loaded){
+            print("lose scene called: \(self.interstitialAds.loaded)")
             self.interstitialAdView.removeFromSuperview()
             let scene = GameOver(size: self.size, won: false, score: score, highscore: highscore)
             self.view?.presentScene(scene)
         }
-        
         callUnpause()
     }
     
@@ -526,9 +526,11 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
     func projectileDidCollideWithMonster(player:SKSpriteNode, fireball:SKSpriteNode) {
         fireball.removeFromParent()
         removeActionForKey("scoreCounter")
-        
+        removeActionForKey("fire_attack")
+        removeActionForKey("dragon_attack")
         // show iAd Pop up - if it is loaded successfully
-        if (self.interstitialAd.loaded){
+        if (self.interstitialAds.loaded){
+            view?.paused = true
             iAdPopup()
         }
         else{
@@ -580,8 +582,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
     }
     
     func iAdPopup(){
-        view?.paused = true
-        self.interstitialAd.presentInView(self.interstitialAdView)
+        self.interstitialAds.presentInView(self.interstitialAdView)
         UIViewController.prepareInterstitialAds()
         
         self.interstitialAdView.hidden = false

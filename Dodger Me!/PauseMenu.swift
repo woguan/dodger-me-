@@ -10,6 +10,7 @@ import UIKit
 import SpriteKit
 
 @objc protocol UnpauseDelegate{
+    // add all functions you want to be able to use
     optional func callUnpause()
 }
 
