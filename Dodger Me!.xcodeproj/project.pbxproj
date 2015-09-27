@@ -1,0 +1,476 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F137C2081A81C03C00FC70EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F137C2071A81C03C00FC70EA /* AppDelegate.swift */; };
+		F137C20C1A81C03C00FC70EA /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F137C20B1A81C03C00FC70EA /* GameScene.swift */; };
+		F137C20E1A81C03C00FC70EA /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F137C20D1A81C03C00FC70EA /* GameViewController.swift */; };
+		F137C2111A81C03C00FC70EA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F137C20F1A81C03C00FC70EA /* Main.storyboard */; };
+		F137C2131A81C03D00FC70EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F137C2121A81C03D00FC70EA /* Images.xcassets */; };
+		F137C2161A81C03D00FC70EA /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F137C2141A81C03D00FC70EA /* LaunchScreen.xib */; };
+		F137C2221A81C03D00FC70EA /* Dodger_Me_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F137C2211A81C03D00FC70EA /* Dodger_Me_Tests.swift */; };
+		F137C22F1A81CA7900FC70EA /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = F137C22D1A81CA7900FC70EA /* background.png */; };
+		F137C2301A81CA7900FC70EA /* player.png in Resources */ = {isa = PBXBuildFile; fileRef = F137C22E1A81CA7900FC70EA /* player.png */; };
+		F137C2321A81CF3700FC70EA /* StartGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = F137C2311A81CF3700FC70EA /* StartGame.swift */; };
+		F137C2341A81D6DC00FC70EA /* fireBall.png in Resources */ = {isa = PBXBuildFile; fileRef = F137C2331A81D6DC00FC70EA /* fireBall.png */; };
+		F137C2361A8278C600FC70EA /* GameOver.swift in Sources */ = {isa = PBXBuildFile; fileRef = F137C2351A8278C600FC70EA /* GameOver.swift */; };
+		F137C25E1A84997500FC70EA /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F137C25D1A84997500FC70EA /* iAd.framework */; };
+		F137C2601A955D8200FC70EA /* PauseMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = F137C25F1A955D8200FC70EA /* PauseMenu.swift */; };
+		F137C2621A95FDFE00FC70EA /* background2.png in Resources */ = {isa = PBXBuildFile; fileRef = F137C2611A95FDFE00FC70EA /* background2.png */; };
+		F1AB1E5E1BB66E01003BA666 /* dragons.png in Resources */ = {isa = PBXBuildFile; fileRef = F1AB1E5D1BB66E01003BA666 /* dragons.png */; settings = {ASSET_TAGS = (); }; };
+		F1EA7F911B72BCCE00444610 /* LevelMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EA7F901B72BCCE00444610 /* LevelMenu.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F137C21C1A81C03D00FC70EA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F137C1FA1A81C03C00FC70EA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F137C2011A81C03C00FC70EA;
+			remoteInfo = "Dodger Me!";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F137C2021A81C03C00FC70EA /* Dodger Me!.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Dodger Me!.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F137C2061A81C03C00FC70EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F137C2071A81C03C00FC70EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		F137C20B1A81C03C00FC70EA /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
+		F137C20D1A81C03C00FC70EA /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		F137C2101A81C03C00FC70EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		F137C2121A81C03D00FC70EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		F137C2151A81C03D00FC70EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		F137C21B1A81C03D00FC70EA /* Dodger Me!Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Dodger Me!Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F137C2201A81C03D00FC70EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F137C2211A81C03D00FC70EA /* Dodger_Me_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dodger_Me_Tests.swift; sourceTree = "<group>"; };
+		F137C22D1A81CA7900FC70EA /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = background.png; path = ../background.png; sourceTree = "<group>"; };
+		F137C22E1A81CA7900FC70EA /* player.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = player.png; path = ../player.png; sourceTree = "<group>"; };
+		F137C2311A81CF3700FC70EA /* StartGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartGame.swift; sourceTree = "<group>"; };
+		F137C2331A81D6DC00FC70EA /* fireBall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fireBall.png; sourceTree = "<group>"; };
+		F137C2351A8278C600FC70EA /* GameOver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOver.swift; sourceTree = "<group>"; };
+		F137C25D1A84997500FC70EA /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
+		F137C25F1A955D8200FC70EA /* PauseMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PauseMenu.swift; sourceTree = "<group>"; };
+		F137C2611A95FDFE00FC70EA /* background2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background2.png; sourceTree = SOURCE_ROOT; };
+		F1AB1E5D1BB66E01003BA666 /* dragons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dragons.png; sourceTree = "<group>"; };
+		F1EA7F901B72BCCE00444610 /* LevelMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LevelMenu.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F137C1FF1A81C03C00FC70EA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F137C25E1A84997500FC70EA /* iAd.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F137C2181A81C03D00FC70EA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F137C1F91A81C03C00FC70EA = {
+			isa = PBXGroup;
+			children = (
+				F137C25D1A84997500FC70EA /* iAd.framework */,
+				F137C2041A81C03C00FC70EA /* Dodger Me! */,
+				F137C21E1A81C03D00FC70EA /* Dodger Me!Tests */,
+				F137C2031A81C03C00FC70EA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F137C2031A81C03C00FC70EA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F137C2021A81C03C00FC70EA /* Dodger Me!.app */,
+				F137C21B1A81C03D00FC70EA /* Dodger Me!Tests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F137C2041A81C03C00FC70EA /* Dodger Me! */ = {
+			isa = PBXGroup;
+			children = (
+				F137C2331A81D6DC00FC70EA /* fireBall.png */,
+				F137C2611A95FDFE00FC70EA /* background2.png */,
+				F1AB1E5D1BB66E01003BA666 /* dragons.png */,
+				F137C22D1A81CA7900FC70EA /* background.png */,
+				F137C22E1A81CA7900FC70EA /* player.png */,
+				F137C2071A81C03C00FC70EA /* AppDelegate.swift */,
+				F137C25F1A955D8200FC70EA /* PauseMenu.swift */,
+				F137C20B1A81C03C00FC70EA /* GameScene.swift */,
+				F1EA7F901B72BCCE00444610 /* LevelMenu.swift */,
+				F137C2311A81CF3700FC70EA /* StartGame.swift */,
+				F137C2351A8278C600FC70EA /* GameOver.swift */,
+				F137C20D1A81C03C00FC70EA /* GameViewController.swift */,
+				F137C20F1A81C03C00FC70EA /* Main.storyboard */,
+				F137C2121A81C03D00FC70EA /* Images.xcassets */,
+				F137C2141A81C03D00FC70EA /* LaunchScreen.xib */,
+				F137C2051A81C03C00FC70EA /* Supporting Files */,
+			);
+			path = "Dodger Me!";
+			sourceTree = "<group>";
+		};
+		F137C2051A81C03C00FC70EA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F137C2061A81C03C00FC70EA /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F137C21E1A81C03D00FC70EA /* Dodger Me!Tests */ = {
+			isa = PBXGroup;
+			children = (
+				F137C2211A81C03D00FC70EA /* Dodger_Me_Tests.swift */,
+				F137C21F1A81C03D00FC70EA /* Supporting Files */,
+			);
+			path = "Dodger Me!Tests";
+			sourceTree = "<group>";
+		};
+		F137C21F1A81C03D00FC70EA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F137C2201A81C03D00FC70EA /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F137C2011A81C03C00FC70EA /* Dodger Me! */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F137C2251A81C03D00FC70EA /* Build configuration list for PBXNativeTarget "Dodger Me!" */;
+			buildPhases = (
+				F137C1FE1A81C03C00FC70EA /* Sources */,
+				F137C1FF1A81C03C00FC70EA /* Frameworks */,
+				F137C2001A81C03C00FC70EA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Dodger Me!";
+			productName = "Dodger Me!";
+			productReference = F137C2021A81C03C00FC70EA /* Dodger Me!.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F137C21A1A81C03D00FC70EA /* Dodger Me!Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F137C2281A81C03D00FC70EA /* Build configuration list for PBXNativeTarget "Dodger Me!Tests" */;
+			buildPhases = (
+				F137C2171A81C03D00FC70EA /* Sources */,
+				F137C2181A81C03D00FC70EA /* Frameworks */,
+				F137C2191A81C03D00FC70EA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F137C21D1A81C03D00FC70EA /* PBXTargetDependency */,
+			);
+			name = "Dodger Me!Tests";
+			productName = "Dodger Me!Tests";
+			productReference = F137C21B1A81C03D00FC70EA /* Dodger Me!Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F137C1FA1A81C03C00FC70EA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = "Guan Wong";
+				TargetAttributes = {
+					F137C2011A81C03C00FC70EA = {
+						CreatedOnToolsVersion = 6.1.1;
+						DevelopmentTeam = 96342UP57T;
+					};
+					F137C21A1A81C03D00FC70EA = {
+						CreatedOnToolsVersion = 6.1.1;
+						TestTargetID = F137C2011A81C03C00FC70EA;
+					};
+				};
+			};
+			buildConfigurationList = F137C1FD1A81C03C00FC70EA /* Build configuration list for PBXProject "Dodger Me!" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F137C1F91A81C03C00FC70EA;
+			productRefGroup = F137C2031A81C03C00FC70EA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F137C2011A81C03C00FC70EA /* Dodger Me! */,
+				F137C21A1A81C03D00FC70EA /* Dodger Me!Tests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F137C2001A81C03C00FC70EA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F137C2341A81D6DC00FC70EA /* fireBall.png in Resources */,
+				F137C2161A81C03D00FC70EA /* LaunchScreen.xib in Resources */,
+				F137C2621A95FDFE00FC70EA /* background2.png in Resources */,
+				F137C2301A81CA7900FC70EA /* player.png in Resources */,
+				F1AB1E5E1BB66E01003BA666 /* dragons.png in Resources */,
+				F137C22F1A81CA7900FC70EA /* background.png in Resources */,
+				F137C2131A81C03D00FC70EA /* Images.xcassets in Resources */,
+				F137C2111A81C03C00FC70EA /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F137C2191A81C03D00FC70EA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F137C1FE1A81C03C00FC70EA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F1EA7F911B72BCCE00444610 /* LevelMenu.swift in Sources */,
+				F137C2321A81CF3700FC70EA /* StartGame.swift in Sources */,
+				F137C20C1A81C03C00FC70EA /* GameScene.swift in Sources */,
+				F137C20E1A81C03C00FC70EA /* GameViewController.swift in Sources */,
+				F137C2361A8278C600FC70EA /* GameOver.swift in Sources */,
+				F137C2081A81C03C00FC70EA /* AppDelegate.swift in Sources */,
+				F137C2601A955D8200FC70EA /* PauseMenu.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F137C2171A81C03D00FC70EA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F137C2221A81C03D00FC70EA /* Dodger_Me_Tests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F137C21D1A81C03D00FC70EA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F137C2011A81C03C00FC70EA /* Dodger Me! */;
+			targetProxy = F137C21C1A81C03D00FC70EA /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		F137C20F1A81C03C00FC70EA /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F137C2101A81C03C00FC70EA /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		F137C2141A81C03D00FC70EA /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F137C2151A81C03D00FC70EA /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		F137C2231A81C03D00FC70EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F137C2241A81C03D00FC70EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F137C2261A81C03D00FC70EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = "Dodger Me!/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "diego.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		F137C2271A81C03D00FC70EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = "Dodger Me!/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "diego.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		F137C2291A81C03D00FC70EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Dodger Me!Tests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "diego.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Dodger Me!.app/Dodger Me!";
+			};
+			name = Debug;
+		};
+		F137C22A1A81C03D00FC70EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Dodger Me!Tests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "diego.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Dodger Me!.app/Dodger Me!";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F137C1FD1A81C03C00FC70EA /* Build configuration list for PBXProject "Dodger Me!" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F137C2231A81C03D00FC70EA /* Debug */,
+				F137C2241A81C03D00FC70EA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F137C2251A81C03D00FC70EA /* Build configuration list for PBXNativeTarget "Dodger Me!" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F137C2261A81C03D00FC70EA /* Debug */,
+				F137C2271A81C03D00FC70EA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F137C2281A81C03D00FC70EA /* Build configuration list for PBXNativeTarget "Dodger Me!Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F137C2291A81C03D00FC70EA /* Debug */,
+				F137C22A1A81C03D00FC70EA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F137C1FA1A81C03C00FC70EA /* Project object */;
+}
