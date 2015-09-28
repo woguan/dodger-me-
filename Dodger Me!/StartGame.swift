@@ -58,7 +58,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         for view in view.subviews {
             view.removeFromSuperview()
         }
-        print("startgame")
         
         // load ads
         loadiAd()
@@ -233,16 +232,15 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
     }
     
     func interstitialAdDidLoad(interstitialAd: ADInterstitialAd!) {
-        print("interstitialAd ready to show")
     }
     
     func interstitialAdActionDidFinish(interstitialAd: ADInterstitialAd!) {
-          print("didFinish")
+        // it is always called twice... why?
+        
         if(self.interstitialAds.loaded){
-            print("lose scene called: \(self.interstitialAds.loaded)")
+           // print("lose scene called: \(self.interstitialAds.loaded)")
             self.interstitialAdView.removeFromSuperview()
-            let scene = GameOver(size: self.size, won: false, score: score, highscore: highscore)
-            self.view?.presentScene(scene)
+            castEndScene()
         }
         callUnpause()
     }
@@ -260,9 +258,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
     func interstitialAdDidUnload(interstitialAd: ADInterstitialAd!) {
         self.interstitialAdView.removeFromSuperview()
         self.interstitialAdView.hidden = true
-        //  callUnpause()
-        
-        
     }
     
     // finish iAd pop up functions
@@ -360,7 +355,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
             // dragons
         else if (id == 1){
             dragonDelay += 0.2
-            if (dragonDelay >= 1.5){
+            if (dragonDelay >= 1.5 && score >= 5000){
                 callDragon()
                 dragonDelay = 0;
             }
@@ -504,6 +499,17 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         let x_right_bound:CGFloat = 200
         
         dragonMonster.position = CGPoint(x: x_left_bound, y: y_respawn)
+        
+        // both side if score greater than 10000
+        
+        if (score >= 10000){
+            let rVal:CGFloat = random(0, max:1000)
+            
+            if (rVal > 500){
+                dragonMonster.position = CGPoint(x: x_right_bound, y: y_respawn)
+            }
+        }
+        
         addChild(dragonMonster)
         
         // adding physical stuff  -> create a function for that later
@@ -516,7 +522,14 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         dragonMonster.physicsBody?.usesPreciseCollisionDetection = true
         
         // Create the actions
-        let actionMove = SKAction.moveTo(CGPoint(x: x_right_bound, y: y_respawn), duration: 5)
+        
+        // by default
+        var actionMove = SKAction.moveTo(CGPoint(x: x_right_bound, y: y_respawn), duration: 5)
+        
+        if (dragonMonster.position.x == 200){
+          actionMove = SKAction.moveTo(CGPoint(x: x_left_bound, y: y_respawn), duration: 5)
+        }
+        
         let actionMoveDone = SKAction.removeFromParent()
         dragonMonster.runAction(SKAction.sequence([actionMove, actionMoveDone]))
         
@@ -534,27 +547,27 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
             iAdPopup()
         }
         else{
-            
-            SKAction.waitForDuration(5)
-            //  let reveal = SKTransition.flipHorizontalWithDuration(0.5)
-            
-            
-            let winScene = GameOver(size: self.size, won: true, score: score, highscore: highscore)
-            
-            let loseScene = GameOver(size: self.size, won: false, score: score, highscore: highscore)
-            
-            if ( score >= scorePass!){
-                self.view?.presentScene(winScene)
-            }
-                
-            else{
-                self.view?.presentScene(loseScene)
-            }
-            
-            
+            castEndScene()
         }
         
         
+    }
+    
+    func castEndScene(){
+        
+        SKAction.waitForDuration(5)
+        //  let reveal = SKTransition.flipHorizontalWithDuration(0.5)
+        let winScene = GameOver(size: self.size, won: true, score: score, highscore: highscore)
+        
+        let loseScene = GameOver(size: self.size, won: false, score: score, highscore: highscore)
+        
+        if ( score >= scorePass!){
+            self.view?.presentScene(winScene)
+        }
+            
+        else{
+            self.view?.presentScene(loseScene)
+        }
     }
     
     func didBeginContact(contact: SKPhysicsContact) {
@@ -584,7 +597,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
     func iAdPopup(){
         self.interstitialAds.presentInView(self.interstitialAdView)
         UIViewController.prepareInterstitialAds()
-        
         self.interstitialAdView.hidden = false
     }
     
@@ -594,7 +606,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         view?.addSubview(pauseGameViewController.view)
     }
     
-    // this is called by delegation
+    // this is also called by delegate
     func callUnpause(){
         
         view?.paused = false
