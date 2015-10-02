@@ -23,6 +23,7 @@
 		F1AB1E651BB79075003BA666 /* background2.png in Resources */ = {isa = PBXBuildFile; fileRef = F1AB1E631BB79075003BA666 /* background2.png */; settings = {ASSET_TAGS = (); }; };
 		F1AB1E671BB79089003BA666 /* player.png in Resources */ = {isa = PBXBuildFile; fileRef = F1AB1E661BB79089003BA666 /* player.png */; settings = {ASSET_TAGS = (); }; };
 		F1AB1E691BB7F6EB003BA666 /* StartGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1AB1E681BB7F6EB003BA666 /* StartGame.swift */; settings = {ASSET_TAGS = (); }; };
+		F1AB1E6E1BBA283D003BA666 /* sprites in Resources */ = {isa = PBXBuildFile; fileRef = F1AB1E6D1BBA283D003BA666 /* sprites */; settings = {ASSET_TAGS = (); }; };
 		F1EA7F911B72BCCE00444610 /* LevelMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EA7F901B72BCCE00444610 /* LevelMenu.swift */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +58,7 @@
 		F1AB1E631BB79075003BA666 /* background2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background2.png; sourceTree = "<group>"; };
 		F1AB1E661BB79089003BA666 /* player.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = player.png; sourceTree = "<group>"; };
 		F1AB1E681BB7F6EB003BA666 /* StartGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartGame.swift; sourceTree = "<group>"; };
+		F1AB1E6D1BBA283D003BA666 /* sprites */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sprites; sourceTree = "<group>"; };
 		F1EA7F901B72BCCE00444610 /* LevelMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LevelMenu.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -101,6 +103,7 @@
 		F137C2041A81C03C00FC70EA /* Dodger Me! */ = {
 			isa = PBXGroup;
 			children = (
+				F1AB1E6D1BBA283D003BA666 /* sprites */,
 				F137C2331A81D6DC00FC70EA /* fireBall.png */,
 				F1AB1E5D1BB66E01003BA666 /* dragons.png */,
 				F1AB1E661BB79089003BA666 /* player.png */,
@@ -232,6 +235,7 @@
 				F137C2341A81D6DC00FC70EA /* fireBall.png in Resources */,
 				F1AB1E641BB79075003BA666 /* background.png in Resources */,
 				F1AB1E671BB79089003BA666 /* player.png in Resources */,
+				F1AB1E6E1BBA283D003BA666 /* sprites in Resources */,
 				F1AB1E651BB79075003BA666 /* background2.png in Resources */,
 				F137C2161A81C03D00FC70EA /* LaunchScreen.xib in Resources */,
 				F1AB1E5E1BB66E01003BA666 /* dragons.png in Resources */,
@@ -321,6 +325,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -364,6 +369,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;

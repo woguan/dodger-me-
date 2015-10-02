@@ -23,7 +23,7 @@ struct PhysicsCategory {
     static let All       : UInt32 = UInt32.max
     static let Player   :UInt32 = 0b1
     static let Fire   : UInt32 = 0b10
-    static let Dragon : UInt32 = 0b11
+    static let Dragon : UInt32 = 0b100
     
 }
 
@@ -134,6 +134,15 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         // physics
         physicsWorld.gravity = CGVectorMake(0, 0)
         physicsWorld.contactDelegate = self
+        
+    }
+    
+    func testSprite() -> [SKTexture]{
+  
+        //testing
+       // dragonMonster.texture = SKTexture(imageNamed: "sprites/draggy/d_001")
+        //ends
+        return [SKTexture(imageNamed: "sprites/draggy/d_001"), SKTexture(imageNamed: "sprites/draggy/d_002"), SKTexture(imageNamed: "sprites/draggy/d_003"), SKTexture(imageNamed: "sprites/draggy/d_004")]
         
     }
     
@@ -488,6 +497,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         
         // Create sprite
         let dragonMonster = SKSpriteNode(imageNamed: "dragons")
+        
         dragonMonster.name = "spriteFire"
         dragonMonster.size = CGSize(width: 20, height: 20)
         
@@ -501,11 +511,11 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         dragonMonster.position = CGPoint(x: x_left_bound, y: y_respawn)
         
         // both side if score greater than 10000
-        
         if (score >= 10000){
             let rVal:CGFloat = random(0, max:1000)
             
             if (rVal > 500){
+                dragonMonster.xScale = dragonMonster.xScale * -1;
                 dragonMonster.position = CGPoint(x: x_right_bound, y: y_respawn)
             }
         }
@@ -531,12 +541,20 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         }
         
         let actionMoveDone = SKAction.removeFromParent()
+        let walk = SKAction.animateWithTextures(testSprite(), timePerFrame: 0.033)
+        
+        dragonMonster.runAction(SKAction.repeatActionForever(walk))
+        
         dragonMonster.runAction(SKAction.sequence([actionMove, actionMoveDone]))
         
         
     }
     
     func projectileDidCollideWithMonster(player:SKSpriteNode, fireball:SKSpriteNode) {
+        
+        print("player:, \(player)")
+        print("fireball:, \(fireball)")
+        
         fireball.removeFromParent()
         removeActionForKey("scoreCounter")
         removeActionForKey("fire_attack")
