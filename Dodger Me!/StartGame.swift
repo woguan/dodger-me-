@@ -18,15 +18,92 @@ import SpriteKit
 import iAd
 //import UIKit
 
+
+/*
+**  For colision detection
+**
+*/
 struct PhysicsCategory {
     static let None      : UInt32 = 0
-    static let All       : UInt32 = UInt32.max
+    static let Imune       : UInt32 = UInt32.max
     static let Player   :UInt32 = 0b1
     static let Fire   : UInt32 = 0b10
-    static let Dragon : UInt32 = 0b100
+    static let Dragon : UInt32 = 0b11
     
 }
 
+/*  NEW ADDED 11/29/2015
+**
+** Now the player has a struct
+** Easier to manage the player
+*/
+struct Player{
+    var HP:Int?
+    var isInvincible:Bool?
+    var playerImage:SKSpriteNode
+}
+
+/*
+**  Extension is to extend the struct
+** Added to practice it.. since it might be useful in later apps
+*/
+extension Player{
+    init (playerImage:SKSpriteNode){
+        self.playerImage = SKSpriteNode()
+    }
+    func load(){
+        // in the future... i can use like load("name of image")
+        self.playerImage.size = CGSize(width: 30, height: 30)
+        self.playerImage.texture = SKTexture(imageNamed: "player")
+        self.playerImage.name = "player"
+        self.playerImage.position = CGPointMake( 0, 0)
+    }
+    func materializeBody(){
+        // Setting a physical body to the player
+        playerImage.physicsBody = SKPhysicsBody(rectangleOfSize: playerImage.size)
+        playerImage.physicsBody?.dynamic = true
+        playerImage.physicsBody?.categoryBitMask = PhysicsCategory.Player
+        playerImage.physicsBody?.contactTestBitMask = PhysicsCategory.Fire
+        playerImage.physicsBody?.collisionBitMask = PhysicsCategory.None
+    }
+}
+
+/*
+
+im going to put fireball/dragon in a struct
+*/
+
+struct Enemy{
+    var delay:Int = 0  // delay for spawining the object
+    
+}
+
+
+/*
+** Below I am using the mutating function
+** Struct is a value type, and itself is immutable, thus, if we want to
+** change the value we have to use the mutating func
+** Note: Class = reference type ,  Struct = Value type
+*/
+struct Scorelabel{
+    var node:SKLabelNode =  SKLabelNode(fontNamed: "Courier")  // score board
+    var score = 0
+    
+    func load(){
+        // load score
+        node.text = "\(score)"
+        node.name = "scoring"
+        node.fontSize = 20
+        node.fontColor = SKColor.blackColor()
+        node.position = CGPoint(x:-130, y:320)
+    }
+    
+    mutating func setScore(){
+        //set score and display it
+        score = score + 10
+        node.text = "\(score)"
+    }
+}
 
 class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInterstitialAdDelegate, UnpauseDelegate{
     
@@ -40,14 +117,14 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
     var speedLevel:CGFloat = 1   // default speed for 'delay'
     
     var pauseGameViewController = PauseMenu()
-    var playerImage:SKSpriteNode = SKSpriteNode()
     var bgImage = SKSpriteNode(imageNamed: "background2")
-    let scoreBoard = SKLabelNode(fontNamed: "Courier")
     var startCountLabel = SKLabelNode(fontNamed: "Courier")
     var isValid:Bool = false  // touching the 'player' object  :  change var name later.. for a better one
     var highscore:Int = 0
-    var score:Int = 0
     var timerCount:Int = 3
+    
+    var player = Player(playerImage: SKSpriteNode()) // using extension way
+    var scoreBoard = Scorelabel()
     
     var interstitialAds:ADInterstitialAd = ADInterstitialAd()
     var interstitialAdView: UIView = UIView()
@@ -64,7 +141,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         // load objects
         load();
         
-        //  counting 3 for fireball !
+        // Counts from 3 to 0 and starts showing enemies
         startCountLabel.runAction(SKAction.repeatActionForever(
             SKAction.sequence([
                 SKAction.runBlock(startCount),
@@ -117,21 +194,14 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         
         // load score
         
-        scoreBoard.text = "\(score)"
-        scoreBoard.name = "scoring"
-        scoreBoard.fontSize = 20
-        scoreBoard.fontColor = SKColor.blackColor()
-        scoreBoard.position = CGPoint(x:-130, y:320)
-        self.addChild(scoreBoard)
+        scoreBoard.load()
+        self.addChild(scoreBoard.node)
         
         // load player
-        self.playerImage.size = CGSize(width: 30, height: 30)
-        self.playerImage.texture = SKTexture(imageNamed: "player")
-        self.playerImage.name = "player"
-        self.playerImage.position = CGPointMake( 0, 0)
-        self.addChild(playerImage)
+        player.load()
+          self.addChild(player.playerImage)
         
-        // physics
+        // applying physics
         physicsWorld.gravity = CGVectorMake(0, 0)
         physicsWorld.contactDelegate = self
         
@@ -152,20 +222,17 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
             
             
             let location = (touch ).locationInNode(self)
-            if ( ((playerImage.position.x > location.x - 20 ) && (playerImage.position.x < location.x + 20)) && ((playerImage.position.y > location.y - 20 ) && (playerImage.position.y < location.y + 20))  ){
+            if ( ((player.playerImage.position.x > location.x - 20 ) && (player.playerImage.position.x < location.x + 20)) && ((player.playerImage.position.y > location.y - 20 ) && (player.playerImage.position.y < location.y + 20))  ){
                 let liftUp = SKAction.scaleTo(1.2, duration: 0.2)
-                playerImage.runAction(liftUp)
+                player.playerImage.runAction(liftUp)
                 isValid = true
                 
             }
             else{
                 isValid = false
             }
-            playerImage.physicsBody = SKPhysicsBody(rectangleOfSize: playerImage.size)
-            playerImage.physicsBody?.dynamic = true
-            playerImage.physicsBody?.categoryBitMask = PhysicsCategory.Player
-            playerImage.physicsBody?.contactTestBitMask = PhysicsCategory.Fire
-            playerImage.physicsBody?.collisionBitMask = PhysicsCategory.None
+            
+            player.materializeBody()
             
         }
     }
@@ -175,18 +242,18 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
             let location = (touch ).locationInNode(self)
             if (isValid){
                 
-                playerImage.position = location
-                if ( playerImage.position.y > 285){
-                    playerImage.position.y = 285
+                player.playerImage.position = location
+                if ( player.playerImage.position.y > 285){
+                    player.playerImage.position.y = 285
                 }
-                else if ( playerImage.position.y < -277){
-                    playerImage.position.y = -277
+                else if ( player.playerImage.position.y < -277){
+                    player.playerImage.position.y = -277
                 }
-                if ( playerImage.position.x < -150){
-                    playerImage.position.x = -150
+                if ( player.playerImage.position.x < -150){
+                    player.playerImage.position.x = -150
                 }
-                else if ( playerImage.position.x > 155){
-                    playerImage.position.x = 155
+                else if ( player.playerImage.position.x > 155){
+                    player.playerImage.position.x = 155
                 }
             }
         }
@@ -195,7 +262,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         for _ in touches {
             let liftUp = SKAction.scaleTo(1.0, duration: 0.2)
-            playerImage.runAction(liftUp)
+            player.playerImage.runAction(liftUp)
         }
     }
     
@@ -283,14 +350,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         return random() * (max - min) + min
     }
     
-    func setScore(){
-        
-        score = score + 10
-        //   scoreBoard.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Center
-        //   scoreBoard.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Center
-        scoreBoard.text = "\(score)"
-    }
-    
     // function to keep calling callFire()
     func loadFire(){
         runAction(SKAction.repeatActionForever(
@@ -344,13 +403,17 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         runAction(SKAction.repeatActionForever(SKAction.sequence([SKAction.runBlock(setScore), SKAction.waitForDuration(NSTimeInterval(0.01))])), withKey: "scoreCounter")
     }
     
+    func setScore(){
+        scoreBoard.setScore()
+    }
+    
     func callType(id: Int){
         
         // fireball
         if ( id == 0){
             
             // increase level of difficulty
-            if ( score % 10000 < 300 && speedLevel > 0.4 ){
+            if ( scoreBoard.score % 10000 < 300 && speedLevel > 0.4 ){
                 speedLevel -= 0.1
             }
             
@@ -364,7 +427,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
             // dragons
         else if (id == 1){
             dragonDelay += 0.2
-            if (dragonDelay >= 1.5 && score >= 5000){
+            if (dragonDelay >= 1.5 && scoreBoard.score >= 5000){
                 callDragon()
                 dragonDelay = 0;
             }
@@ -451,7 +514,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         
         // 2. Calculate the angular coefficient
         
-        angle = (playerImage.position.y - y_respawn)/(playerImage.position.x - x_respawn) //  angle = (y - yi ) / ( x - xo )
+        angle = (player.playerImage.position.y - y_respawn)/(player.playerImage.position.x - x_respawn) //  angle = (y - yi ) / ( x - xo )
         b = y_respawn - angle*x_respawn // finding b from y = ax + b,  b = y - ax
         
         
@@ -511,7 +574,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         dragonMonster.position = CGPoint(x: x_left_bound, y: y_respawn)
         
         // both side if score greater than 10000
-        if (score >= 10000){
+        if (scoreBoard.score >= 10000){
             let rVal:CGFloat = random(0, max:1000)
             
             if (rVal > 500){
@@ -552,9 +615,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
     
     func projectileDidCollideWithMonster(player:SKSpriteNode, fireball:SKSpriteNode) {
         
-        print("player:, \(player)")
-        print("fireball:, \(fireball)")
-        
         fireball.removeFromParent()
         removeActionForKey("scoreCounter")
         removeActionForKey("fire_attack")
@@ -575,11 +635,11 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         
         SKAction.waitForDuration(5)
         //  let reveal = SKTransition.flipHorizontalWithDuration(0.5)
-        let winScene = GameOver(size: self.size, won: true, score: score, highscore: highscore)
+        let winScene = GameOver(size: self.size, won: true, score: scoreBoard.score, highscore: highscore)
         
-        let loseScene = GameOver(size: self.size, won: false, score: score, highscore: highscore)
+        let loseScene = GameOver(size: self.size, won: false, score: scoreBoard.score, highscore: highscore)
         
-        if ( score >= scorePass!){
+        if ( scoreBoard.score >= scorePass!){
             self.view?.presentScene(winScene)
         }
             
