@@ -131,6 +131,10 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
     
     override func didMoveToView(view: SKView){
         
+      //  print("screen width: \(self.appDelegate.screenSize.width)\n")
+      //  print("screen height: \(self.appDelegate.screenSize.height)")
+        
+        
         // delete subviews if previous didnt called
         for view in view.subviews {
             view.removeFromSuperview()
@@ -179,6 +183,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
     func load(){
         
         //load background
+        self.bgImage.size = self.frame.size
         self.bgImage.position = CGPointMake( 0, 0)
         self.bgImage.name = "bground"
         self.addChild(bgImage)
@@ -243,18 +248,20 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
             if (isValid){
                 
                 player.playerImage.position = location
-                if ( player.playerImage.position.y > 285){
-                    player.playerImage.position.y = 285
+                
+                if ( player.playerImage.position.y > self.appDelegate.screenSize.height/2 * 0.815){
+                    player.playerImage.position.y = self.appDelegate.screenSize.height/2 * 0.815
                 }
-                else if ( player.playerImage.position.y < -277){
-                    player.playerImage.position.y = -277
+                else if ( player.playerImage.position.y < -self.appDelegate.screenSize.height/2 * 0.815){
+                    player.playerImage.position.y = -self.appDelegate.screenSize.height/2 * 0.815
                 }
-                if ( player.playerImage.position.x < -150){
-                    player.playerImage.position.x = -150
+                if ( player.playerImage.position.x < -self.appDelegate.screenSize.width/2 * 0.735){
+                    player.playerImage.position.x = -self.appDelegate.screenSize.width/2 * 0.735
                 }
-                else if ( player.playerImage.position.x > 155){
-                    player.playerImage.position.x = 155
+                else if ( player.playerImage.position.x > self.appDelegate.screenSize.width/2 * 0.745){
+                    player.playerImage.position.x = self.appDelegate.screenSize.width/2 * 0.745
                 }
+                
             }
         }
     }
