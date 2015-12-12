@@ -284,6 +284,9 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
     
     func bannerViewDidLoadAd(banner: ADBannerView!) {
         self.appDelegate.adBannerView.hidden = false
+        
+        
+        print("iAD banner didload")
     }
     
     func bannerViewActionDidFinish(banner: ADBannerView!) {
