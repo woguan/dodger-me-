@@ -28,7 +28,8 @@ struct PhysicsCategory {
     static let Imune       : UInt32 = UInt32.max
     static let Player   :UInt32 = 0b1
     static let Fire   : UInt32 = 0b10
-    static let Dragon : UInt32 = 0b11
+    static let Dragon : UInt32 = 0b100
+    static let Food : UInt32 = 0b1000
     
 }
 
@@ -54,7 +55,7 @@ extension Player{
     func load(){
         // in the future... i can use like load("name of image")
         self.playerImage.size = CGSize(width: 30, height: 30)
-        self.playerImage.texture = SKTexture(imageNamed: "player")
+        self.playerImage.texture = SKTexture(imageNamed: "sprites/player/player_full")
         self.playerImage.name = "player"
         self.playerImage.position = CGPointMake( 0, 0)
     }
@@ -63,7 +64,7 @@ extension Player{
         playerImage.physicsBody = SKPhysicsBody(rectangleOfSize: playerImage.size)
         playerImage.physicsBody?.dynamic = true
         playerImage.physicsBody?.categoryBitMask = PhysicsCategory.Player
-        playerImage.physicsBody?.contactTestBitMask = PhysicsCategory.Fire
+        //playerImage.physicsBody?.contactTestBitMask = PhysicsCategory.Fire
         playerImage.physicsBody?.collisionBitMask = PhysicsCategory.None
     }
 }
@@ -74,6 +75,7 @@ im going to put fireball/dragon in a struct
 */
 
 struct Enemy{
+    var type:Int?;
     var delay:Int = 0  // delay for spawining the object
     
 }
@@ -104,11 +106,18 @@ struct Scorelabel{
         node.text = "\(score)"
     }
 }
+//
 
-class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInterstitialAdDelegate, UnpauseDelegate{
+class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, UnpauseDelegate, ADInterstitialAdDelegate{
     
-    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate // Create reference to the app delegate
+  //  deinit{
+  //      print("startgame is being deInitialized.");
+        
+  //  }
     
+    
+    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate // Create reference to the app delegate
+
     var stageLevel:Int? = nil;   // current Level -> this is set up by level selector
     var scorePass:Int? = nil;    // minumum score to pass to next level
     
@@ -117,7 +126,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
     var speedLevel:CGFloat = 1   // default speed for 'delay'
     
     var pauseGameViewController = PauseMenu()
-    var bgImage = SKSpriteNode(imageNamed: "background2")
+    var bgImage = SKSpriteNode(imageNamed: "sprites/background2")
     var startCountLabel = SKLabelNode(fontNamed: "Courier")
     var isValid:Bool = false  // touching the 'player' object  :  change var name later.. for a better one
     var highscore:Int = 0
@@ -140,43 +149,48 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
             view.removeFromSuperview()
         }
         
+        self.anchorPoint = CGPointMake(0.5, 0.5)
+        
         // load ads
         loadiAd()
         // load objects
         load();
         
+        
         // Counts from 3 to 0 and starts showing enemies
-        startCountLabel.runAction(SKAction.repeatActionForever(
+      startCountLabel.runAction(SKAction.repeatActionForever(
             SKAction.sequence([
                 SKAction.runBlock(startCount),
                 SKAction.waitForDuration(NSTimeInterval(1)), SKAction.scaleTo(1.0, duration: 0.2)
                 ])
             ), withKey: "start_count")
+    
         
     }
     
     func loadiAd(){
-        
+  
         // delegate for Unpause scene
         pauseGameViewController.delegate = self
-        
-        //iAd Banner
-       // self.appDelegate.adBannerView.delegate = self  // -> to avoid an error
+       
+           //iAd Banner
+        //self.appDelegate.adBannerView.delegate = self  // -> to avoid an error
         
         //hide until ad loaded
         
-        self.appDelegate.adBannerView.hidden = false
+        //self.appDelegate.adBannerView.hidden = false
         self.appDelegate.adBannerView = ADBannerView(frame: CGRect.zero)
         self.appDelegate.adBannerView.center = CGPoint(x: self.appDelegate.adBannerView.center.x, y: view!.bounds.size.height - self.appDelegate.adBannerView.frame.size.height / 2)
         self.appDelegate.adBannerView.delegate = self
         self.appDelegate.adBannerView.hidden = true
         view!.addSubview(self.appDelegate.adBannerView)
         
+        
         // iAD  Interstitial  -> pop up full screen iAds   ( Not fully working! )
         self.interstitialAdView.frame = self.view!.bounds
         self.interstitialAds.delegate = self
         self.interstitialAdView.hidden = true
-        self.anchorPoint = CGPointMake(0.5, 0.5)
+       
         view!.addSubview(self.interstitialAdView)
         
     }
@@ -203,6 +217,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         self.addChild(scoreBoard.node)
         
         // load player
+        player.HP = 3
         player.load()
           self.addChild(player.playerImage)
         
@@ -276,7 +291,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
     
     // iAd functions
     
-    
+ 
     func bannerViewWillLoadAd(banner: ADBannerView!) {
         // about to load a new ads
         
@@ -286,7 +301,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         self.appDelegate.adBannerView.hidden = false
         
         
-        print("iAD banner didload")
+     //   print("iAD banner didload")
     }
     
     func bannerViewActionDidFinish(banner: ADBannerView!) {
@@ -312,7 +327,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
     // finish iAd functions
     
     
-    // iAD pop up
+    // iAD interstitial pop up
     
     func interstitialAdWillLoad(interstitialAd: ADInterstitialAd!) {
     }
@@ -360,26 +375,40 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         return random() * (max - min) + min
     }
     
-    // function to keep calling callFire()
-    func loadFire(){
-        runAction(SKAction.repeatActionForever(
-            SKAction.sequence([
-                SKAction.runBlock({self.callType(0)}),
-                SKAction.waitForDuration(NSTimeInterval(0.2))
-                ])
-            ), withKey: "fire_attack")
+    
+    func loadEnemy(){
+    
+        //keep calling callFire()
+            runAction(SKAction.repeatActionForever(
+                SKAction.sequence([
+                    SKAction.runBlock({self.callType(0)}),
+                    SKAction.waitForDuration(NSTimeInterval(0.2))
+                    ])
+                ), withKey: "fire_attack")
+        
+        
+        //keep calling callDragon
+        if (stageLevel! >= 2){
+            removeActionForKey("dragon_attack")
+            runAction(SKAction.repeatActionForever(
+                SKAction.sequence([
+                    SKAction.runBlock({self.callType(1)}),
+                    SKAction.waitForDuration(NSTimeInterval(0.2))
+                    ])
+                ), withKey: "dragon_attack")
+        }
         
     }
     
-    // function to keep calling callDragon
-    func loadDragonMonster(){
-        removeActionForKey("dragon_attack")
+    func loadFood(){
+        
         runAction(SKAction.repeatActionForever(
             SKAction.sequence([
-                SKAction.runBlock({self.callType(1)}),
-                SKAction.waitForDuration(NSTimeInterval(0.2))
+                SKAction.runBlock({self.callType(2)}),
+                SKAction.waitForDuration(NSTimeInterval(1))
                 ])
-            ), withKey: "dragon_attack")
+            ), withKey: "summon_food")
+        
     }
     
     func startCount(){
@@ -392,21 +421,16 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
             scoreStartCounting()
         }
         else if (timerCount == -1){
-            removeActionForKey("start_count")
-            
-            // Start sending fireballs
-            loadFire()
-            
-            // Start sending Dragons
-            if(stageLevel! >= 2){
-                loadDragonMonster()
-            }
-            
-            
+             startCountLabel.removeActionForKey("start_count")
+            // Load enemies
+             loadEnemy()
+            // Load food
+             loadFood()
             startCountLabel.removeFromParent()
         }
         
         timerCount--
+       
     }
     
     func scoreStartCounting(){
@@ -424,9 +448,9 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
             
             // increase level of difficulty
             if ( scoreBoard.score % 10000 < 300 && speedLevel > 0.4 ){
+                //print("func called")
                 speedLevel -= 0.1
             }
-            
             
             fireDelay += 0.2
             if (fireDelay >= speedLevel){
@@ -443,13 +467,21 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
             }
         }
         
+        else if (id == 2){
+            let ram = random(0, max:1000)
+            if(ram > 990){
+                print("food summoned")
+            callFood()
+            }
+        }
+        
         
     }
     func callFire() {
         
         //self.s = self.delta
         // Create sprite
-        let fireball = SKSpriteNode(imageNamed: "fireBall")
+        let fireball = SKSpriteNode(imageNamed: "sprites/fireBall")
         fireball.name = "spriteFire"
         fireball.size = CGSize(width: 20, height: 20)
         
@@ -623,12 +655,89 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         
     }
     
+    func callFood(){
+        
+        
+        // Create sprite
+        let food = SKSpriteNode(imageNamed: "sprites/energy")
+        
+        food.name = "spriteFood"
+        food.size = CGSize(width: 20, height: 20)
+        
+        // random Y position respawn
+        let y_respawn = random( -300, max: 300)
+        
+        // destination
+        let x_respawn = random( -150, max: 150)
+        
+        food.position = CGPoint(x: x_respawn, y: y_respawn)
+        
+        addChild(food)
+        
+        // adding physical stuff  -> create a function for that later
+        
+        food.physicsBody = SKPhysicsBody(circleOfRadius: food.size.width/2) // 1
+        food.physicsBody?.dynamic = true // physic engine will not control the its movement
+        food.physicsBody?.categoryBitMask = PhysicsCategory.Food // category of bit I defined in the struct
+        food.physicsBody?.contactTestBitMask = PhysicsCategory.Player // notify when contact Player
+        food.physicsBody?.collisionBitMask = PhysicsCategory.None // this thing is related to bounce
+        food.physicsBody?.usesPreciseCollisionDetection = true
+        
+        // Create the actions
+        
+        
+    }
+    
+    func updatePlayerIMG(){
+       
+        if(player.HP! == 3){
+        self.player.playerImage.texture = SKTexture(imageNamed: "sprites/player/player_full")
+        }
+        else if(player.HP! == 2){
+            self.player.playerImage.texture = SKTexture(imageNamed: "sprites/player/player_medium")
+        }
+        else if(player.HP! == 1){
+            self.player.playerImage.texture = SKTexture(imageNamed: "sprites/player/player_low")
+        }
+        else{
+         self.player.playerImage.texture = SKTexture(imageNamed: "sprites/player/player")
+        }
+    }
+    
     func projectileDidCollideWithMonster(player:SKSpriteNode, fireball:SKSpriteNode) {
         
         fireball.removeFromParent()
+      //  print("Collided")
+        
+        if (fireball.name == "spriteFood"){
+            self.player.HP = self.player.HP! + 1
+            
+            if (self.player.HP > 3 ){
+            self.player.HP = 3
+            }
+        }
+        
+        else {
+        self.player.HP = self.player.HP! - 1
+        }
+        
+        updatePlayerIMG()
+        if (self.player.HP! <= 0){
         removeActionForKey("scoreCounter")
         removeActionForKey("fire_attack")
         removeActionForKey("dragon_attack")
+        removeActionForKey("summon_food")
+        
+        // remove the strong reference
+        //Questions: Why I do not need to do this to other delegates such as:
+        // *physical delegate, ad delegate? :/
+        // Example: the pauseGameController MUST have. Otherwise, it will cause memory leak
+        // But.. the others will not cause memory leak
+        pauseGameViewController.delegate = nil
+       //     physicsWorld.contactDelegate = nil
+        //    self.appDelegate.adBannerView.delegate = nil
+         //   self.interstitialAds.delegate = nil
+            
         // show iAd Pop up - if it is loaded successfully
         if (self.interstitialAds.loaded){
             view?.paused = true
@@ -637,23 +746,27 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         else{
             castEndScene()
         }
+            
+        }
         
         
     }
     
     func castEndScene(){
         
+        //removeActionForKey("scoreCounter")
+        
         SKAction.waitForDuration(5)
         //  let reveal = SKTransition.flipHorizontalWithDuration(0.5)
-        let winScene = GameOver(size: self.size, won: true, score: scoreBoard.score, highscore: highscore)
         
-        let loseScene = GameOver(size: self.size, won: false, score: scoreBoard.score, highscore: highscore)
         
-        if ( scoreBoard.score >= scorePass!){
+               if ( scoreBoard.score >= scorePass!){
+            let winScene = GameOver(size: self.size, won: true, score: scoreBoard.score, highscore: highscore)
             self.view?.presentScene(winScene)
         }
             
         else{
+                let loseScene = GameOver(size: self.size, won: false, score: scoreBoard.score, highscore: highscore)
             self.view?.presentScene(loseScene)
         }
     }
@@ -661,9 +774,11 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
     func didBeginContact(contact: SKPhysicsContact) {
         
         
-        
         var firstBody: SKPhysicsBody  // player
         var secondBody: SKPhysicsBody // fireball
+        
+    //    print("the body A: \(contact.bodyA.categoryBitMask)")
+     //   print("the body B: \(contact.bodyB.categoryBitMask)")
         
         if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
             firstBody = contact.bodyA
@@ -675,10 +790,10 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, ADInte
         
         
         
-        if ((firstBody.categoryBitMask & PhysicsCategory.Player != 0) &&
-            (secondBody.categoryBitMask & PhysicsCategory.Fire != 0)) {
+     //   if ((firstBody.categoryBitMask & PhysicsCategory.Player != 0) &&
+     //       (secondBody.categoryBitMask & PhysicsCategory.Fire != 0)) {
                 projectileDidCollideWithMonster(firstBody.node as! SKSpriteNode, fireball: secondBody.node as! SKSpriteNode)
-        }
+     //   }
         
     }
     

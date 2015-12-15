@@ -14,16 +14,12 @@
 		F137C2131A81C03D00FC70EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F137C2121A81C03D00FC70EA /* Images.xcassets */; };
 		F137C2161A81C03D00FC70EA /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F137C2141A81C03D00FC70EA /* LaunchScreen.xib */; };
 		F137C2221A81C03D00FC70EA /* Dodger_Me_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F137C2211A81C03D00FC70EA /* Dodger_Me_Tests.swift */; };
-		F137C2341A81D6DC00FC70EA /* fireBall.png in Resources */ = {isa = PBXBuildFile; fileRef = F137C2331A81D6DC00FC70EA /* fireBall.png */; };
 		F137C2361A8278C600FC70EA /* GameOver.swift in Sources */ = {isa = PBXBuildFile; fileRef = F137C2351A8278C600FC70EA /* GameOver.swift */; };
 		F137C25E1A84997500FC70EA /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F137C25D1A84997500FC70EA /* iAd.framework */; };
 		F137C2601A955D8200FC70EA /* PauseMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = F137C25F1A955D8200FC70EA /* PauseMenu.swift */; };
-		F1AB1E5E1BB66E01003BA666 /* dragons.png in Resources */ = {isa = PBXBuildFile; fileRef = F1AB1E5D1BB66E01003BA666 /* dragons.png */; settings = {ASSET_TAGS = (); }; };
-		F1AB1E641BB79075003BA666 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = F1AB1E621BB79075003BA666 /* background.png */; settings = {ASSET_TAGS = (); }; };
-		F1AB1E651BB79075003BA666 /* background2.png in Resources */ = {isa = PBXBuildFile; fileRef = F1AB1E631BB79075003BA666 /* background2.png */; settings = {ASSET_TAGS = (); }; };
-		F1AB1E671BB79089003BA666 /* player.png in Resources */ = {isa = PBXBuildFile; fileRef = F1AB1E661BB79089003BA666 /* player.png */; settings = {ASSET_TAGS = (); }; };
-		F1AB1E691BB7F6EB003BA666 /* StartGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1AB1E681BB7F6EB003BA666 /* StartGame.swift */; settings = {ASSET_TAGS = (); }; };
-		F1AB1E6E1BBA283D003BA666 /* sprites in Resources */ = {isa = PBXBuildFile; fileRef = F1AB1E6D1BBA283D003BA666 /* sprites */; settings = {ASSET_TAGS = (); }; };
+		F1AB1E5E1BB66E01003BA666 /* dragons.png in Resources */ = {isa = PBXBuildFile; fileRef = F1AB1E5D1BB66E01003BA666 /* dragons.png */; };
+		F1AB1E691BB7F6EB003BA666 /* StartGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1AB1E681BB7F6EB003BA666 /* StartGame.swift */; };
+		F1AB1E6E1BBA283D003BA666 /* sprites in Resources */ = {isa = PBXBuildFile; fileRef = F1AB1E6D1BBA283D003BA666 /* sprites */; };
 		F1EA7F911B72BCCE00444610 /* LevelMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EA7F901B72BCCE00444610 /* LevelMenu.swift */; };
 /* End PBXBuildFile section */
 
@@ -49,14 +45,10 @@
 		F137C21B1A81C03D00FC70EA /* Dodger Me!Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Dodger Me!Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F137C2201A81C03D00FC70EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F137C2211A81C03D00FC70EA /* Dodger_Me_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dodger_Me_Tests.swift; sourceTree = "<group>"; };
-		F137C2331A81D6DC00FC70EA /* fireBall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fireBall.png; sourceTree = "<group>"; };
 		F137C2351A8278C600FC70EA /* GameOver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOver.swift; sourceTree = "<group>"; };
 		F137C25D1A84997500FC70EA /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		F137C25F1A955D8200FC70EA /* PauseMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PauseMenu.swift; sourceTree = "<group>"; };
 		F1AB1E5D1BB66E01003BA666 /* dragons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dragons.png; sourceTree = "<group>"; };
-		F1AB1E621BB79075003BA666 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
-		F1AB1E631BB79075003BA666 /* background2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background2.png; sourceTree = "<group>"; };
-		F1AB1E661BB79089003BA666 /* player.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = player.png; sourceTree = "<group>"; };
 		F1AB1E681BB7F6EB003BA666 /* StartGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartGame.swift; sourceTree = "<group>"; };
 		F1AB1E6D1BBA283D003BA666 /* sprites */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sprites; sourceTree = "<group>"; };
 		F1EA7F901B72BCCE00444610 /* LevelMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LevelMenu.swift; sourceTree = "<group>"; };
@@ -104,11 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				F1AB1E6D1BBA283D003BA666 /* sprites */,
-				F137C2331A81D6DC00FC70EA /* fireBall.png */,
 				F1AB1E5D1BB66E01003BA666 /* dragons.png */,
-				F1AB1E661BB79089003BA666 /* player.png */,
-				F1AB1E621BB79075003BA666 /* background.png */,
-				F1AB1E631BB79075003BA666 /* background2.png */,
 				F137C2071A81C03C00FC70EA /* AppDelegate.swift */,
 				F137C25F1A955D8200FC70EA /* PauseMenu.swift */,
 				F137C20B1A81C03C00FC70EA /* GameScene.swift */,
@@ -232,11 +220,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F137C2341A81D6DC00FC70EA /* fireBall.png in Resources */,
-				F1AB1E641BB79075003BA666 /* background.png in Resources */,
-				F1AB1E671BB79089003BA666 /* player.png in Resources */,
 				F1AB1E6E1BBA283D003BA666 /* sprites in Resources */,
-				F1AB1E651BB79075003BA666 /* background2.png in Resources */,
 				F137C2161A81C03D00FC70EA /* LaunchScreen.xib in Resources */,
 				F1AB1E5E1BB66E01003BA666 /* dragons.png in Resources */,
 				F137C2131A81C03D00FC70EA /* Images.xcassets in Resources */,

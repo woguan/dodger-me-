@@ -16,6 +16,11 @@ import SpriteKit
 
 class GameScene: SKScene{
     
+  //  deinit{
+  //      print(" gamescene being deInitialized.");
+        
+ //   }
+    
     var score = 0;
     var scoreBoard = SKLabelNode()
     override func didMoveToView(view: SKView){

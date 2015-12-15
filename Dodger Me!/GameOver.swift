@@ -9,7 +9,13 @@
 import SpriteKit
 
 class GameOver: SKScene {
-    var bgImage = SKSpriteNode(imageNamed: "background2")
+    
+//    deinit{
+//        print(" gameover being deInitialized.");
+        
+//    }
+    
+    var bgImage = SKSpriteNode(imageNamed: "sprites/background2")
     var label = SKLabelNode(fontNamed: "Chalkduster")
     var scoreLabel = SKLabelNode(fontNamed: "Chalkduster")
     var score:Int = 0

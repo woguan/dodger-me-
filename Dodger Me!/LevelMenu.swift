@@ -11,6 +11,11 @@ import SpriteKit
 
 class LevelMenu: SKScene{
     
+  //  deinit{
+   //     print(" levelmenu being deInitialized.");
+        
+   // }
+    
     var score = 0;
     var scoreBoard = SKLabelNode()
     override func didMoveToView(view: SKView){

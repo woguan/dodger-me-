@@ -17,6 +17,11 @@ import SpriteKit
 
 class PauseMenu: UIViewController {
     
+   // deinit{
+    //    print(" pausemenu being deInitialized.");
+        
+   // }
+    
     var delegate:UnpauseDelegate?
     
     override func viewDidLoad() {
@@ -45,6 +50,7 @@ class PauseMenu: UIViewController {
     
     @IBAction func continueGame(){
        delegate?.callUnpause!()
+        
       view.removeFromSuperview()
     }
     
