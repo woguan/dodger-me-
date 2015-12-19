@@ -42,7 +42,7 @@ struct Player{
     var HP:Int?
     var isInvincible:Bool?
     var playerImage:SKSpriteNode
-    var imuneTime:CGFloat = 0
+    var isTouched:Bool = false
 }
 
 /*
@@ -67,30 +67,16 @@ extension Player{
         playerImage.physicsBody?.categoryBitMask = PhysicsCategory.Player
         playerImage.physicsBody?.collisionBitMask = PhysicsCategory.None
     }
-    
-    mutating func decreaseItemTime(){
-       
-        if(imuneTime > 0.0 ){
-            imuneTime -= 0.1
-            isInvincible = true
-        }
-        else{
-            isInvincible = false
-        }
-    }
 }
 
-/*
-
-im going to put fireball/dragon in a struct
-*/
 
 struct Object{
    
     var objImage:SKSpriteNode = SKSpriteNode()
     var type:Int?;
     var delay:CGFloat = 0.0  // delay for spawining the object
-    
+    var current_speed:CGFloat = 1   // initial/current speed
+    var max_speed:CGFloat = 0.4
     
     
   /*  init (imgName:String){
@@ -108,7 +94,50 @@ struct Object{
     }
 }
 
-
+struct PowerUPS{
+    var object:Object
+    var isRightArrowEnabled = false
+    var isLeftArrowEnabled = false
+    var isUpArrowEnabled = false
+    var isDownArrowEnabled = false
+    var isImuneItemEnabled = false
+    
+    var buffTime_Up:CGFloat = 0
+    var buffTime_Down:CGFloat = 0
+    var buffTime_Left:CGFloat = 0
+    var buffTime_Right:CGFloat = 0
+    var buffTime_imune:CGFloat = 0
+  
+    
+    
+    init (){
+ object = Object()
+    }
+    
+    mutating func update(){
+        if (buffTime_Up <= 0){
+            isUpArrowEnabled = false
+        }
+        
+        if (buffTime_Down <= 0 ){
+            isDownArrowEnabled = false
+        }
+        
+        if (buffTime_Left <= 0 ){
+            isLeftArrowEnabled = false
+        }
+        
+        if (buffTime_Right <= 0 ){
+            isRightArrowEnabled = false
+        }
+        
+        if (buffTime_imune <= 0 ){
+            isImuneItemEnabled = false
+        }
+        
+    }
+    
+}
 /*
 ** Below I am using the mutating function
 ** Struct is a value type, and itself is immutable, thus, if we want to
@@ -140,37 +169,46 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
     
    deinit{
         print("startgame is being deInitialized.");
-        
     }
     
     
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate // Create reference to the app delegate
-
+    var interstitialAds:ADInterstitialAd = ADInterstitialAd()
+    var interstitialAdView: UIView = UIView()
+    var pauseGameViewController = PauseMenu()
+    var bgImage = SKSpriteNode(imageNamed: "sprites/background2.png")
+    var startCountLabel = SKLabelNode(fontNamed: "Courier")
+    
+    // This will fix the BUG from interstitial ads when not clicked
+    var gameover:Bool = false
+    
+    
+    
     var stageLevel:Int? = nil;   // current Level -> this is set up by level selector
     var scorePass:Int? = nil;    // minumum score to pass to next level
     
-    var speedLevel:CGFloat = 1   // default speed for 'delay'
     
-    var pauseGameViewController = PauseMenu()
-    var bgImage = SKSpriteNode(imageNamed: "sprites/background2.png")
- 
-    
-    var startCountLabel = SKLabelNode(fontNamed: "Courier")
-    var isValid:Bool = false  // touching the 'player' object  :  change var name later.. for a better one
     var highscore:Int = 0
     var timerCount:Int = 3
     
-    var player = Player(playerImage: SKSpriteNode()) // using extension way
+    
+    // Implemented Scorelabel Class
     var scoreBoard = Scorelabel()
     
-    var interstitialAds:ADInterstitialAd = ADInterstitialAd()
-    var interstitialAdView: UIView = UIView()
-    var gameover:Bool = false
+    // Implemented Player class
+    var player = Player(playerImage: SKSpriteNode()) // using extension way
     
-    // implementing Enemy class 12/15/2015
+    // Implemented Enemy class 12/15/2015
     var fire = Object()
     var dragon = Object()
-    var food = Object()
+    var powerUp = PowerUPS()
+    
+    // Implemented "constant" values for differents modes 12/18/2015
+    var CHANCE_OF_POWERUP:CGFloat? // Percentage of respawing each second
+    var MAX_FIRE_SPEED:CGFloat?
+    var MAX_DRAGON_SPEED:CGFloat?
+    var RESPAWN_DRAGON_SCORE:Int?
+    var RATE_SPEED_GROWTH:CGFloat?
     
     
     override func didMoveToView(view: SKView){
@@ -185,6 +223,28 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         }
         
         self.anchorPoint = CGPointMake(0.5, 0.5)
+        
+        //load stage settings
+        
+        // 1.Classic
+        if(stageLevel! == 1){
+            
+            CHANCE_OF_POWERUP = 10
+            MAX_FIRE_SPEED = 0.4
+            MAX_DRAGON_SPEED = 1.5
+            RESPAWN_DRAGON_SCORE = 40000
+            RATE_SPEED_GROWTH = 0.01
+            
+        }
+        // 2.Insane
+        else if(stageLevel! == 2){
+            CHANCE_OF_POWERUP = 15
+            MAX_FIRE_SPEED = 0.2
+            MAX_DRAGON_SPEED = 1.0
+            RESPAWN_DRAGON_SCORE = 30000
+            RATE_SPEED_GROWTH = 0.03
+        }
+        
         
         // load ads
         loadiAd()
@@ -254,6 +314,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         // load player
         player.HP = 3
         player.load()
+        player.materializeBody()
         player.isInvincible = false
         self.addChild(player.playerImage)
         
@@ -279,16 +340,15 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
             
             let location = (touch ).locationInNode(self)
             if ( ((player.playerImage.position.x > location.x - 20 ) && (player.playerImage.position.x < location.x + 20)) && ((player.playerImage.position.y > location.y - 20 ) && (player.playerImage.position.y < location.y + 20))  ){
+               if (self.player.isInvincible == false){
                 let liftUp = SKAction.scaleTo(1.2, duration: 0.2)
-                player.playerImage.runAction(liftUp)
-                isValid = true
+                player.playerImage.runAction(liftUp)}
+                player.isTouched = true
                 
             }
             else{
-                isValid = false
+                player.isTouched  = false
             }
-            
-            player.materializeBody()
             
         }
     }
@@ -296,7 +356,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         for touch in touches {
             let location = (touch ).locationInNode(self)
-            if (isValid){
+            if (player.isTouched){
                 
                 player.playerImage.position = location
                 
@@ -319,8 +379,10 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         for _ in touches {
+            if (self.player.isInvincible == false){
             let liftUp = SKAction.scaleTo(1.0, duration: 0.2)
             player.playerImage.runAction(liftUp)
+            }
         }
     }
     
@@ -420,37 +482,41 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
     
     func loadObjects(){
     fire.type = 0
+    fire.current_speed = 1.0
+    fire.max_speed = MAX_FIRE_SPEED!
+        
     dragon.type = 1
-    food.type = 2
+    dragon.current_speed = 1.5
+    dragon.max_speed = MAX_DRAGON_SPEED!
+    powerUp.object.type = 2
         
         
         //keep calling callFire()
             runAction(SKAction.repeatActionForever(
                 SKAction.sequence([
                     SKAction.runBlock({self.callType(self.fire)}),
-                    SKAction.waitForDuration(NSTimeInterval(0.2))
+                    SKAction.waitForDuration(NSTimeInterval(0.1))
                     ])
                 ), withKey: "fire_attack")
         
     
         //keep calling callDragon
-        if (stageLevel! >= 2){
-            removeActionForKey("dragon_attack")
+
+         //   removeActionForKey("dragon_attack")
             runAction(SKAction.repeatActionForever(
                 SKAction.sequence([
                     SKAction.runBlock({self.callType(self.dragon)}),
-                    SKAction.waitForDuration(NSTimeInterval(0.2))
+                    SKAction.waitForDuration(NSTimeInterval(0.1))
                     ])
                 ), withKey: "dragon_attack")
-        }
         
         // for food
         runAction(SKAction.repeatActionForever(
             SKAction.sequence([
-                SKAction.runBlock({self.callType(self.food)}),
+                SKAction.runBlock({self.callType(self.powerUp.object)}),
                 SKAction.waitForDuration(NSTimeInterval(1))
                 ])
-            ), withKey: "summon_food")
+            ), withKey: "respawn_powerups")
         
     }
     
@@ -489,30 +555,38 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         if ( obj.type == 0){
             
             // increase level of difficulty
-            if ( scoreBoard.score % 10000 < 300 && speedLevel > 0.4 ){
-                speedLevel -= 0.1
+            if ( obj.current_speed > obj.max_speed ){
+                fire.current_speed -= RATE_SPEED_GROWTH!
             }
             
             fire.incDelay(0.2)
             
-            if (obj.delay >= speedLevel){
+            if (obj.delay >= obj.current_speed){
                 callFire();
                 fire.resetDelay()
             }
+            
+            print("current level: \(obj.current_speed)")
         }
             // dragons
         else if (obj.type == 1){
             dragon.incDelay(0.2)
-            if (obj.delay >= 1.5 && scoreBoard.score >= 5000){
+            if (obj.delay >= obj.current_speed && scoreBoard.score >= RESPAWN_DRAGON_SCORE){
+                
+                //increase dragon speed
+                if ( obj.current_speed > obj.max_speed ){
+                    dragon.current_speed -= RATE_SPEED_GROWTH!
+                }
+                
                 callDragon()
                dragon.resetDelay()
             }
         }
         
+            // powerups
         else if (obj.type == 2){
-            let ram = random(0, max:1000)
-            if(ram > 900){
-                print("food summoned")
+            let ram = random(0, max:100)
+            if(ram > 100 - CHANCE_OF_POWERUP!){
             callPowerUp()
             }
         }
@@ -525,7 +599,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         // Create sprite
         let fireball = SKSpriteNode(imageNamed: "sprites/fireball/fireBall")
         fireball.name = "spriteFire"
-        fireball.size = CGSize(width: 20, height: 20)
+        fireball.size = CGSize(width: 15, height: 15)
         
         // destination
         let y_up_bound:CGFloat = self.appDelegate.screenSize.height/2
@@ -549,24 +623,36 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         
         // Respawn bottom
         if ( Int(option) == 0 ){
+            if(powerUp.isRightArrowEnabled == true){
+                return
+            }
             fireball.position = CGPoint(x: x_respawn, y: y_down_bound)
             y_respawn = y_down_bound
         }
         
         // Respawn Top
         else if ( Int(option) == 1 ){
+            if(powerUp.isUpArrowEnabled == true){
+                return
+            }
             fireball.position = CGPoint(x: x_respawn, y: y_up_bound)
             y_respawn = y_up_bound
         }
             
         //Respawn Left
         else if ( Int(option) == 2 ){
+            if(powerUp.isLeftArrowEnabled == true){
+                return
+            }
             fireball.position = CGPoint(x: x_left_bound, y: y_respawn)
             x_respawn = x_left_bound
         }
             
         //Respawn Right
         else if ( Int(option) == 3 ){
+            if(powerUp.isRightArrowEnabled == true){
+                return
+            }
             fireball.position = CGPoint(x: x_right_bound, y: y_respawn)
             x_respawn = x_right_bound
         }
@@ -703,24 +789,58 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
     
     func callPowerUp(){
         
-        // 30% :  Imune item
+        // 10% :  Imune item
+        // 20% :  block side
         // 70% :  Gain HP
         
         let randomNum:CGFloat = random(0, max: 100)
-        
+        let randomArrowtype:CGFloat = random(0, max:100)
         // Create sprite
-        let food = SKSpriteNode()
+        let item = SKSpriteNode()
         
-        if ( randomNum <= 30){
-            food.texture = SKTexture(imageNamed: "sprites/powerUps/imuneItem")
-            food.name = "spriteImune"
-            food.size = CGSize(width: 20, height: 20)
+        // 10% imune
+        if ( randomNum <= 10){
+            item.texture = SKTexture(imageNamed: "sprites/powerUps/imuneItem")
+            item.name = "spriteImune"
+            item.size = CGSize(width: 20, height: 20)
         }
         
+        // 20% block item
+        else if ( randomNum > 10 && randomNum <= 30){
+           
+           
+            // 30% : up/down
+            // 20% : left/right
+            
+            if (randomArrowtype <= 30 ){
+               item.texture = SKTexture(imageNamed: "sprites/powerUps/left_arrow")
+                item.name = "spriteArrow_left"
+            }
+            
+            else if (randomArrowtype > 30 && randomArrowtype <= 60 ){
+                item.texture = SKTexture(imageNamed: "sprites/powerUps/right_arrow")
+                item.name = "spriteArrow_right"
+            }
+            
+            else if (randomArrowtype > 60 && randomArrowtype <= 80 ){
+                item.texture = SKTexture(imageNamed: "sprites/powerUps/up_arrow")
+                item.name = "spriteArrow_up"
+            }
+            
+            else if (randomArrowtype > 80 && randomArrowtype <= 100 ){
+                item.texture = SKTexture(imageNamed: "sprites/powerUps/down_arrow")
+                item.name = "spriteArrow_down"
+            }
+            
+            
+            item.size = CGSize(width: 20, height: 20)
+        }
+        
+        // 70% life item
         else {
-            food.texture = SKTexture(imageNamed: "sprites/powerUps/life")
-            food.name = "spriteLife"
-            food.size = CGSize(width: 20, height: 20)
+            item.texture = SKTexture(imageNamed: "sprites/powerUps/life")
+            item.name = "spriteLife"
+            item.size = CGSize(width: 20, height: 20)
         }
        
        
@@ -731,20 +851,18 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         // destination
         let x_respawn = random( -150, max: 150)
         
-        food.position = CGPoint(x: x_respawn, y: y_respawn)
+        item.position = CGPoint(x: x_respawn, y: y_respawn)
         
-        addChild(food)
+        addChild(item)
         
         // adding physical stuff  -> create a function for that later
         
-        food.physicsBody = SKPhysicsBody(circleOfRadius: food.size.width/2) // 1
-        food.physicsBody?.dynamic = true // physic engine will not control the its movement
-        food.physicsBody?.categoryBitMask = PhysicsCategory.Food // category of bit I defined in the struct
-        food.physicsBody?.contactTestBitMask = PhysicsCategory.Player // notify when contact Player
-        food.physicsBody?.collisionBitMask = PhysicsCategory.None // this thing is related to bounce
-        food.physicsBody?.usesPreciseCollisionDetection = true
-        
-        // Create the actions
+        item.physicsBody = SKPhysicsBody(circleOfRadius: item.size.width/2) // 1
+        item.physicsBody?.dynamic = true // physic engine will not control the its movement
+        item.physicsBody?.categoryBitMask = PhysicsCategory.Food // category of bit I defined in the struct
+        item.physicsBody?.contactTestBitMask = PhysicsCategory.Player // notify when contact Player
+        item.physicsBody?.collisionBitMask = PhysicsCategory.None // this thing is related to bounce
+        item.physicsBody?.usesPreciseCollisionDetection = true
         
         
     }
@@ -788,32 +906,145 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         
         else if (object.name == "spriteImune"){
             
-            self.player.isInvincible = true
+            var tempBool:Bool = true // this is used for alpha purpose
             
-            if (self.player.imuneTime <= 0 ){
-                     self.player.imuneTime = 10.0
+            let expand = SKAction.scaleTo(2.0, duration: 0.2)
+            let shrink = SKAction.scaleTo(1.0, duration: 0.2)
+            let BONUS_TIME:CGFloat = 10.0
+            
+            self.player.playerImage.runAction(expand)
+            self.player.isInvincible = true
+            self.player.playerImage.alpha = 1.0
+            
+            if (self.powerUp.buffTime_imune <= 0 ){
+                     self.powerUp.isImuneItemEnabled = true
+                     self.powerUp.buffTime_imune = BONUS_TIME
                 
                 runAction(SKAction.repeatActionForever(
                     SKAction.sequence([
                         SKAction.runBlock({
-                            self.player.imuneTime -= 2.0
+                            self.powerUp.buffTime_imune -= 0.1
                             
-                            if (self.player.imuneTime <= 0){
+                            if( self.powerUp.buffTime_imune > 0 &&  self.powerUp.buffTime_imune <= 5){
+                                
+                                if(tempBool == true){
+                                    self.player.playerImage.alpha -= 0.1
+                                    if (self.player.playerImage.alpha <= 0.6){
+                                        tempBool = false
+                                    }
+                                }
+                                else{
+                                    self.player.playerImage.alpha += 0.1
+                                    if (self.player.playerImage.alpha >= 1.0){
+                                        tempBool = true
+                                    }
+                                }
+                            }
+                            
+                            self.powerUp.update()
+                            
+                            if (self.powerUp.isImuneItemEnabled == false){
                                 self.player.isInvincible = false
+                                self.player.playerImage.alpha = 1.0
+                                self.player.playerImage.runAction(shrink)
                                 self.removeActionForKey("imune_counter")
                              self.updatePlayerIMG()
                             }
                             
-                            }), SKAction.waitForDuration(NSTimeInterval(1))
+                            }), SKAction.waitForDuration(NSTimeInterval(0.1))
                         ])
                     ), withKey: "imune_counter")
                 
             }
             else {
-                self.player.imuneTime = 10.0
+                self.powerUp.buffTime_imune = BONUS_TIME
             }
         }
         
+        else if (object.name!.containsString("spriteArrow")){
+          
+            let BONUS_TIME:CGFloat = 20.0
+            
+            if(object.name!.containsString("_right")){
+                powerUp.isRightArrowEnabled = true
+            }
+            else if(object.name!.containsString("_left")){
+                powerUp.isLeftArrowEnabled = true
+            }
+            else if(object.name!.containsString("_up")){
+                powerUp.isUpArrowEnabled = true
+            }
+            else if(object.name!.containsString("_down")){
+                powerUp.isDownArrowEnabled = true
+            }
+            
+            // SKAction - run it if the action is not running
+            if (self.powerUp.buffTime_Right <= 0.0 && self.powerUp.buffTime_Left <= 0.0 && self.powerUp.buffTime_Up <= 0.0 && self.powerUp.buffTime_Down <= 0.0 ){
+                
+                if(powerUp.isRightArrowEnabled){
+                    self.powerUp.buffTime_Right = BONUS_TIME
+                }
+                if(powerUp.isLeftArrowEnabled){
+                    self.powerUp.buffTime_Left = BONUS_TIME
+                }
+                if(powerUp.isUpArrowEnabled){
+                    self.powerUp.buffTime_Up = BONUS_TIME
+                }
+                if(powerUp.isDownArrowEnabled){
+                    self.powerUp.buffTime_Down = BONUS_TIME
+                }
+                
+            runAction(SKAction.repeatActionForever(
+                SKAction.sequence([
+                    SKAction.runBlock({
+                        
+                        if(self.powerUp.isRightArrowEnabled){
+                            self.powerUp.buffTime_Right -= 0.1
+                        }
+
+                        if(self.powerUp.isLeftArrowEnabled){
+                            self.powerUp.buffTime_Left -= 0.1
+                        }
+                        if(self.powerUp.isUpArrowEnabled){
+                            self.powerUp.buffTime_Up -= 0.1
+                        }
+                        
+                        if(self.powerUp.isDownArrowEnabled){
+                            self.powerUp.buffTime_Down -= 0.1
+                        }
+                        
+                        self.powerUp.update()
+                        
+                        if(self.powerUp.isDownArrowEnabled == false && self.powerUp.isUpArrowEnabled == false && self.powerUp.isLeftArrowEnabled == false && self.powerUp.isRightArrowEnabled == false){
+                            self.removeActionForKey("arrow_counter")
+                        }
+                        
+                    }), SKAction.waitForDuration(NSTimeInterval(0.1))
+                    ])
+                ), withKey: "arrow_counter")
+                
+                
+            }
+            
+            else{
+                
+                if(powerUp.isRightArrowEnabled){
+                    self.powerUp.buffTime_Right = BONUS_TIME
+                }
+                if(powerUp.isLeftArrowEnabled){
+                    self.powerUp.buffTime_Left = BONUS_TIME
+                }
+                if(powerUp.isUpArrowEnabled){
+                    self.powerUp.buffTime_Up = BONUS_TIME
+                }
+                if(powerUp.isDownArrowEnabled){
+                    self.powerUp.buffTime_Down = BONUS_TIME
+                }
+                
+            }
+            
+        }
+            
         else if (self.player.isInvincible == false ){
         self.player.HP = self.player.HP! - 1
         }
@@ -825,10 +1056,13 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         gameover = true
         
         // remove all actions ( maybe can try remove all actions later )
-        removeActionForKey("scoreCounter")
+       /* removeActionForKey("scoreCounter")
         removeActionForKey("fire_attack")
         removeActionForKey("dragon_attack")
-        removeActionForKey("summon_food")
+        removeActionForKey("respawn_powerups")
+        removeActionForKey("imune_counter")
+        removeActionForKey("imune_counter")*/
+        removeAllActions()
         
         // remove the strong reference
         //Questions: Why I do not need to do this to other delegates such as:

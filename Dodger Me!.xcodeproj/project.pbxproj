@@ -7,12 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F10B57931C250CA600313A31 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F10B57921C250CA600313A31 /* Default-568h@2x.png */; };
+		F10B57961C2510E100313A31 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F10B57941C2510E100313A31 /* LaunchScreen.xib */; };
 		F137C2081A81C03C00FC70EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F137C2071A81C03C00FC70EA /* AppDelegate.swift */; };
 		F137C20C1A81C03C00FC70EA /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F137C20B1A81C03C00FC70EA /* GameScene.swift */; };
 		F137C20E1A81C03C00FC70EA /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F137C20D1A81C03C00FC70EA /* GameViewController.swift */; };
 		F137C2111A81C03C00FC70EA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F137C20F1A81C03C00FC70EA /* Main.storyboard */; };
 		F137C2131A81C03D00FC70EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F137C2121A81C03D00FC70EA /* Images.xcassets */; };
-		F137C2161A81C03D00FC70EA /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F137C2141A81C03D00FC70EA /* LaunchScreen.xib */; };
 		F137C2221A81C03D00FC70EA /* Dodger_Me_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F137C2211A81C03D00FC70EA /* Dodger_Me_Tests.swift */; };
 		F137C2361A8278C600FC70EA /* GameOver.swift in Sources */ = {isa = PBXBuildFile; fileRef = F137C2351A8278C600FC70EA /* GameOver.swift */; };
 		F137C25E1A84997500FC70EA /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F137C25D1A84997500FC70EA /* iAd.framework */; };
@@ -34,6 +35,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F10B57921C250CA600313A31 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		F10B57951C2510E100313A31 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		F137C2021A81C03C00FC70EA /* Dodger Me!.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Dodger Me!.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F137C2061A81C03C00FC70EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F137C2071A81C03C00FC70EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -41,7 +44,6 @@
 		F137C20D1A81C03C00FC70EA /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		F137C2101A81C03C00FC70EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F137C2121A81C03D00FC70EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		F137C2151A81C03D00FC70EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		F137C21B1A81C03D00FC70EA /* Dodger Me!Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Dodger Me!Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F137C2201A81C03D00FC70EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F137C2211A81C03D00FC70EA /* Dodger_Me_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dodger_Me_Tests.swift; sourceTree = "<group>"; };
@@ -76,6 +78,7 @@
 		F137C1F91A81C03C00FC70EA = {
 			isa = PBXGroup;
 			children = (
+				F10B57921C250CA600313A31 /* Default-568h@2x.png */,
 				F137C25D1A84997500FC70EA /* iAd.framework */,
 				F137C2041A81C03C00FC70EA /* Dodger Me! */,
 				F137C21E1A81C03D00FC70EA /* Dodger Me!Tests */,
@@ -104,9 +107,9 @@
 				F1AB1E681BB7F6EB003BA666 /* StartGame.swift */,
 				F137C2351A8278C600FC70EA /* GameOver.swift */,
 				F137C20D1A81C03C00FC70EA /* GameViewController.swift */,
+				F10B57941C2510E100313A31 /* LaunchScreen.xib */,
 				F137C20F1A81C03C00FC70EA /* Main.storyboard */,
 				F137C2121A81C03D00FC70EA /* Images.xcassets */,
-				F137C2141A81C03D00FC70EA /* LaunchScreen.xib */,
 				F137C2051A81C03C00FC70EA /* Supporting Files */,
 			);
 			path = "Dodger Me!";
@@ -221,9 +224,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				F1AB1E6E1BBA283D003BA666 /* sprites in Resources */,
-				F137C2161A81C03D00FC70EA /* LaunchScreen.xib in Resources */,
 				F1AB1E5E1BB66E01003BA666 /* dragons.png in Resources */,
 				F137C2131A81C03D00FC70EA /* Images.xcassets in Resources */,
+				F10B57931C250CA600313A31 /* Default-568h@2x.png in Resources */,
+				F10B57961C2510E100313A31 /* LaunchScreen.xib in Resources */,
 				F137C2111A81C03C00FC70EA /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -271,20 +275,20 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		F10B57941C2510E100313A31 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F10B57951C2510E100313A31 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
 		F137C20F1A81C03C00FC70EA /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				F137C2101A81C03C00FC70EA /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		F137C2141A81C03D00FC70EA /* LaunchScreen.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				F137C2151A81C03D00FC70EA /* Base */,
-			);
-			name = LaunchScreen.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -398,10 +402,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -418,10 +419,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "Dodger Me!Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "diego.$(PRODUCT_NAME:rfc1034identifier)";

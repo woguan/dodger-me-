@@ -27,11 +27,17 @@ class PauseMenu: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.greenColor()
+        
+        let background_img = UIImage(named: "sprites/pause_img")
+        self.view.backgroundColor = UIColor(patternImage: background_img!)
+        
+    
         
         view.frame = CGRectMake(view.center.x/2 , view.center.y/2, self.view.frame.width * 0.5, self.view.frame.height * 0.5)
         
-        let continueButton = UIButton (frame: CGRectMake(view.center.x/4,view.center.y/4,100,50))
+        
+        let continueButton = UIButton (frame: CGRectMake(view.frame.width/4,view.frame.height/2,100,50))
+        
         continueButton.setTitle("CONTINUE", forState: .Normal)
         continueButton.titleLabel?.font = UIFont(name: "Chalkduster", size: 15)
         continueButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
