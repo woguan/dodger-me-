@@ -70,11 +70,11 @@ class LevelMenu: SKScene{
     }
     
     @IBAction func Mode_1() {
-        selector(1)
+        selector("classic")
     }
     
     @IBAction func Mode_2() {
-        selector(2)
+        selector("insane")
     }
     
    /* @IBAction func lv3() {
@@ -87,11 +87,11 @@ class LevelMenu: SKScene{
     }*/
     
     
-    func selector (level:Int){
+    func selector (mode:String){
     
         let scene = StartGame(size: self.size)
-        scene.stageLevel = level
-        scene.scorePass = level * 15000;
+        scene.gameMode = mode
+        //scene.scorePass = level * 15000;
         view?.presentScene(scene)
         
     }

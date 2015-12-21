@@ -184,7 +184,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
     
     
     
-    var stageLevel:Int? = nil;   // current Level -> this is set up by level selector
+    var gameMode:String? = nil;   // current Level -> this is set up by level selector
     var scorePass:Int? = nil;    // minumum score to pass to next level
     
     
@@ -211,6 +211,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
     var RATE_SPEED_GROWTH:CGFloat?
     
     
+    
     override func didMoveToView(view: SKView){
         
       //  print("screen width: \(self.appDelegate.screenSize.width)\n")
@@ -224,25 +225,30 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         
         self.anchorPoint = CGPointMake(0.5, 0.5)
         
+        //Implemented usage of plist 12/19/2015
+       // getValuesInPlistFile()
+        
         //load stage settings
         
         // 1.Classic
-        if(stageLevel! == 1){
+        if(gameMode! == "classic"){
             
             CHANCE_OF_POWERUP = 10
             MAX_FIRE_SPEED = 0.4
             MAX_DRAGON_SPEED = 1.5
             RESPAWN_DRAGON_SCORE = 40000
             RATE_SPEED_GROWTH = 0.01
+            scorePass = 50000
             
         }
         // 2.Insane
-        else if(stageLevel! == 2){
+        else if(gameMode! == "insane"){
             CHANCE_OF_POWERUP = 15
             MAX_FIRE_SPEED = 0.2
             MAX_DRAGON_SPEED = 1.0
             RESPAWN_DRAGON_SCORE = 30000
             RATE_SPEED_GROWTH = 0.03
+            scorePass = 40000
         }
         
         
@@ -262,6 +268,20 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
     
         
     }
+    
+    func getValuesInPlistFile(){
+    
+        // this works -- RETRIEVING STUFF FROM THE DEFAULT PLIST ( CAN BE USED FOR RESET )
+        /*
+        let filePath = NSBundle.mainBundle().pathForResource("dodger", ofType: "plist")!
+        let stylesheet = NSDictionary(contentsOfFile:filePath)
+        let filename = "Highscore_Classic"
+        let hs:Double = stylesheet!.valueForKeyPath(filename) as! Double
+        print("finally we got this: \(hs)")*/
+        
+    }
+        
+    
     
     func loadiAd(){
   
@@ -566,7 +586,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
                 fire.resetDelay()
             }
             
-            print("current level: \(obj.current_speed)")
+           // print("current level: \(obj.current_speed)")
         }
             // dragons
         else if (obj.type == 1){
@@ -963,7 +983,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         
         else if (object.name!.containsString("spriteArrow")){
           
-            let BONUS_TIME:CGFloat = 20.0
+            let BONUS_TIME:CGFloat = 15.0
             
             if(object.name!.containsString("_right")){
                 powerUp.isRightArrowEnabled = true
@@ -1094,12 +1114,12 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         
         
                if ( scoreBoard.score >= scorePass!){
-            let winScene = GameOver(size: self.size, won: true, score: scoreBoard.score, highscore: highscore)
+                let winScene = GameOver(size: self.size, won: true, score: scoreBoard.score, highscore: highscore, game_mode: self.gameMode!)
             self.view?.presentScene(winScene)
         }
             
         else{
-                let loseScene = GameOver(size: self.size, won: false, score: scoreBoard.score, highscore: highscore)
+                let loseScene = GameOver(size: self.size, won: false, score: scoreBoard.score, highscore: highscore, game_mode:gameMode!)
             self.view?.presentScene(loseScene)
         }
     }
