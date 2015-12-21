@@ -15,7 +15,9 @@ class Highscore: SKScene {
     
     //    }
     
-    var bgImage = SKSpriteNode(imageNamed: "sprites/background")
+    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate // Create reference to the app delegate
+    
+    var bgImage = SKSpriteNode(imageNamed: "sprites/background2")
     var label_Classic = SKLabelNode(fontNamed: "Chalkduster")
     var label_Insane = SKLabelNode(fontNamed: "Chalkduster")
     var Label_Highscore = SKLabelNode(fontNamed: "Chalkduster")
@@ -33,7 +35,7 @@ class Highscore: SKScene {
     var label_insane_5 = SKLabelNode(fontNamed: "Chalkduster")
     
     
-    let SIZE_LABEL_HS:CGFloat = 40.0
+    
     let SIZE_LABAL_MODE:CGFloat = 20.0
     let SIZE_LABEL_SCORE:CGFloat = 15.0
     
@@ -50,6 +52,17 @@ class Highscore: SKScene {
 
        override func didMoveToView(view: SKView) {
        
+        let y_up_bound:CGFloat = self.appDelegate.screenSize.height/2
+        let y_down_bound:CGFloat = -self.appDelegate.screenSize.height/2
+        let x_left_bound:CGFloat = -self.appDelegate.screenSize.width/2
+        let x_right_bound:CGFloat = self.appDelegate.screenSize.width/2
+        
+        let SIZE_LABEL_HS:CGFloat = y_up_bound * 0.1086
+        
+        print(y_up_bound)
+        print(y_down_bound)
+        print(x_left_bound)
+        print(x_right_bound)
         // Load score from pList
         let documentDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
         let fullPathName = documentDirectory.stringByAppendingPathComponent("dodger.plist") as String
@@ -62,6 +75,7 @@ class Highscore: SKScene {
                 self.anchorPoint = CGPointMake(0.5, 0.5)
         
         //load background
+        self.bgImage.size = self.frame.size
         self.bgImage.position = CGPointMake( 0, 0)
         self.bgImage.name = "bground"
         self.addChild(bgImage)

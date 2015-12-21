@@ -454,14 +454,15 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
     }
     
     func interstitialAdActionDidFinish(interstitialAd: ADInterstitialAd!) {
-        // it is always called twice... why?
+        // it is always called when at the start.. why?
        // print("is it called twice?")
         if(self.interstitialAds.loaded){
+            callUnpause()  // check later if this is necessary
             self.interstitialAdView.removeFromSuperview()
             castEndScene()
            
         }
-        callUnpause()
+        
     }
     
     func interstitialAdActionShouldBegin(interstitialAd: ADInterstitialAd!, willLeaveApplication willLeave: Bool) -> Bool {
@@ -928,7 +929,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
             
             var tempBool:Bool = true // this is used for alpha purpose
             
-            let expand = SKAction.scaleTo(2.0, duration: 0.2)
+            let expand = SKAction.scaleTo(2.5, duration: 0.2)
             let shrink = SKAction.scaleTo(1.0, duration: 0.2)
             let BONUS_TIME:CGFloat = 10.0
             
@@ -949,7 +950,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
                                 
                                 if(tempBool == true){
                                     self.player.playerImage.alpha -= 0.1
-                                    if (self.player.playerImage.alpha <= 0.6){
+                                    if (self.player.playerImage.alpha <= 0.5){
                                         tempBool = false
                                     }
                                 }
@@ -1092,7 +1093,9 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         pauseGameViewController.delegate = nil
             
         // show iAd Pop up - if it is loaded successfully
-        if (self.interstitialAds.loaded){
+            
+            let chance_toShow:CGFloat = random(0, max: 100)
+        if (self.interstitialAds.loaded && chance_toShow > 70){
             view?.paused = true
             iAdPopup()
         }
