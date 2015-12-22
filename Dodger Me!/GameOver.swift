@@ -22,6 +22,7 @@ class GameOver: SKScene {
     var highscore:Int = 0
     var winResult = false
     var game_mode:String?
+    var points_accumulated:Int = 0
     
     init(size: CGSize, won:Bool, score:Int, highscore:Int, game_mode:String) {
         
@@ -82,7 +83,9 @@ class GameOver: SKScene {
     }
     
     // newList is a copy of the key \(mode)
-    let newList = plistFile!.valueForKeyPath(mode!) as? NSMutableArray
+    let newList = plistFile!.valueForKeyPath(mode!) as? NSMutableArray  // Highscore
+    let pointsPlist = plistFile!.valueForKeyPath("Points") as? Int
+    
     for stuff in newList!{
     let id = newList!.indexOfObject(stuff) as Int
         
@@ -93,7 +96,11 @@ class GameOver: SKScene {
         }
         
     }
-
+    
+    // updating Points
+    points_accumulated = score/10000 + pointsPlist!
+    // updating virtual plist for points
+    plistFile?.setObject(points_accumulated, forKey: "Points")
     // Changing the object from plistFile - I'm replacing it with a new newList
       plistFile!.setObject(newList!, forKey: mode!)
     

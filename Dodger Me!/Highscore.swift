@@ -258,10 +258,12 @@ class Highscore: SKScene {
         var RATIO:CGFloat = 1.0
         
         if (curr_ratio > 0.6){
-            RATIO = 0.7143
+           // RATIO = 0.7143
+            RATIO =  0.6333
         }
         else{
-            RATIO = 0.61
+           // RATIO = 0.61
+             RATIO = 0.76
         }
         
         Y_POSITION_LABEL_HS *= RATIO

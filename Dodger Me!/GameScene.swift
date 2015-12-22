@@ -16,13 +16,13 @@ import SpriteKit
 
 class GameScene: SKScene{
     
-  //  deinit{
-  //      print(" gamescene being deInitialized.");
+    deinit{
+        print(" gamescene being deInitialized.");
         
- //   }
+    }
     
     var score = 0;
-    var scoreBoard = SKLabelNode()
+    var pointLabel = SKLabelNode()
     override func didMoveToView(view: SKView){
         
         let height = 60
@@ -30,8 +30,18 @@ class GameScene: SKScene{
         
         self.backgroundColor = SKColor.lightGrayColor()
         
+        //initialize the virtual plist
+        let documentDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
         
+        // giving the path?
+        let fullPathName = documentDirectory.stringByAppendingPathComponent("dodger.plist") as String
         
+        // plistFile is the root ( which is of the type Dictionary )
+        let plistFile = NSMutableDictionary(contentsOfFile:fullPathName)
+        
+        // pointsPlist
+        let points_from_plist = plistFile?.valueForKey("Points") as! Int
+
         let newGameButton = UIButton (frame: CGRectMake(0,0,CGFloat(width),CGFloat(height)))
         newGameButton.center = CGPointMake(view.center.x, view.center.y - 60)
         newGameButton.setTitle("START GAME", forState: .Normal)
@@ -54,16 +64,50 @@ class GameScene: SKScene{
         
         
      
+        // SKSprite of points
+        let point_image = SKSpriteNode(imageNamed: "sprites/coin")
+        point_image.name = "points"
+        point_image.size = CGSize(width: 70, height: 70)
+        point_image.position = CGPoint(x:  view.center.x + 120, y: view.center.y + 210)
+        addChild(point_image)
+
         
-  /*      scoreBoard.text = "High Score: \(score)"
-        scoreBoard.name = "scoring"
-        scoreBoard.fontSize = 20
-        scoreBoard.fontColor = SKColor.blackColor()
-        scoreBoard.position = CGPoint(x:150, y:150)
-        self.addChild(scoreBoard)*/
+        // Sksprite label points
+        pointLabel.text = "\(points_from_plist)"
+        pointLabel.name = "scoring"
+        pointLabel.fontSize = 20
+        pointLabel.fontName = "Arial-BoldMT"
+        pointLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Right
+        pointLabel.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Bottom;
+        pointLabel.fontColor = SKColor.blackColor()
+        pointLabel.position = CGPoint(x:view.center.x + 100, y: view.center.y + 200)
+        self.addChild(pointLabel)
+        
+        // Animate Coin
+        var tempBool = true
+       // point_image.alpha = 0.2
+        runAction(SKAction.repeatActionForever(
+               SKAction.sequence([ SKAction.runBlock({
+                
+                        if(tempBool == true){
+                           point_image.alpha -= 0.1
+                            if (point_image.alpha <= 0.3){
+                                tempBool = false
+                            }
+                        }
+                        else{
+                            point_image.alpha += 0.1
+                            if (point_image.alpha >= 1.0){
+                                tempBool = true
+                            }
+                        }
+                    }), SKAction.waitForDuration(NSTimeInterval(0.1))])), withKey: "animate_coin")
+        
+
 
         
     }
+
     
     @IBAction func startGame() {
         
@@ -90,6 +134,7 @@ class GameScene: SKScene{
     }
     
      override func willMoveFromView(view: SKView) {
+        removeAllActions()
         for view in view.subviews {
             view.removeFromSuperview()
         }

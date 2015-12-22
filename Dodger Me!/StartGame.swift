@@ -75,8 +75,8 @@ struct Object{
     var objImage:SKSpriteNode = SKSpriteNode()
     var type:Int?;
     var delay:CGFloat = 0.0  // delay for spawining the object
-    var current_speed:CGFloat = 1   // initial/current speed
-    var max_speed:CGFloat = 0.4
+    var current_speed_rate:CGFloat = 1   // initial/current speed
+    var max_speed_rate:CGFloat = 0.4
     
     
   /*  init (imgName:String){
@@ -148,20 +148,23 @@ struct Scorelabel{
     var node:SKLabelNode =  SKLabelNode(fontNamed: "Courier")  // score board
     var score = 0
     
-    func load(){
+    func load(x: CGFloat, y: CGFloat){
         // load score
-        node.text = "\(score)"
+        node.text = "Score: \(score)"
         node.name = "scoring"
+        node.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Left
+        node.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Bottom;
         node.fontSize = 20
         node.fontColor = SKColor.blackColor()
-        node.position = CGPoint(x:-130, y:320)
+        node.position = CGPoint(x: -x, y: y)
     }
     
     mutating func setScore(){
         //set score and display it
-        score = score + 10
-        node.text = "\(score)"
+        score = score + 11
+        node.text = "Score: \(score)"
     }
+
 }
 //
 
@@ -178,15 +181,14 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
     var pauseGameViewController = PauseMenu()
     var bgImage = SKSpriteNode(imageNamed: "sprites/background2.png")
     var startCountLabel = SKLabelNode(fontNamed: "Courier")
+    let point_image = SKSpriteNode(imageNamed: "sprites/coin")
+    var labelCountPoint = SKLabelNode()
     
     // This will fix the BUG from interstitial ads when not clicked
     var gameover:Bool = false
     
-    
-    
     var gameMode:String? = nil;   // current Level -> this is set up by level selector
     var scorePass:Int? = nil;    // minumum score to pass to next level
-    
     
     var highscore:Int = 0
     var timerCount:Int = 3
@@ -198,18 +200,42 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
     // Implemented Player class
     var player = Player(playerImage: SKSpriteNode()) // using extension way
     
-    // Implemented Enemy class 12/15/2015
+    // Implemented Object class 12/15/2015
     var fire = Object()
     var dragon = Object()
     var powerUp = PowerUPS()
     
     // Implemented "constant" values for differents modes 12/18/2015
     var CHANCE_OF_POWERUP:CGFloat? // Percentage of respawing each second
-    var MAX_FIRE_SPEED:CGFloat?
-    var MAX_DRAGON_SPEED:CGFloat?
+    var MAX_FIRE_RATE:CGFloat?
+    var MAX_DRAGON_RATE:CGFloat?
     var RESPAWN_DRAGON_SCORE:Int?
+    var INITIAL_FIRE_SPEED_RATE:CGFloat?
+    var INITIAL_DRAGON_SPEED_RATE:CGFloat?
     var RATE_SPEED_GROWTH:CGFloat?
+    var SPEED_OF_BALL:Double?  // added 12/21/2015
+   
     
+    // Implemented "constants" values to fix the ratio between different iPhones
+  //  var SIZE_LABEL_HS:CGFloat = 40.0
+  //  var SIZE_LABAL_MODE:CGFloat = 20.0
+  //  var SIZE_LABEL_SCORE:CGFloat = 15.0
+    
+    var X_POSITION_OBJECT:CGFloat = 0.0
+    var Y_POSITION_OBJECT:CGFloat = 210.0
+    
+    var X_POSITION_TOP_LABEL:CGFloat = 150.0
+    var Y_POSITION_TOP_LABEL:CGFloat = 300.0
+    
+    let FIX_LABEL_Y:CGFloat = 5.0
+/*  var DISTANCE_BETWEEN_SCORE:CGFloat = 40.0
+    var DISTANCE_X_SEPARATOR:CGFloat =  50.0
+    
+    var DISTANCE_X_SEPARATOR_RESET:CGFloat = 6.0
+    
+    var SIZE_RESET_BUTTON_WIDTH:CGFloat = 100.0
+    var SIZE_RESET_BUTTON_HEIGHT:CGFloat = 80.0*/
+ 
     
     
     override func didMoveToView(view: SKView){
@@ -217,6 +243,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
       //  print("screen width: \(self.appDelegate.screenSize.width)\n")
       //  print("screen height: \(self.appDelegate.screenSize.height)")
         
+        let aspect_ratio:CGFloat = self.appDelegate.screenSize.width/self.appDelegate.screenSize.height
         
         // delete subviews if previous didnt called
         for view in view.subviews {
@@ -232,28 +259,39 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         if(gameMode! == "classic"){
             
             CHANCE_OF_POWERUP = 10
-            MAX_FIRE_SPEED = 0.4
-            MAX_DRAGON_SPEED = 1.5
+            MAX_FIRE_RATE = 0.4
+            MAX_DRAGON_RATE = 1.5
             RESPAWN_DRAGON_SCORE = 40000
-            RATE_SPEED_GROWTH = 0.01
+            RATE_SPEED_GROWTH = 0.001
+            SPEED_OF_BALL = 140
             scorePass = 50000
+            INITIAL_FIRE_SPEED_RATE = 1.0
+            INITIAL_DRAGON_SPEED_RATE = 1.5
             
         }
         // 2.Insane
         else if(gameMode! == "insane"){
             CHANCE_OF_POWERUP = 15
-            MAX_FIRE_SPEED = 0.2
-            MAX_DRAGON_SPEED = 1.0
+            MAX_FIRE_RATE = 0.2
+            MAX_DRAGON_RATE = 1.0
             RESPAWN_DRAGON_SCORE = 30000
-            RATE_SPEED_GROWTH = 0.03
+            RATE_SPEED_GROWTH = 0.003
+             SPEED_OF_BALL = 140
             scorePass = 40000
+            INITIAL_FIRE_SPEED_RATE = 1.0
+            INITIAL_DRAGON_SPEED_RATE = 1.5
         }
         
+        // fix ratios
+        if (aspect_ratio != 0.5625){
+            fixRatio(aspect_ratio)
+        }
         
         // load ads
         loadiAd()
         // load objects
         load();
+        
         
         
         // Counts from 3 to 0 and starts showing enemies
@@ -325,8 +363,8 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         self.addChild(startCountLabel)
         
         // load score
-        
-        scoreBoard.load()
+
+        scoreBoard.load(X_POSITION_TOP_LABEL, y: Y_POSITION_TOP_LABEL  - FIX_LABEL_Y)
         self.addChild(scoreBoard.node)
         
         // load player
@@ -339,6 +377,45 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         // applying physics
         physicsWorld.gravity = CGVectorMake(0, 0)
         physicsWorld.contactDelegate = self
+        
+        // Load coins/points 12/21/2015
+        
+        // label
+        labelCountPoint.text = "123"
+        labelCountPoint.fontName = "Courier"
+        labelCountPoint.name = "points_label"
+        labelCountPoint.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Right
+        labelCountPoint.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Bottom;
+        labelCountPoint.fontSize = 20
+        labelCountPoint.fontColor = SKColor.blackColor()
+        labelCountPoint.position = CGPoint(x: X_POSITION_TOP_LABEL - 15.0, y: Y_POSITION_TOP_LABEL - FIX_LABEL_Y)
+        self.addChild(labelCountPoint)
+        
+        // image
+        point_image.name = "points_image"
+        point_image.size = CGSize(width: 70, height: 70)
+        point_image.position = CGPoint(x: X_POSITION_TOP_LABEL, y: Y_POSITION_TOP_LABEL)
+        self.addChild(point_image)
+        
+        // Animate Coin
+        var alphaBool = true
+        runAction(SKAction.repeatActionForever(
+            SKAction.sequence([ SKAction.runBlock({
+                
+                if(alphaBool == true){
+                    self.point_image.alpha -= 0.1
+                    if (self.point_image.alpha <= 0.3){
+                        alphaBool = false
+                    }
+                }
+                else{
+                    self.point_image.alpha += 0.1
+                    if (self.point_image.alpha >= 1.0){
+                        alphaBool = true
+                    }
+                }
+            }), SKAction.waitForDuration(NSTimeInterval(0.1))])), withKey: "animate_coin")
+        
         
     }
     
@@ -501,12 +578,12 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
     
     func loadObjects(){
     fire.type = 0
-    fire.current_speed = 1.0
-    fire.max_speed = MAX_FIRE_SPEED!
+    fire.current_speed_rate = INITIAL_FIRE_SPEED_RATE!
+    fire.max_speed_rate = MAX_FIRE_RATE!
         
     dragon.type = 1
-    dragon.current_speed = 1.5
-    dragon.max_speed = MAX_DRAGON_SPEED!
+    dragon.current_speed_rate = INITIAL_DRAGON_SPEED_RATE!
+    dragon.max_speed_rate = MAX_DRAGON_RATE!
     powerUp.object.type = 2
         
         
@@ -574,13 +651,13 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         if ( obj.type == 0){
             
             // increase level of difficulty
-            if ( obj.current_speed > obj.max_speed ){
-                fire.current_speed -= RATE_SPEED_GROWTH!
+            if ( obj.current_speed_rate > obj.max_speed_rate ){
+                fire.current_speed_rate -= RATE_SPEED_GROWTH!
             }
             
             fire.incDelay(0.2)
             
-            if (obj.delay >= obj.current_speed){
+            if (obj.delay >= obj.current_speed_rate){
                 callFire();
                 fire.resetDelay()
             }
@@ -590,11 +667,11 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
             // dragons
         else if (obj.type == 1){
             dragon.incDelay(0.2)
-            if (obj.delay >= obj.current_speed && scoreBoard.score >= RESPAWN_DRAGON_SCORE){
+            if (obj.delay >= obj.current_speed_rate && scoreBoard.score >= RESPAWN_DRAGON_SCORE){
                 
                 //increase dragon speed
-                if ( obj.current_speed > obj.max_speed ){
-                    dragon.current_speed -= RATE_SPEED_GROWTH!
+                if ( obj.current_speed_rate > obj.max_speed_rate ){
+                    dragon.current_speed_rate -= RATE_SPEED_GROWTH!
                 }
                 
                 callDragon()
@@ -740,10 +817,15 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         }
         
         
+        // calculate time  t = d/v
+        let dx = Double(x_togo) - Double(x_respawn)
+        let dy = Double(y_togo) - Double(y_respawn)
+        let dist = sqrt( (dx*dx) + (dy*dy) )
+        
         // end calculation
         
         // Create the actions
-        let actionMove = SKAction.moveTo(CGPoint(x: x_togo, y: y_togo), duration: 5)
+        let actionMove = SKAction.moveTo(CGPoint(x: x_togo, y: y_togo), duration: dist/SPEED_OF_BALL!)
         let actionMoveDone = SKAction.removeFromParent()
         fireball.runAction(SKAction.sequence([actionMove, actionMoveDone]))
         
@@ -1173,4 +1255,42 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         //  self.appDelegate.interstitialAdView.removeFromSuperview()
         self.appDelegate.adBannerView.removeFromSuperview()
     }
+    
+    func fixRatio(curr_ratio:CGFloat){
+      //  print("THE RATIO IS: \(curr_ratio)")
+        
+        var RATIO:CGFloat = 1.0
+        
+        var FIX_X:CGFloat = 0.0
+        
+        if (curr_ratio > 0.6){
+            RATIO = 0.6333
+            FIX_X = 20.0
+        }
+            
+        else if (curr_ratio >= 0.562 && curr_ratio < 0.563){
+           RATIO = 0.9
+        }
+        else{
+            RATIO = 0.76
+        }
+        
+        X_POSITION_TOP_LABEL = X_POSITION_TOP_LABEL * RATIO + FIX_X
+        Y_POSITION_TOP_LABEL *= RATIO
+       // Y_POSITION_TOP_LABEL = 270
+        X_POSITION_OBJECT *= RATIO
+        Y_POSITION_OBJECT *= RATIO
+        
+        
+        
+     //   DISTANCE_BETWEEN_SCORE = DISTANCE_BETWEEN_SCORE * RATIO  + 5.0
+        
+    /*    DISTANCE_X_SEPARATOR_RESET = DISTANCE_X_SEPARATOR_RESET * RATIO
+        
+        SIZE_RESET_BUTTON_HEIGHT *= RATIO
+        SIZE_RESET_BUTTON_WIDTH *= RATIO*/
+        
+        
+    }
+
 }
