@@ -99,7 +99,7 @@ class GameViewController: UIViewController {
             
             /* Set the scale mode to scale to fit the window */
            // scene.scaleMode = .ResizeFill
-        
+       // scene.scaleMode = .ResizeFill
         skView.multipleTouchEnabled = false
         
             skView.presentScene(scene)

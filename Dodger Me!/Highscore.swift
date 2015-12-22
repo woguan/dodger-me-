@@ -35,16 +35,25 @@ class Highscore: SKScene {
     var label_insane_5 = SKLabelNode(fontNamed: "Chalkduster")
     
     
+    var SIZE_LABEL_HS:CGFloat = 40.0
+    var SIZE_LABAL_MODE:CGFloat = 20.0
+    var SIZE_LABEL_SCORE:CGFloat = 15.0
     
-    let SIZE_LABAL_MODE:CGFloat = 20.0
-    let SIZE_LABEL_SCORE:CGFloat = 15.0
+    var X_POSITION_LABEL_HS:CGFloat = 0.0
+    var Y_POSITION_LABEL_HS:CGFloat = 210.0
     
-    let X_POSITION_LABEL_MODE:CGFloat = 80.0
-    let Y_POSITION_LABEL_MODE:CGFloat = 150.0
+    var X_POSITION_LABEL_MODE:CGFloat = 80.0
+    var Y_POSITION_LABEL_MODE:CGFloat = 150.0
     
     
-    let DISTANCE_BETWEEN_SCORE:CGFloat = 40.0
-    let DISTANCE_X_SEPARATOR:CGFloat =  50.0
+    var DISTANCE_BETWEEN_SCORE:CGFloat = 40.0
+    var DISTANCE_X_SEPARATOR:CGFloat =  50.0
+    
+    var DISTANCE_X_SEPARATOR_RESET:CGFloat = 6.0
+    
+    var SIZE_RESET_BUTTON_WIDTH:CGFloat = 100.0
+    var SIZE_RESET_BUTTON_HEIGHT:CGFloat = 80.0
+    
     
     // New format for number 12/20/2015
     // Example:  1234 -> 1,234
@@ -52,17 +61,25 @@ class Highscore: SKScene {
 
        override func didMoveToView(view: SKView) {
        
-        let y_up_bound:CGFloat = self.appDelegate.screenSize.height/2
+      /*  let y_up_bound:CGFloat = self.appDelegate.screenSize.height/2
         let y_down_bound:CGFloat = -self.appDelegate.screenSize.height/2
         let x_left_bound:CGFloat = -self.appDelegate.screenSize.width/2
-        let x_right_bound:CGFloat = self.appDelegate.screenSize.width/2
+        let x_right_bound:CGFloat = self.appDelegate.screenSize.width/2*/
         
-        let SIZE_LABEL_HS:CGFloat = y_up_bound * 0.1086
-        
-        print(y_up_bound)
+        /*     print(y_up_bound)
         print(y_down_bound)
         print(x_left_bound)
         print(x_right_bound)
+        print("aspect ratio: \(aspect_ratio)")*/
+        
+        
+        let aspect_ratio:CGFloat = self.appDelegate.screenSize.width/self.appDelegate.screenSize.height
+        
+        if (aspect_ratio > 0.563){
+            fixRatio(aspect_ratio)
+        }
+        
+   
         // Load score from pList
         let documentDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
         let fullPathName = documentDirectory.stringByAppendingPathComponent("dodger.plist") as String
@@ -72,7 +89,7 @@ class Highscore: SKScene {
         let hs_insane = plistFile!.objectForKey("Highscore_Insane") as! NSArray
         let hs_classic = plistFile!.objectForKey("Highscore_Classic") as! NSArray
         
-                self.anchorPoint = CGPointMake(0.5, 0.5)
+            self.anchorPoint = CGPointMake(0.5, 0.5)
         
         //load background
         self.bgImage.size = self.frame.size
@@ -84,7 +101,7 @@ class Highscore: SKScene {
         Label_Highscore.text = "Highscores"
         Label_Highscore.fontSize = SIZE_LABEL_HS
         Label_Highscore.fontColor = SKColor.blackColor()
-        Label_Highscore.position = CGPoint(x: 0, y: 210)
+        Label_Highscore.position = CGPoint(x: X_POSITION_LABEL_HS, y: Y_POSITION_LABEL_HS)
         addChild(Label_Highscore)
         
         // Label Mode
@@ -187,14 +204,14 @@ class Highscore: SKScene {
         // Reset Classic
         let reset_classic = SKSpriteNode(imageNamed: "sprites/reset_button")
         reset_classic.name = "reset_classic"
-        reset_classic.size = CGSize(width: 100, height: 80)
-         reset_classic.position = CGPoint(x: -X_POSITION_LABEL_MODE - 15, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE * 6)
+        reset_classic.size = CGSize(width: SIZE_RESET_BUTTON_WIDTH, height: SIZE_RESET_BUTTON_HEIGHT)
+         reset_classic.position = CGPoint(x: -X_POSITION_LABEL_MODE - DISTANCE_X_SEPARATOR_RESET, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE * 6)
          addChild(reset_classic)
         // Reset Insane
         let reset_insane = SKSpriteNode(imageNamed: "sprites/reset_button")
         reset_insane.name = "reset_insane"
-        reset_insane.size = CGSize(width: 100, height: 80)
-        reset_insane.position = CGPoint(x: X_POSITION_LABEL_MODE - 15, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE * 6)
+        reset_insane.size = CGSize(width: SIZE_RESET_BUTTON_WIDTH, height: SIZE_RESET_BUTTON_HEIGHT)
+        reset_insane.position = CGPoint(x: X_POSITION_LABEL_MODE + DISTANCE_X_SEPARATOR_RESET, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE * 6)
         addChild(reset_insane)
         
         
@@ -203,7 +220,7 @@ class Highscore: SKScene {
         backLabel.name = "restart"
         backLabel.fontSize = 20
         backLabel.fontColor = SKColor.blackColor()
-        backLabel.position = CGPoint(x: 0, y: -view.center.y/2)
+        backLabel.position = CGPoint(x: 0, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE * 8)
         self.addChild(backLabel)
         
     }
@@ -224,6 +241,41 @@ class Highscore: SKScene {
             }
             
         }
+    }
+    
+    func fixRatio(curr_ratio:CGFloat){
+    /*     SIZE_LABEL_HS  = 40.0
+        SIZE_LABAL_MODE = 20.0
+        SIZE_LABEL_SCORE = 15.0
+        
+        X_POSITION_LABEL_MODE = 80.0
+        Y_POSITION_LABEL_MODE = 150.0
+        
+        
+       DISTANCE_BETWEEN_SCORE = 40.0
+        DISTANCE_X_SEPARATOR =  50.0*/
+        
+        var RATIO:CGFloat = 1.0
+        
+        if (curr_ratio > 0.6){
+            RATIO = 0.7143
+        }
+        else{
+            RATIO = 0.61
+        }
+        
+        Y_POSITION_LABEL_HS *= RATIO
+        X_POSITION_LABEL_MODE *= RATIO
+        Y_POSITION_LABEL_MODE *= RATIO
+        
+        DISTANCE_BETWEEN_SCORE = DISTANCE_BETWEEN_SCORE * RATIO  + 5.0
+        
+        DISTANCE_X_SEPARATOR_RESET = DISTANCE_X_SEPARATOR_RESET * RATIO
+        
+        SIZE_RESET_BUTTON_HEIGHT *= RATIO
+        SIZE_RESET_BUTTON_WIDTH *= RATIO
+
+  
     }
     
     func formatScore(value:Int) -> String{
