@@ -50,40 +50,8 @@ class GameViewController: UIViewController {
         else{
             // If it's here... virtualPlist exists. 
             // Let check if both roots have same number of items
-            
-            if  let sourceFilePath = NSBundle.mainBundle().pathForResource("dodger", ofType: "plist") {
-                
-                
-                let originalPlist = NSMutableDictionary(contentsOfFile:sourceFilePath)
-                
-                // replace the virtual if the roots have different size
-                if (virtualPlist!.count != originalPlist!.count){
-                    print("virtualPlist updated. REASON: Different size")
-                virtualPlist = originalPlist
-                
-                // Saving the virtual plist
-                if !virtualPlist!.writeToFile(fullPathName, atomically: false){
-                    print("FILE FAILED TO SAVE THE CHANGES ---- PLEASE FIX IT IN GameViewController")
-                }
-                } else {
-                    // same size... all good to proceed
-                    
-                    // FOR SELF USE PURPOSE
-               /*     if (FORCERESET){
-                        let originalPlist = NSMutableDictionary(contentsOfFile:sourceFilePath)
-                        
-                        virtualPlist = originalPlist
-                        if !virtualPlist!.writeToFile(fullPathName, atomically: false){
-                            print("FILE FAILED TO SAVE THE CHANGES ---- PLEASE FIX IT IN GameViewController")
-                        }
-                    }*/
-                    
-                }
-                
-            } else {
-                print("dodger.plist not found")
-            }
-            
+           
+            backup()
         }
         
         
@@ -112,5 +80,59 @@ class GameViewController: UIViewController {
         // Release any cached data, images, etc that aren't in use.
     }
 
+    func backup(){
+        
+        let documentDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
+        let fullPathName = documentDirectory.stringByAppendingPathComponent("dodger.plist") as String
+        var virtualPlist = NSMutableDictionary(contentsOfFile:fullPathName)
+        let temporaryVirtualPlist = NSMutableDictionary(contentsOfFile:fullPathName)
+        
+        
+        if  let sourceFilePath = NSBundle.mainBundle().pathForResource("dodger", ofType: "plist") {
+            
+            
+            let originalPlist = NSMutableDictionary(contentsOfFile:sourceFilePath)
+            
+            // update the virtual if the virtual have less elements than original plist
+            if (virtualPlist!.count < originalPlist!.count){
+                print("virtualPlist updated. REASON: the original plist has more elements")
+                
+                
+                 virtualPlist = originalPlist
+                
+                // The logic example:
+                // stuffs.key = Highscore_Classic  stuff.value = Highscore_Classic values - both of them are AnyObject
+                // virtual now is reseted
+                // update the virtual with the info os temporaryVirtualPlist
+                for stuffs in temporaryVirtualPlist!{
+                    virtualPlist?.setObject(stuffs.value, forKey: stuffs.key as! String)
+                }
+                
+                // Saving the virtual plist
+                if !virtualPlist!.writeToFile(fullPathName, atomically: false){
+                    print("FILE FAILED TO SAVE THE CHANGES ---- PLEASE FIX IT IN GameViewController")
+                }
+            }
+            
+            // if the virtual list has more elements... reset it
+            else if ( virtualPlist!.count >  originalPlist!.count) {
+                print("virtualPlist updated. REASON: the original plist has more elements")
+                
+                // RESET IT
+                virtualPlist = originalPlist
+                
+                // Saving the virtual plist
+                if !virtualPlist!.writeToFile(fullPathName, atomically: false){
+                    print("FILE FAILED TO SAVE THE CHANGES ---- PLEASE FIX IT IN GameViewController")
+                }
+            }
+            else {
+                // PASS :)
+            }
+            
+        } else {
+            print("dodger.plist not found")
+        }
+    }
 
 }

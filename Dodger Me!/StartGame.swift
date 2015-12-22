@@ -225,8 +225,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         
         self.anchorPoint = CGPointMake(0.5, 0.5)
         
-        //Implemented usage of plist 12/19/2015
-       // getValuesInPlistFile()
         
         //load stage settings
         
