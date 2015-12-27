@@ -1,26 +1,27 @@
 //
-//  PauseMenu.swift
+//  PreGameOver.swift
 //  Dodger Me!
 //
-//  Created by Guan Wong on 2/18/15.
-//  Copyright (c) 2015 Guan Wong. All rights reserved.
+//  Created by Guan Wong on 12/22/15.
+//  Copyright © 2015 Guan Wong. All rights reserved.
 //
 
+/*
 import UIKit
 import SpriteKit
 
-@objc protocol UnpauseDelegate{
+protocol UnpauseDelegate{
     // add all functions you want to be able to use
-    optional func callUnpause()
+    func callUnpause()
 }
 
 
-class PauseMenu: UIViewController {
+class PreGameOver: UIViewController {
     
-   // deinit{
+    // deinit{
     //    print(" pausemenu being deInitialized.");
-        
-   // }
+    
+    // }
     
     var delegate:UnpauseDelegate?
     
@@ -31,7 +32,7 @@ class PauseMenu: UIViewController {
         let background_img = UIImage(named: "sprites/pause_img")
         self.view.backgroundColor = UIColor(patternImage: background_img!)
         
-    
+        
         
         view.frame = CGRectMake(view.center.x/2 , view.center.y/2, self.view.frame.width * 0.5, self.view.frame.height * 0.5)
         
@@ -55,9 +56,9 @@ class PauseMenu: UIViewController {
     }
     
     @IBAction func continueGame(){
-       delegate?.callUnpause!()
+        delegate?.callUnpause!()
         
-      view.removeFromSuperview()
+        view.removeFromSuperview()
     }
     
-}
+}*/

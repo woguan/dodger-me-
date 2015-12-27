@@ -20,7 +20,8 @@ class GameScene: SKScene{
         print(" gamescene being deInitialized.");
         
     }
-    
+
+    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate // Create reference to the app delegate
     var score = 0;
     var pointLabel = SKLabelNode()
     override func didMoveToView(view: SKView){

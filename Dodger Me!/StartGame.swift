@@ -43,6 +43,7 @@ struct Player{
     var isInvincible:Bool?
     var playerImage:SKSpriteNode
     var isTouched:Bool = false
+    var isTouchable:Bool = true
 }
 
 /*
@@ -168,21 +169,29 @@ struct Scorelabel{
 }
 //
 
-class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, UnpauseDelegate, ADInterstitialAdDelegate{
+class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseMenuDelegate, ADInterstitialAdDelegate{
     
    deinit{
         print("startgame is being deInitialized.");
     }
     
+    // Handling case when going to background/foreground
+    let notificationCenter = NSNotificationCenter.defaultCenter()
+    var movingToBackground:Bool = false
+    var isPauseGameCalled:Bool = false
     
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate // Create reference to the app delegate
+    var adBannerView: ADBannerView = ADBannerView()
     var interstitialAds:ADInterstitialAd = ADInterstitialAd()
     var interstitialAdView: UIView = UIView()
-    var pauseGameViewController = PauseMenu()
+    var pauseGameViewController = PauseMenuController()
     var bgImage = SKSpriteNode(imageNamed: "sprites/background2.png")
     var startCountLabel = SKLabelNode(fontNamed: "Courier")
     let point_image = SKSpriteNode(imageNamed: "sprites/coin")
     var labelCountPoint = SKLabelNode()
+    
+    // This is to check if the "pausemenu" is open. This avoids creating multiple instances of it when spamming homebotton
+   // var isPauseMenuActive:Bool = false
     
     // This will fix the BUG from interstitial ads when not clicked
     var gameover:Bool = false
@@ -242,7 +251,8 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         
       //  print("screen width: \(self.appDelegate.screenSize.width)\n")
       //  print("screen height: \(self.appDelegate.screenSize.height)")
-        
+               notificationCenter.addObserver(self, selector: "appMovedToBackground", name: UIApplicationWillResignActiveNotification, object: nil)
+        notificationCenter.addObserver(self, selector: "appMovedToForeground", name: UIApplicationWillEnterForegroundNotification, object: nil)
         let aspect_ratio:CGFloat = self.appDelegate.screenSize.width/self.appDelegate.screenSize.height
         
         // delete subviews if previous didnt called
@@ -305,6 +315,31 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         
     }
     
+    func appMovedToBackground (){
+        print("appMovedToBackground CALLED")
+   //     view?.paused = true
+        movingToBackground = true
+    }
+    
+    func appMovedToForeground(){
+       // print("appMovedToForeground CALLED")
+        
+          self.movingToBackground = false
+        
+        if (!isPauseGameCalled){
+            
+        runAction(SKAction.runBlock({
+            self.pauseGame()
+            sleep(1)
+        }))}
+        
+        print("this function has benn acallled")
+       /* runAction(SKAction.sequence([
+            SKAction.waitForDuration(NSTimeInterval(0.01)),   SKAction.runBlock(pauseGame),
+            ]))*/
+        
+    }
+    
     func getValuesInPlistFile(){
     
         // this works -- RETRIEVING STUFF FROM THE DEFAULT PLIST ( CAN BE USED FOR RESET )
@@ -327,23 +362,18 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
            //iAd Banner
         //self.appDelegate.adBannerView.delegate = self  // -> to avoid an error
         
-        //hide until ad loaded
-        
-        //self.appDelegate.adBannerView.hidden = false
-        self.appDelegate.adBannerView = ADBannerView(frame: CGRect.zero)
-        self.appDelegate.adBannerView.center = CGPoint(x: self.appDelegate.adBannerView.center.x, y: view!.bounds.size.height - self.appDelegate.adBannerView.frame.size.height / 2)
-        self.appDelegate.adBannerView.delegate = self
-        self.appDelegate.adBannerView.hidden = true
-        view!.addSubview(self.appDelegate.adBannerView)
-        
+        adBannerView = ADBannerView(frame: CGRect.zero)
+        adBannerView.delegate = self
+        adBannerView.center = CGPoint(x: adBannerView.center.x, y: view!.bounds.size.height - adBannerView.frame.size.height / 2)
+        view!.addSubview(adBannerView)
+         adBannerView.hidden = true
+    
         
         // iAD  Interstitial  -> pop up full screen iAds
         self.interstitialAdView.frame = self.view!.bounds
         self.interstitialAds.delegate = self
-        self.interstitialAdView.hidden = true
-       
         view!.addSubview(self.interstitialAdView)
-        
+        self.interstitialAdView.hidden = true
     }
     func load(){
         
@@ -380,8 +410,13 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         
         // Load coins/points 12/21/2015
         
+        // load score from plist
+        let documentDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
+        let fullPathName = documentDirectory.stringByAppendingPathComponent("dodger.plist") as String
+        let virtualPlist = NSMutableDictionary(contentsOfFile:fullPathName)
+        let the_points:Int = virtualPlist?.valueForKey("Points") as! Int
         // label
-        labelCountPoint.text = "123"
+        labelCountPoint.text = "\(the_points)"
         labelCountPoint.fontName = "Courier"
         labelCountPoint.name = "points_label"
         labelCountPoint.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Right
@@ -434,7 +469,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
             
             
             let location = (touch ).locationInNode(self)
-            if ( ((player.playerImage.position.x > location.x - 20 ) && (player.playerImage.position.x < location.x + 20)) && ((player.playerImage.position.y > location.y - 20 ) && (player.playerImage.position.y < location.y + 20))  ){
+            if ( ((player.playerImage.position.x > location.x - 20 ) && (player.playerImage.position.x < location.x + 20)) && ((player.playerImage.position.y > location.y - 20 ) && (player.playerImage.position.y < location.y + 20))  && player.isTouchable == true){
                if (self.player.isInvincible == false){
                 let liftUp = SKAction.scaleTo(1.2, duration: 0.2)
                 player.playerImage.runAction(liftUp)}
@@ -491,20 +526,19 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
     }
     
     func bannerViewDidLoadAd(banner: ADBannerView!) {
-        self.appDelegate.adBannerView.hidden = false
+        adBannerView.hidden = false
         
-        
-     //   print("iAD banner didload")
+        print("iAD IS LOADED - SUCCESSFULLY LOADED")
     }
     
     func bannerViewActionDidFinish(banner: ADBannerView!) {
+        print("BANNER DID FINISH CALLED")
         //self.appDelegate.adBannerView.removeFromSuperview()
     }
     
     func bannerViewActionShouldBegin(banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
-        
         // when banner begins -> pause game
-        self.appDelegate.adBannerView.hidden = true
+        adBannerView.hidden = true
         pauseGame()
         return true
         
@@ -512,7 +546,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
     }
     
     func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
-        
+        print("im called from the error banner")
         //when fails to call banner it will call this function
     }
     
@@ -531,10 +565,13 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
     func interstitialAdActionDidFinish(interstitialAd: ADInterstitialAd!) {
         // it is always called when at the start.. why?
        // print("is it called twice?")
-        if(self.interstitialAds.loaded){
-            callUnpause()  // check later if this is necessary
-            self.interstitialAdView.removeFromSuperview()
-            castEndScene()
+        
+        // this funcion is also called when it is going to background
+        if(self.interstitialAds.loaded && movingToBackground == false){
+           self.interstitialAdView.removeFromSuperview()
+            
+            if(gameover == true){
+                castEndScene()}
            
         }
         
@@ -646,7 +683,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
     }
     
     func callType(obj: Object){
-        
         // fireball
         if ( obj.type == 0){
             
@@ -1152,29 +1188,13 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
         
         updatePlayerIMG()
         if (self.player.HP! <= 0){
-        
+            
         // Game is over - this fix when player do not close the interstital ad
         gameover = true
-        
-        // remove all actions ( maybe can try remove all actions later )
-       /* removeActionForKey("scoreCounter")
-        removeActionForKey("fire_attack")
-        removeActionForKey("dragon_attack")
-        removeActionForKey("respawn_powerups")
-        removeActionForKey("imune_counter")
-        removeActionForKey("imune_counter")*/
-        removeAllActions()
-        
-        // remove the strong reference
-        //Questions: Why I do not need to do this to other delegates such as:
-        // *physical delegate, ad delegate? :/
-        // Example: the pauseGameController MUST have. Otherwise, it will cause memory leak
-        // But.. the others will not cause memory leak
-        pauseGameViewController.delegate = nil
             
         // show iAd Pop up - if it is loaded successfully
             
-            let chance_toShow:CGFloat = random(0, max: 100)
+            let chance_toShow:CGFloat = random(80, max: 100)
         if (self.interstitialAds.loaded && chance_toShow > 70){
             view?.paused = true
             iAdPopup()
@@ -1190,7 +1210,28 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
     
     func castEndScene(){
         
-        //removeActionForKey("scoreCounter")
+        // remove all actions ( maybe can try remove all actions later )
+        /* removeActionForKey("scoreCounter")
+        removeActionForKey("fire_attack")
+        removeActionForKey("dragon_attack")
+        removeActionForKey("respawn_powerups")
+        removeActionForKey("imune_counter")
+        removeActionForKey("imune_counter")*/
+        removeAllActions()
+        
+        // remove the strong reference
+        //Questions: Why I do not need to do this to other delegates such as:
+        // *physical delegate, ad delegate? :/
+        // Example: the pauseGameController MUST have. Otherwise, it will cause memory leak
+        // But.. the others will not cause memory leak
+        pauseGameViewController.delegate = nil
+        
+        // delete the listener nsnotification ( since it dont get removed when move to other scenes)
+        notificationCenter.removeObserver(self)
+        
+        // hide banner iAd
+          adBannerView.hidden = true
+        
         
         SKAction.waitForDuration(5)
         //  let reveal = SKTransition.flipHorizontalWithDuration(0.5)
@@ -1240,20 +1281,22 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, Unpaus
     }
     
     func pauseGame (){
-        
+       
+        isPauseGameCalled = true
         view?.paused = true
+        //view?.scene?.scaleMode = .AspectFill
         view?.addSubview(pauseGameViewController.view)
     }
     
-    // this is also called by delegate
+    // It is only called by delegate. If you plan to use for this Class.. please, review the logic of the boolean
     func callUnpause(){
-        
+        isPauseGameCalled = false
         view?.paused = false
     }
     
     func removeAds(){
         //  self.appDelegate.interstitialAdView.removeFromSuperview()
-        self.appDelegate.adBannerView.removeFromSuperview()
+        adBannerView.removeFromSuperview()
     }
     
     func fixRatio(curr_ratio:CGFloat){
