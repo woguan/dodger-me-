@@ -119,23 +119,34 @@ struct PowerUPS{
         if (buffTime_Up <= 0){
             isUpArrowEnabled = false
         }
+        else{
+            isUpArrowEnabled = true
+        }
         
         if (buffTime_Down <= 0 ){
             isDownArrowEnabled = false
         }
-        
+        else{
+            isDownArrowEnabled = true
+        }
         if (buffTime_Left <= 0 ){
             isLeftArrowEnabled = false
         }
-        
+        else{
+            isLeftArrowEnabled = true
+        }
         if (buffTime_Right <= 0 ){
             isRightArrowEnabled = false
         }
-        
+        else{
+            isRightArrowEnabled = true
+        }
         if (buffTime_imune <= 0 ){
             isImuneItemEnabled = false
         }
-        
+        else{
+            isImuneItemEnabled = true
+        }
     }
     
 }
@@ -167,9 +178,9 @@ struct Scorelabel{
     }
 
 }
-//
 
-class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseMenuDelegate, ADInterstitialAdDelegate{
+
+class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseMenuDelegate, ReplayMenuDelegate, ADInterstitialAdDelegate{
     
    deinit{
         print("startgame is being deInitialized.");
@@ -181,10 +192,12 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     var isPauseGameCalled:Bool = false
     
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate // Create reference to the app delegate
+    var replayGameViewController = ReplayMenuController()
+    var pauseGameViewController = PauseMenuController()
+    
     var adBannerView: ADBannerView = ADBannerView()
     var interstitialAds:ADInterstitialAd = ADInterstitialAd()
     var interstitialAdView: UIView = UIView()
-    var pauseGameViewController = PauseMenuController()
     var bgImage = SKSpriteNode(imageNamed: "sprites/background2.png")
     var startCountLabel = SKLabelNode(fontNamed: "Courier")
     let point_image = SKSpriteNode(imageNamed: "sprites/coin")
@@ -197,8 +210,8 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     var gameover:Bool = false
     
     var gameMode:String? = nil;   // current Level -> this is set up by level selector
-    var scorePass:Int? = nil;    // minumum score to pass to next level
-    
+  //  var scorePass:Int? = nil;    // minumum score to pass to next level
+    var scorePass:Int = 0
     var highscore:Int = 0
     var timerCount:Int = 3
     
@@ -262,13 +275,12 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         
         self.anchorPoint = CGPointMake(0.5, 0.5)
         
-        
         //load stage settings
         
         // 1.Classic
         if(gameMode! == "classic"){
             
-            CHANCE_OF_POWERUP = 10
+            CHANCE_OF_POWERUP = 80
             MAX_FIRE_RATE = 0.4
             MAX_DRAGON_RATE = 1.5
             RESPAWN_DRAGON_SCORE = 40000
@@ -297,6 +309,11 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             fixRatio(aspect_ratio)
         }
         
+        
+        // load delegates
+        // delegate for Unpause scene
+        pauseGameViewController.delegate = self
+      //  replayGameViewController.delegate = self
         // load ads
         loadiAd()
         // load objects
@@ -355,9 +372,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     
     
     func loadiAd(){
-  
-        // delegate for Unpause scene
-        pauseGameViewController.delegate = self
        
            //iAd Banner
         //self.appDelegate.adBannerView.delegate = self  // -> to avoid an error
@@ -368,12 +382,11 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         view!.addSubview(adBannerView)
          adBannerView.hidden = true
     
-        
         // iAD  Interstitial  -> pop up full screen iAds
-        self.interstitialAdView.frame = self.view!.bounds
-        self.interstitialAds.delegate = self
-        view!.addSubview(self.interstitialAdView)
-        self.interstitialAdView.hidden = true
+       // self.interstitialAdView.frame = self.view!.bounds
+       // self.interstitialAds.delegate = self
+       // view!.addSubview(self.interstitialAdView)
+       // self.interstitialAdView.hidden = true
     }
     func load(){
         
@@ -407,6 +420,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         // applying physics
         physicsWorld.gravity = CGVectorMake(0, 0)
         physicsWorld.contactDelegate = self
+  
         
         // Load coins/points 12/21/2015
         
@@ -528,11 +542,11 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     func bannerViewDidLoadAd(banner: ADBannerView!) {
         adBannerView.hidden = false
         
-        print("iAD IS LOADED - SUCCESSFULLY LOADED")
+       // print("iAD IS LOADED - SUCCESSFULLY LOADED")
     }
     
     func bannerViewActionDidFinish(banner: ADBannerView!) {
-        print("BANNER DID FINISH CALLED")
+     //   print("BANNER DID FINISH CALLED")
         //self.appDelegate.adBannerView.removeFromSuperview()
     }
     
@@ -546,7 +560,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     }
     
     func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
-        print("im called from the error banner")
+  //      print("im called from the error banner")
         //when fails to call banner it will call this function
     }
     
@@ -563,15 +577,15 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     }
     
     func interstitialAdActionDidFinish(interstitialAd: ADInterstitialAd!) {
-        // it is always called when at the start.. why?
+      // it is being called twice when closing the iAD.... WHY?!?!
        // print("is it called twice?")
-        
+       // print("DID FINISH CALLING....")
         // this funcion is also called when it is going to background
         if(self.interstitialAds.loaded && movingToBackground == false){
            self.interstitialAdView.removeFromSuperview()
-            
             if(gameover == true){
-                castEndScene()}
+            //     print("did Finish called")
+                askPlayer()}
            
         }
         
@@ -589,7 +603,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         
         // if game is over... cast end scene
         if (gameover){
-            castEndScene()
+            askPlayer()
         }
     }
     
@@ -727,6 +741,11 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     }
     func callFire() {
         
+        // print buff time of powerUp
+     /*   print("left \(self.powerUp.buffTime_Left)")
+         print("right \(self.powerUp.buffTime_Right)")
+         print("up \(self.powerUp.buffTime_Up)")
+         print("down \(self.powerUp.buffTime_Down)")*/
         //self.s = self.delta
         // Create sprite
         let fireball = SKSpriteNode(imageNamed: "sprites/fireball/fireBall")
@@ -755,11 +774,12 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         
         // Respawn bottom
         if ( Int(option) == 0 ){
-            if(powerUp.isRightArrowEnabled == true){
+            if(powerUp.isDownArrowEnabled == true){
                 return
             }
             fireball.position = CGPoint(x: x_respawn, y: y_down_bound)
             y_respawn = y_down_bound
+          //  print("Respawn Bottom")
         }
         
         // Respawn Top
@@ -769,6 +789,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             }
             fireball.position = CGPoint(x: x_respawn, y: y_up_bound)
             y_respawn = y_up_bound
+          //  print("Respawn Top")
         }
             
         //Respawn Left
@@ -778,6 +799,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             }
             fireball.position = CGPoint(x: x_left_bound, y: y_respawn)
             x_respawn = x_left_bound
+         //  print("Respawn Left")
         }
             
         //Respawn Right
@@ -787,6 +809,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             }
             fireball.position = CGPoint(x: x_right_bound, y: y_respawn)
             x_respawn = x_right_bound
+         //   print("Respawn Right")
         }
         
         // Add to scene
@@ -926,6 +949,8 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     
     func callPowerUp(){
         
+        // change to this later after debug
+        
         // 10% :  Imune item
         // 20% :  block side
         // 70% :  Gain HP
@@ -943,7 +968,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         }
         
         // 20% block item
-        else if ( randomNum > 10 && randomNum <= 30){
+        else if ( randomNum > 10 && randomNum <= 99){
            
            
             // 30% : up/down
@@ -1004,6 +1029,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         
     }
     
+    // MOVE THIS FUNCTION TO PLAYER CLASS LATER
     func updatePlayerIMG(){
        
         if(player.isInvincible == true){
@@ -1028,20 +1054,18 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         }
     }
     
-    func projectileDidCollideWithMonster(player:SKSpriteNode, object:SKSpriteNode) {
+    // MOVE THIS FUNCTION TO PLAYER CLASS LATER -> IF POSSIBLE
+    func playerObtainItem(itemName:String) -> Bool{
         
-        object.removeFromParent()
-      //  print("Collided")
-        
-        if (object.name == "spriteLife"){
+        if (itemName == "spriteLife"){
             self.player.HP = self.player.HP! + 1
             
             if (self.player.HP > 3 ){
-            self.player.HP = 3
+                self.player.HP = 3
             }
         }
-        
-        else if (object.name == "spriteImune"){
+            
+        else if (itemName == "spriteImune"){
             
             var tempBool:Bool = true // this is used for alpha purpose
             
@@ -1051,17 +1075,21 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             
             self.player.playerImage.runAction(expand)
             self.player.isInvincible = true
+            updatePlayerIMG()
+            
             self.player.playerImage.alpha = 1.0
             
             if (self.powerUp.buffTime_imune <= 0 ){
-                     self.powerUp.isImuneItemEnabled = true
-                     self.powerUp.buffTime_imune = BONUS_TIME
+                self.powerUp.buffTime_imune = BONUS_TIME
+                self.powerUp.update()
                 
                 runAction(SKAction.repeatActionForever(
                     SKAction.sequence([
                         SKAction.runBlock({
-                            self.powerUp.buffTime_imune -= 0.1
                             
+                            if(self.powerUp.isImuneItemEnabled == true){
+                            self.powerUp.buffTime_imune -= 0.1
+                            }
                             if( self.powerUp.buffTime_imune > 0 &&  self.powerUp.buffTime_imune <= 5){
                                 
                                 if(tempBool == true){
@@ -1085,130 +1113,161 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
                                 self.player.playerImage.alpha = 1.0
                                 self.player.playerImage.runAction(shrink)
                                 self.removeActionForKey("imune_counter")
-                             self.updatePlayerIMG()
+                                self.updatePlayerIMG()
                             }
                             
-                            }), SKAction.waitForDuration(NSTimeInterval(0.1))
+                        }), SKAction.waitForDuration(NSTimeInterval(0.1))
                         ])
                     ), withKey: "imune_counter")
                 
             }
             else {
                 self.powerUp.buffTime_imune = BONUS_TIME
+                self.powerUp.update()
             }
         }
-        
-        else if (object.name!.containsString("spriteArrow")){
-          
-            let BONUS_TIME:CGFloat = 15.0
             
-            if(object.name!.containsString("_right")){
-                powerUp.isRightArrowEnabled = true
-            }
-            else if(object.name!.containsString("_left")){
-                powerUp.isLeftArrowEnabled = true
-            }
-            else if(object.name!.containsString("_up")){
-                powerUp.isUpArrowEnabled = true
-            }
-            else if(object.name!.containsString("_down")){
-                powerUp.isDownArrowEnabled = true
-            }
+        else if (itemName.containsString("spriteArrow")){
+            
+            let BONUS_TIME:CGFloat = 15.0
             
             // SKAction - run it if the action is not running
             if (self.powerUp.buffTime_Right <= 0.0 && self.powerUp.buffTime_Left <= 0.0 && self.powerUp.buffTime_Up <= 0.0 && self.powerUp.buffTime_Down <= 0.0 ){
                 
-                if(powerUp.isRightArrowEnabled){
+                if(itemName.containsString("_right")){
                     self.powerUp.buffTime_Right = BONUS_TIME
                 }
-                if(powerUp.isLeftArrowEnabled){
+                else if(itemName.containsString("_left")){
                     self.powerUp.buffTime_Left = BONUS_TIME
                 }
-                if(powerUp.isUpArrowEnabled){
+                else if(itemName.containsString("_up")){
                     self.powerUp.buffTime_Up = BONUS_TIME
                 }
-                if(powerUp.isDownArrowEnabled){
+                else if(itemName.containsString("_down")){
                     self.powerUp.buffTime_Down = BONUS_TIME
                 }
                 
-            runAction(SKAction.repeatActionForever(
-                SKAction.sequence([
-                    SKAction.runBlock({
-                        
-                        if(self.powerUp.isRightArrowEnabled){
-                            self.powerUp.buffTime_Right -= 0.1
-                        }
-
-                        if(self.powerUp.isLeftArrowEnabled){
-                            self.powerUp.buffTime_Left -= 0.1
-                        }
-                        if(self.powerUp.isUpArrowEnabled){
-                            self.powerUp.buffTime_Up -= 0.1
-                        }
-                        
-                        if(self.powerUp.isDownArrowEnabled){
-                            self.powerUp.buffTime_Down -= 0.1
-                        }
-                        
-                        self.powerUp.update()
-                        
-                        if(self.powerUp.isDownArrowEnabled == false && self.powerUp.isUpArrowEnabled == false && self.powerUp.isLeftArrowEnabled == false && self.powerUp.isRightArrowEnabled == false){
-                            self.removeActionForKey("arrow_counter")
-                        }
-                        
-                    }), SKAction.waitForDuration(NSTimeInterval(0.1))
-                    ])
-                ), withKey: "arrow_counter")
+                // update the current status
+                self.powerUp.update()
+                
+                runAction(SKAction.repeatActionForever(
+                    SKAction.sequence([
+                        SKAction.runBlock({
+                            
+                            if(self.powerUp.isRightArrowEnabled){
+                                self.powerUp.buffTime_Right -= 0.1
+                            }
+                            
+                            if(self.powerUp.isLeftArrowEnabled){
+                                self.powerUp.buffTime_Left -= 0.1
+                            }
+                            if(self.powerUp.isUpArrowEnabled){
+                                self.powerUp.buffTime_Up -= 0.1
+                            }
+                            
+                            if(self.powerUp.isDownArrowEnabled){
+                                self.powerUp.buffTime_Down -= 0.1
+                            }
+                            
+                            self.powerUp.update()
+                            
+                            if(self.powerUp.isDownArrowEnabled == false && self.powerUp.isUpArrowEnabled == false && self.powerUp.isLeftArrowEnabled == false && self.powerUp.isRightArrowEnabled == false){
+                                self.removeActionForKey("arrow_counter")
+                            }
+                            
+                        }), SKAction.waitForDuration(NSTimeInterval(0.1))
+                        ])
+                    ), withKey: "arrow_counter")
                 
                 
             }
-            
+                
             else{
                 
-                if(powerUp.isRightArrowEnabled){
+                if(itemName.containsString("_right")){
                     self.powerUp.buffTime_Right = BONUS_TIME
                 }
-                if(powerUp.isLeftArrowEnabled){
+                else if(itemName.containsString("_left")){
                     self.powerUp.buffTime_Left = BONUS_TIME
                 }
-                if(powerUp.isUpArrowEnabled){
+                else if(itemName.containsString("_up")){
                     self.powerUp.buffTime_Up = BONUS_TIME
                 }
-                if(powerUp.isDownArrowEnabled){
+                else if(itemName.containsString("_down")){
                     self.powerUp.buffTime_Down = BONUS_TIME
                 }
                 
+                // update
+                powerUp.update()
             }
-            
+           
         }
-            
-        else if (self.player.isInvincible == false ){
-        self.player.HP = self.player.HP! - 1
+        else{
+            return false
+        }
+        return true
+    }
+    
+    func projectileDidCollideWithMonster(player:SKSpriteNode, object:SKSpriteNode) {
+        
+        object.removeFromParent()
+        
+        // swift read from left to right... if left is true... then right will not be read
+         if (playerObtainItem(object.name!) == false && self.player.isInvincible == false ){
+            self.player.HP = self.player.HP! - 1
         }
         
         updatePlayerIMG()
+        
         if (self.player.HP! <= 0){
-            
         // Game is over - this fix when player do not close the interstital ad
-        gameover = true
+            gameover = true
+        // pause game
+             view?.paused = true
             
         // show iAd Pop up - if it is loaded successfully
+            let chance_toShow:CGFloat = random(71, max: 100)
             
-            let chance_toShow:CGFloat = random(80, max: 100)
-        if (self.interstitialAds.loaded && chance_toShow > 70){
-            view?.paused = true
-            iAdPopup()
+    // debug print
+  //  print("The iAD Interstitial loaded: \(self.interstitialAds.loaded)")
+   // print("Value of Random: \(chance_toShow)")
+            if (self.interstitialAds.loaded && chance_toShow > 70){
+                iAdPopup()
+            }
+            else{
+              
+                askPlayer()
+            }
         }
-        else{
-            castEndScene()
-        }
-            
-        }
-        
         
     }
     
+    func askPlayer(){
+        replayGameViewController.delegate = self
+        let replayScene = replayGameViewController.view
+        view?.addSubview(replayScene)
+        }
+    
+    func playerContinue(){
+        replayGameViewController = ReplayMenuController()
+        gameover = false
+        self.player.HP = 3
+        playerObtainItem("spriteImune")
+        
+        // update Points
+        let documentDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
+        let fullPathName = documentDirectory.stringByAppendingPathComponent("dodger.plist") as String
+        let virtualPlist = NSMutableDictionary(contentsOfFile:fullPathName)
+        let the_points:Int = virtualPlist?.valueForKey("Points") as! Int
+        labelCountPoint.text = "\(the_points)"
+        
+    }
+    
+    
     func castEndScene(){
+        
+        // 1. Display ReplayGameMenu
+        // 2. User can choose if to continue or endgame
         
         // remove all actions ( maybe can try remove all actions later )
         /* removeActionForKey("scoreCounter")
@@ -1237,7 +1296,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         //  let reveal = SKTransition.flipHorizontalWithDuration(0.5)
         
         
-               if ( scoreBoard.score >= scorePass!){
+               if ( scoreBoard.score >= scorePass){
                 let winScene = GameOver(size: self.size, won: true, score: scoreBoard.score, highscore: highscore, game_mode: self.gameMode!)
             self.view?.presentScene(winScene)
         }
@@ -1275,6 +1334,12 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     }
     
     func iAdPopup(){
+        // recently added for test
+        self.interstitialAdView.frame = self.view!.bounds
+           self.interstitialAds.delegate = self
+           view!.addSubview(self.interstitialAdView)
+//
+        
         self.interstitialAds.presentInView(self.interstitialAdView)
         UIViewController.prepareInterstitialAds()
         self.interstitialAdView.hidden = false
@@ -1284,7 +1349,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
        
         isPauseGameCalled = true
         view?.paused = true
-        //view?.scene?.scaleMode = .AspectFill
         view?.addSubview(pauseGameViewController.view)
     }
     

@@ -23,7 +23,7 @@
 		F1AB1E691BB7F6EB003BA666 /* StartGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1AB1E681BB7F6EB003BA666 /* StartGame.swift */; };
 		F1AB1E6E1BBA283D003BA666 /* sprites in Resources */ = {isa = PBXBuildFile; fileRef = F1AB1E6D1BBA283D003BA666 /* sprites */; };
 		F1EA7F911B72BCCE00444610 /* LevelMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EA7F901B72BCCE00444610 /* LevelMenu.swift */; };
-		F1EAFBB81C2A5DCB00337069 /* ReplayMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EAFBB71C2A5DCB00337069 /* ReplayMenu.swift */; };
+		F1EAFBB81C2A5DCB00337069 /* ReplayMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EAFBB71C2A5DCB00337069 /* ReplayMenuController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,7 +57,7 @@
 		F1AB1E681BB7F6EB003BA666 /* StartGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartGame.swift; sourceTree = "<group>"; };
 		F1AB1E6D1BBA283D003BA666 /* sprites */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sprites; sourceTree = "<group>"; };
 		F1EA7F901B72BCCE00444610 /* LevelMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LevelMenu.swift; sourceTree = "<group>"; };
-		F1EAFBB71C2A5DCB00337069 /* ReplayMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplayMenu.swift; sourceTree = "<group>"; };
+		F1EAFBB71C2A5DCB00337069 /* ReplayMenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplayMenuController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,7 +109,7 @@
 				F1EA7F901B72BCCE00444610 /* LevelMenu.swift */,
 				F10B57991C26450500313A31 /* Highscore.swift */,
 				F1AB1E681BB7F6EB003BA666 /* StartGame.swift */,
-				F1EAFBB71C2A5DCB00337069 /* ReplayMenu.swift */,
+				F1EAFBB71C2A5DCB00337069 /* ReplayMenuController.swift */,
 				F137C2351A8278C600FC70EA /* GameOver.swift */,
 				F137C20D1A81C03C00FC70EA /* GameViewController.swift */,
 				F10B57941C2510E100313A31 /* LaunchScreen.xib */,
@@ -259,7 +259,7 @@
 				F137C2361A8278C600FC70EA /* GameOver.swift in Sources */,
 				F137C2081A81C03C00FC70EA /* AppDelegate.swift in Sources */,
 				F10B579A1C26450500313A31 /* Highscore.swift in Sources */,
-				F1EAFBB81C2A5DCB00337069 /* ReplayMenu.swift in Sources */,
+				F1EAFBB81C2A5DCB00337069 /* ReplayMenuController.swift in Sources */,
 				F137C2601A955D8200FC70EA /* PauseMenuController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
