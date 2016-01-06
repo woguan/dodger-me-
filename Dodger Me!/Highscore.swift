@@ -324,6 +324,19 @@ class Highscore: SKScene {
     }
     
     func restart_scene(){
+        
+   /*     var refreshAlert = UIAlertController(title: "Refresh", message: "All data will be lost.", preferredStyle: UIAlertControllerStyle.Alert)
+        
+        refreshAlert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { (action: UIAlertAction!) in
+            print("Handle Ok logic here")
+        }))
+        
+        refreshAlert.addAction(UIAlertAction(title: "Cancel", style: .Default, handler: { (action: UIAlertAction!) in
+            print("Handle Cancel Logic here")
+        }))*/
+        
+      //  presentViewController(refreshAlert, animated: true, completion: nil)
+    //    view?.addSubview(refreshAlert)
         let scene = Highscore(size: self.size)
         self.view?.presentScene(scene)
     }

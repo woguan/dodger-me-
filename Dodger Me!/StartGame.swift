@@ -280,7 +280,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         // 1.Classic
         if(gameMode! == "classic"){
             
-            CHANCE_OF_POWERUP = 80
+            CHANCE_OF_POWERUP = 10
             MAX_FIRE_RATE = 0.4
             MAX_DRAGON_RATE = 1.5
             RESPAWN_DRAGON_SCORE = 40000
@@ -333,7 +333,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     }
     
     func appMovedToBackground (){
-        print("appMovedToBackground CALLED")
+     //   print("appMovedToBackground CALLED")
    //     view?.paused = true
         movingToBackground = true
     }
@@ -343,14 +343,13 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         
           self.movingToBackground = false
         
-        if (!isPauseGameCalled){
+        if (!isPauseGameCalled && !gameover){
             
         runAction(SKAction.runBlock({
             self.pauseGame()
             sleep(1)
         }))}
         
-        print("this function has benn acallled")
        /* runAction(SKAction.sequence([
             SKAction.waitForDuration(NSTimeInterval(0.01)),   SKAction.runBlock(pauseGame),
             ]))*/
@@ -373,8 +372,11 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     
     func loadiAd(){
        
-           //iAd Banner
-        //self.appDelegate.adBannerView.delegate = self  // -> to avoid an error
+        
+        /*
+        ** Remove this function and put in another place.
+        ** So it can be used multiple times in a single game
+        */
         
         adBannerView = ADBannerView(frame: CGRect.zero)
         adBannerView.delegate = self
@@ -382,11 +384,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         view!.addSubview(adBannerView)
          adBannerView.hidden = true
     
-        // iAD  Interstitial  -> pop up full screen iAds
-       // self.interstitialAdView.frame = self.view!.bounds
-       // self.interstitialAds.delegate = self
-       // view!.addSubview(self.interstitialAdView)
-       // self.interstitialAdView.hidden = true
     }
     func load(){
         
@@ -553,7 +550,9 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     func bannerViewActionShouldBegin(banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
         // when banner begins -> pause game
         adBannerView.hidden = true
+        if(!gameover){
         pauseGame()
+        }
         return true
         
         
@@ -968,7 +967,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         }
         
         // 20% block item
-        else if ( randomNum > 10 && randomNum <= 99){
+        else if ( randomNum > 10 && randomNum <= 30){
            
            
             // 30% : up/down
@@ -1226,7 +1225,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
              view?.paused = true
             
         // show iAd Pop up - if it is loaded successfully
-            let chance_toShow:CGFloat = random(71, max: 100)
+            let chance_toShow:CGFloat = random(0, max: 100)
             
     // debug print
   //  print("The iAD Interstitial loaded: \(self.interstitialAds.loaded)")

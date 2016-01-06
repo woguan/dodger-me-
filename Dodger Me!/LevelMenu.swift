@@ -28,7 +28,9 @@ class LevelMenu: SKScene{
         let  level_Button1 = UIButton (frame: CGRectMake(0,0,CGFloat(width),CGFloat(height)))
         
         level_Button1.center = CGPointMake(view.center.x - 90, view.center.y)
-        level_Button1.setTitle("Classic", forState: .Normal)
+        level_Button1.titleLabel?.lineBreakMode = .ByCharWrapping
+        level_Button1.titleLabel?.textAlignment = .Center
+        level_Button1.setTitle("Classic\nMode", forState: .Normal)
         level_Button1.titleLabel?.font = UIFont(name: "Chalkduster", size: 20)
         level_Button1.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         level_Button1.backgroundColor = UIColor.darkGrayColor()
@@ -38,7 +40,9 @@ class LevelMenu: SKScene{
     
         let  level_Button2 = UIButton (frame: CGRectMake(0,0,CGFloat(width),CGFloat(height)))
         level_Button2.center = CGPointMake(view.center.x + 90, view.center.y)
-        level_Button2.setTitle("Insane", forState: .Normal)
+        level_Button2.titleLabel?.lineBreakMode = .ByCharWrapping
+        level_Button2.titleLabel?.textAlignment = .Center
+        level_Button2.setTitle("Insane\nMode", forState: .Normal)
         level_Button2.titleLabel?.font = UIFont(name: "Chalkduster", size: 20)
         level_Button2.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         level_Button2.backgroundColor = UIColor.darkGrayColor()

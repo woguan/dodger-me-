@@ -68,7 +68,9 @@ class ReplayMenuController: UIViewController {
         
         
         let continueButton = UIButton (frame: CGRectMake(view.frame.width/4, view.frame.height/2,BUTTON_WIDTH,BUTTON_HEIGHT))
-        continueButton.setTitle("CONTINUE x\(pointsNeeded)", forState: .Normal)
+        continueButton.titleLabel?.lineBreakMode = .ByCharWrapping
+        continueButton.titleLabel?.textAlignment = .Center
+        continueButton.setTitle("CONTINUE\nx\(pointsNeeded)", forState: .Normal)
         continueButton.titleLabel?.font = UIFont(name: "Chalkduster", size: BUTTON_LETTER_SIZE)
         continueButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         continueButton.backgroundColor = UIColor.darkGrayColor()
@@ -80,7 +82,7 @@ class ReplayMenuController: UIViewController {
         }
         else{
                     continueButton.alpha = 0.5
-            continueButton.addTarget(self, action: "", forControlEvents: .TouchUpInside)
+        //    continueButton.addTarget(self, action: "", forControlEvents: .TouchUpInside)
         }
         
         view.addSubview(continueButton)
