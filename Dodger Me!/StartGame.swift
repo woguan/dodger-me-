@@ -479,7 +479,13 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         for touch in touches {
             
             
-            let location = (touch ).locationInNode(self)
+            let location = touch.locationInNode(self)
+            
+         //   let ob:SKNode = self.nodeAtPoint(location)
+            
+        //    print(ob)
+            
+            
             if ( ((player.playerImage.position.x > location.x - 20 ) && (player.playerImage.position.x < location.x + 20)) && ((player.playerImage.position.y > location.y - 20 ) && (player.playerImage.position.y < location.y + 20))  && player.isTouchable == true){
                if (self.player.isInvincible == false){
                 let liftUp = SKAction.scaleTo(1.2, duration: 0.2)
@@ -489,6 +495,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             }
             else{
                 player.isTouched  = false
+              
             }
             
         }

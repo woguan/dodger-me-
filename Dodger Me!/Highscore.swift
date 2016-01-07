@@ -8,7 +8,7 @@
 
 import SpriteKit
 
-class Highscore: SKScene {
+class Highscore: SKScene, MessageMenuDelegate {
     
     //    deinit{
     //        print(" highscore being deInitialized.");
@@ -33,6 +33,11 @@ class Highscore: SKScene {
     var label_insane_3 = SKLabelNode(fontNamed: "Chalkduster")
     var label_insane_4 = SKLabelNode(fontNamed: "Chalkduster")
     var label_insane_5 = SKLabelNode(fontNamed: "Chalkduster")
+    
+    
+    var pauseGameViewController = PauseMenuController()
+    var messageWindowViewController = MessageMenuController()
+
     
     
     var SIZE_LABEL_HS:CGFloat = 40.0
@@ -61,6 +66,8 @@ class Highscore: SKScene {
 
        override func didMoveToView(view: SKView) {
        
+        
+        
       /*  let y_up_bound:CGFloat = self.appDelegate.screenSize.height/2
         let y_down_bound:CGFloat = -self.appDelegate.screenSize.height/2
         let x_left_bound:CGFloat = -self.appDelegate.screenSize.width/2
@@ -78,7 +85,7 @@ class Highscore: SKScene {
         if (aspect_ratio > 0.563){
             fixRatio(aspect_ratio)
         }
-        
+       
    
         // Load score from pList
         let documentDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
@@ -203,9 +210,11 @@ class Highscore: SKScene {
         
         // Reset Classic
         let reset_classic = SKSpriteNode(imageNamed: "sprites/reset_button")
+
         reset_classic.name = "reset_classic"
         reset_classic.size = CGSize(width: SIZE_RESET_BUTTON_WIDTH, height: SIZE_RESET_BUTTON_HEIGHT)
-         reset_classic.position = CGPoint(x: -X_POSITION_LABEL_MODE - DISTANCE_X_SEPARATOR_RESET, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE * 6)
+        reset_classic.position = CGPoint(x: -X_POSITION_LABEL_MODE - DISTANCE_X_SEPARATOR_RESET, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE * 6)
+        
          addChild(reset_classic)
         // Reset Insane
         let reset_insane = SKSpriteNode(imageNamed: "sprites/reset_button")
@@ -228,13 +237,16 @@ class Highscore: SKScene {
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         
         for touch in touches {
-            let location = (touch ).locationInNode(self)
+            let location = touch.locationInNode(self)
             let sprite = self.nodeAtPoint(location)
+            
             if ( sprite.name == "restart"){
                 backGameScene()
             }
             else if (sprite.name == "reset_classic"){
-                reset_score("classic")
+                messageWindow()
+                //pauseGame()
+                //reset_score("classic")
             }
             else if (sprite.name == "reset_insane"){
                 reset_score("insane")
@@ -340,6 +352,36 @@ class Highscore: SKScene {
         let scene = Highscore(size: self.size)
         self.view?.presentScene(scene)
     }
+    
+  
+    
+    @IBAction func pauseGame() {
+        //let scene = GameScene(size: self.size)
+        //isPauseGameCalled = true
+        //view?.paused = true
+        
+        view?.addSubview(pauseGameViewController.view)
+    }
+    
+    @IBAction func messageWindow() {
+        //let scene = GameScene(size: self.size)
+        //isPauseGameCalled = true
+        //view?.paused = true
+        
+         messageWindowViewController.delegate = self
+        
+    let scene = messageWindowViewController.view
+       messageWindowViewController.theMode = "classic"
+        view?.addSubview(scene)
+        
+        
+    }
+    
+
+
+    
+
+    
     
     
     

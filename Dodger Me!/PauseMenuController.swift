@@ -26,6 +26,7 @@ class PauseMenuController: UIViewController {
         
    // }
     
+   
     var delegate:PauseMenuDelegate?
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate // Create reference to the app delegate
     
@@ -57,6 +58,7 @@ class PauseMenuController: UIViewController {
         //print("view_width: \(view.frame.width), view_height: \(view.frame.height)")
         //self.view.sendSubviewToBack(someImage)
         self.view.addSubview(someImage)
+        
         let continueButton = UIButton (frame: CGRectMake(view.frame.width/4, view.frame.height/2,BUTTON_WIDTH,BUTTON_HEIGHT))
         continueButton.setTitle("CONTINUE", forState: .Normal)
         continueButton.titleLabel?.font = UIFont(name: "Chalkduster", size: BUTTON_LETTER_SIZE)

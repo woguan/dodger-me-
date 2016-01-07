@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B75C57201C3EEBC000256E98 /* MessageMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75C571F1C3EEBC000256E98 /* MessageMenuController.swift */; };
 		F10B57961C2510E100313A31 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F10B57941C2510E100313A31 /* LaunchScreen.xib */; };
 		F10B57981C25DE6200313A31 /* dodger.plist in Resources */ = {isa = PBXBuildFile; fileRef = F10B57971C25DE6200313A31 /* dodger.plist */; };
 		F10B579A1C26450500313A31 /* Highscore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B57991C26450500313A31 /* Highscore.swift */; };
@@ -37,6 +38,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B75C571F1C3EEBC000256E98 /* MessageMenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageMenuController.swift; sourceTree = "<group>"; };
 		F10B57951C2510E100313A31 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		F10B57971C25DE6200313A31 /* dodger.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = dodger.plist; sourceTree = "<group>"; };
 		F10B57991C26450500313A31 /* Highscore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Highscore.swift; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				F1AB1E6D1BBA283D003BA666 /* sprites */,
 				F1AB1E5D1BB66E01003BA666 /* dragons.png */,
 				F137C2071A81C03C00FC70EA /* AppDelegate.swift */,
+				B75C571F1C3EEBC000256E98 /* MessageMenuController.swift */,
 				F137C25F1A955D8200FC70EA /* PauseMenuController.swift */,
 				F137C20B1A81C03C00FC70EA /* GameScene.swift */,
 				F1EA7F901B72BCCE00444610 /* LevelMenu.swift */,
@@ -254,6 +257,7 @@
 			files = (
 				F1AB1E691BB7F6EB003BA666 /* StartGame.swift in Sources */,
 				F1EA7F911B72BCCE00444610 /* LevelMenu.swift in Sources */,
+				B75C57201C3EEBC000256E98 /* MessageMenuController.swift in Sources */,
 				F137C20C1A81C03C00FC70EA /* GameScene.swift in Sources */,
 				F137C20E1A81C03C00FC70EA /* GameViewController.swift in Sources */,
 				F137C2361A8278C600FC70EA /* GameOver.swift in Sources */,
