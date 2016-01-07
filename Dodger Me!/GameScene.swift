@@ -64,6 +64,8 @@ class GameScene: SKScene{
         view.addSubview(HighscoreButton)
         
         
+        
+        
      
         // SKSprite of points
         let point_image = SKSpriteNode(imageNamed: "sprites/coin")
@@ -117,6 +119,7 @@ class GameScene: SKScene{
         view?.presentScene(scene)*/
         
         let scene = LevelMenu(size: self.size)
+        scene.score = 100
         view?.presentScene(scene)
         
         

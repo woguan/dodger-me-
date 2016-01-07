@@ -1067,6 +1067,9 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         else if (itemName == "spriteImune"){
             
             var tempBool:Bool = true // this is used for alpha purpose
+            var timer:CGFloat = 0.1
+            var tempTimer:CGFloat = 0
+            var boolSwapper:Bool = true
             
             let expand = SKAction.scaleTo(2.5, duration: 0.2)
             let shrink = SKAction.scaleTo(1.0, duration: 0.2)
@@ -1087,11 +1090,12 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
                         SKAction.runBlock({
                             
                             if(self.powerUp.isImuneItemEnabled == true){
-                            self.powerUp.buffTime_imune -= 0.1
+                                self.powerUp.buffTime_imune -= 0.1
                             }
                             if( self.powerUp.buffTime_imune > 0 &&  self.powerUp.buffTime_imune <= 5){
                                 
                                 if(tempBool == true){
+                                    
                                     self.player.playerImage.alpha -= 0.1
                                     if (self.player.playerImage.alpha <= 0.5){
                                         tempBool = false
@@ -1103,7 +1107,35 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
                                         tempBool = true
                                     }
                                 }
+                                
+                                
+                                //character color swapping
+                                tempTimer += timer
+                                
+                                if(tempTimer >= 1.0){
+                                    if(boolSwapper){
+                                        
+                                        if(self.player.HP! == 3){
+                                            self.player.playerImage.texture = SKTexture(imageNamed: "sprites/player/player_full")
+                                        }
+                                        else if(self.player.HP! == 2){
+                                            self.player.playerImage.texture = SKTexture(imageNamed: "sprites/player/player_medium")
+                                        }
+                                        else if(self.player.HP! == 1){
+                                            self.player.playerImage.texture = SKTexture(imageNamed: "sprites/player/player_low")
+                                        }
+                                        boolSwapper = false
+                                        
+                                    }
+                                    else{
+                                        self.updatePlayerIMG()
+                                        boolSwapper = true
+                                    }
+                                    timer *= 1.15
+                                    tempTimer = 0
+                                }
                             }
+                            
                             
                             self.powerUp.update()
                             
@@ -1214,9 +1246,10 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         // swift read from left to right... if left is true... then right will not be read
          if (playerObtainItem(object.name!) == false && self.player.isInvincible == false ){
             self.player.HP = self.player.HP! - 1
+            updatePlayerIMG()
         }
         
-        updatePlayerIMG()
+        
         
         if (self.player.HP! <= 0){
         // Game is over - this fix when player do not close the interstital ad

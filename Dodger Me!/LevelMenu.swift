@@ -16,9 +16,10 @@ class LevelMenu: SKScene{
         
    // }
     
-    var score = 0;
+    var score = 0
     var scoreBoard = SKLabelNode()
     override func didMoveToView(view: SKView){
+        
         
         let height = 100  // height of buttons
         let width = 100   // width of buttons
@@ -71,6 +72,17 @@ class LevelMenu: SKScene{
         view.addSubview(level_Button4)*/
         
         
+        let  level_Button4 = UIButton (frame: CGRectMake(0,0,CGFloat(width),CGFloat(height)))
+        level_Button4.center = CGPointMake(view.center.x, view.center.y + 120)
+        level_Button4.setTitle("Back", forState: .Normal)
+        level_Button4.titleLabel?.font = UIFont(name: "Chalkduster", size: 30)
+        level_Button4.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
+        level_Button4.backgroundColor = UIColor.darkGrayColor()
+        level_Button4.addTarget(self, action: "back", forControlEvents: .TouchUpInside)
+        level_Button4.layer.cornerRadius = 5.0
+        view.addSubview(level_Button4)
+        
+        
     }
     
     @IBAction func Mode_1() {
@@ -89,6 +101,12 @@ class LevelMenu: SKScene{
     @IBAction func lv4() {
         selector(4)
     }*/
+    @IBAction func back() {
+        let scene = GameScene(size: self.size)
+        view?.presentScene(scene)
+        
+    }
+    
     
     
     func selector (mode:String){
