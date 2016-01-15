@@ -30,6 +30,7 @@ struct PhysicsCategory {
     static let Fire   : UInt32 = 0b10
     static let Dragon : UInt32 = 0b100
     static let Food : UInt32 = 0b1000
+    static let Wall : UInt32 = 0b11
     
 }
 
@@ -63,10 +64,13 @@ extension Player{
     }
     func materializeBody(){
         // Setting a physical body to the player
-        playerImage.physicsBody = SKPhysicsBody(rectangleOfSize: playerImage.size)
-        playerImage.physicsBody?.dynamic = true
-        playerImage.physicsBody?.categoryBitMask = PhysicsCategory.Player
-        playerImage.physicsBody?.collisionBitMask = PhysicsCategory.None
+       // playerImage.physicsBody = SKPhysicsBody(rectangleOfSize: playerImage.size)
+        playerImage.physicsBody = SKPhysicsBody(circleOfRadius: playerImage.size.width/2 + 2, center: CGPoint(x: playerImage.position.x, y: playerImage.position.y - 1))
+       
+       // playerImage.physicsBody =  SKPhysicsBody(texture: playerImage.texture!, size: playerImage.size)
+        playerImage.physicsBody?.dynamic = false
+       playerImage.physicsBody?.categoryBitMask = PhysicsCategory.Player
+     //   playerImage.physicsBody?.collisionBitMask = PhysicsCategory.None
     }
 }
 
@@ -211,7 +215,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     
     var gameMode:String? = nil;   // current Level -> this is set up by level selector
   //  var scorePass:Int? = nil;    // minumum score to pass to next level
-    var scorePass:Int = 0
+    var currHighscore:Int?
     var highscore:Int = 0
     var timerCount:Int = 3
     
@@ -261,7 +265,8 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     
     
     override func didMoveToView(view: SKView){
-        
+     
+      //  view.showsPhysics = true
       //  print("screen width: \(self.appDelegate.screenSize.width)\n")
       //  print("screen height: \(self.appDelegate.screenSize.height)")
                notificationCenter.addObserver(self, selector: "appMovedToBackground", name: UIApplicationWillResignActiveNotification, object: nil)
@@ -274,19 +279,19 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         }
         
         self.anchorPoint = CGPointMake(0.5, 0.5)
+     
         
         //load stage settings
         
         // 1.Classic
         if(gameMode! == "classic"){
             
-            CHANCE_OF_POWERUP = 10
+            CHANCE_OF_POWERUP = 80
             MAX_FIRE_RATE = 0.4
             MAX_DRAGON_RATE = 1.5
             RESPAWN_DRAGON_SCORE = 40000
             RATE_SPEED_GROWTH = 0.001
             SPEED_OF_BALL = 140
-            scorePass = 50000
             INITIAL_FIRE_SPEED_RATE = 1.0
             INITIAL_DRAGON_SPEED_RATE = 1.5
             
@@ -299,7 +304,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             RESPAWN_DRAGON_SCORE = 30000
             RATE_SPEED_GROWTH = 0.003
              SPEED_OF_BALL = 140
-            scorePass = 40000
             INITIAL_FIRE_SPEED_RATE = 1.0
             INITIAL_DRAGON_SPEED_RATE = 1.5
         }
@@ -313,10 +317,10 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         // load delegates
         // delegate for Unpause scene
         pauseGameViewController.delegate = self
-      //  replayGameViewController.delegate = self
+        
         // load ads
         loadiAd()
-        // load objects
+        // load objects and other stuff
         load();
         
         
@@ -417,7 +421,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         // applying physics
         physicsWorld.gravity = CGVectorMake(0, 0)
         physicsWorld.contactDelegate = self
-  
         
         // Load coins/points 12/21/2015
         
@@ -462,7 +465,19 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
                 }
             }), SKAction.waitForDuration(NSTimeInterval(0.1))])), withKey: "animate_coin")
         
+        // Assign value for currHighscore for Classic and Insane modes
+       
+        let hsClassicArray = virtualPlist?.objectForKey("Highscore_Classic") as! NSArray
+        let hsInsaneArray = virtualPlist?.objectForKey("Highscore_Insane") as! NSArray
+       let currClassicHighscore = hsClassicArray.objectAtIndex(0) as! Int
+       let currInsaneHighscore = hsInsaneArray.objectAtIndex(0) as! Int
         
+        if (self.gameMode == "classic"){
+            self.currHighscore = currClassicHighscore
+        }
+        else{
+            self.currHighscore = currInsaneHighscore
+        }
     }
     
     func testSprite() -> [SKTexture]{
@@ -478,7 +493,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         
         for touch in touches {
             
-            
+            print("i am pressed")
             let location = touch.locationInNode(self)
             
          //   let ob:SKNode = self.nodeAtPoint(location)
@@ -901,7 +916,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         // Create sprite
         let dragonMonster = SKSpriteNode(imageNamed: "dragons")
         
-        dragonMonster.name = "spriteFire"
+        dragonMonster.name = "spriteDragon"
         dragonMonster.size = CGSize(width: 20, height: 20)
         
         // random Y position respawn
@@ -1059,6 +1074,57 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             
         }
     }
+   
+    // added Jan 12, 2016  - Consider using struct?
+    func createWall(name:String, dir:String){
+        // load a many blocks of red_walls using for loop
+        //  print("screen width: \(self.appDelegate.screenSize.width)\n")
+        //   print("screen height: \(self.appDelegate.screenSize.height)")
+        var value_x = self.appDelegate.screenSize.width / 2
+        var value_y =  self.appDelegate.screenSize.height / 2
+        
+        if ( dir == "left"){
+            value_x *= -1
+
+        }
+        if (dir == "bottom"){
+            value_y *= -1
+        }
+        for (var s:CGFloat = 0; s <= self.appDelegate.screenSize.height; s = s + 40){
+            let redWall:SKSpriteNode = SKSpriteNode()
+            redWall.size = CGSize(width: 50, height: 40)
+            redWall.texture = SKTexture(imageNamed: "sprites/grey_wall")
+            redWall.name = name
+            if ( dir == "left" || dir == "right"){
+            redWall.position = CGPointMake( value_x , value_y - s)
+            }
+            else{
+               redWall.position = CGPointMake( value_x - s , value_y)
+            }
+            
+            // add physical body
+            redWall.physicsBody = SKPhysicsBody(rectangleOfSize: redWall.size)
+            
+            // playerImage.physicsBody =  SKPhysicsBody(texture: playerImage.texture!, size: playerImage.size)
+            redWall.physicsBody?.dynamic = false
+            redWall.physicsBody?.categoryBitMask = PhysicsCategory.Wall
+            redWall.physicsBody?.collisionBitMask = PhysicsCategory.None
+            
+            self.addChild(redWall)
+            //       print("I create a wall on height: \(self.appDelegate.screenSize.height / 2 - s)")
+        }
+        
+       
+    }
+    // added Jan 12, 2016
+    func deleteWall(name:String){
+        for kids in children{
+            if (kids.name == name){
+                kids.removeFromParent()
+            }
+        }
+    }
+    
     
     // MOVE THIS FUNCTION TO PLAYER CLASS LATER -> IF POSSIBLE
     func playerObtainItem(itemName:String) -> Bool{
@@ -1069,6 +1135,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             if (self.player.HP > 3 ){
                 self.player.HP = 3
             }
+            updatePlayerIMG()
         }
             
         else if (itemName == "spriteImune"){
@@ -1080,7 +1147,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             
             let expand = SKAction.scaleTo(2.5, duration: 0.2)
             let shrink = SKAction.scaleTo(1.0, duration: 0.2)
-            let BONUS_TIME:CGFloat = 10.0
+            let BONUS_TIME:CGFloat = 100000000.0
             
             self.player.playerImage.runAction(expand)
             self.player.isInvincible = true
@@ -1174,15 +1241,19 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
                 
                 if(itemName.containsString("_right")){
                     self.powerUp.buffTime_Right = BONUS_TIME
+                    createWall("right_brick", dir: "right")
                 }
                 else if(itemName.containsString("_left")){
                     self.powerUp.buffTime_Left = BONUS_TIME
+                    createWall("left_brick", dir: "left")
                 }
                 else if(itemName.containsString("_up")){
                     self.powerUp.buffTime_Up = BONUS_TIME
+                    createWall("top_brick", dir: "top")
                 }
                 else if(itemName.containsString("_down")){
                     self.powerUp.buffTime_Down = BONUS_TIME
+                    createWall("bottom_brick", dir: "bottom")
                 }
                 
                 // update the current status
@@ -1208,8 +1279,20 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
                             }
                             
                             self.powerUp.update()
-                            
+                            if(!self.powerUp.isDownArrowEnabled){
+                                self.deleteWall("bottom_brick")
+                            }
+                            if(!self.powerUp.isUpArrowEnabled){
+                                self.deleteWall("top_brick")
+                            }
+                            if(!self.powerUp.isRightArrowEnabled){
+                                 self.deleteWall("right_brick")
+                            }
+                            if(!self.powerUp.isLeftArrowEnabled){
+                                 self.deleteWall("left_brick")
+                            }
                             if(self.powerUp.isDownArrowEnabled == false && self.powerUp.isUpArrowEnabled == false && self.powerUp.isLeftArrowEnabled == false && self.powerUp.isRightArrowEnabled == false){
+                               
                                 self.removeActionForKey("arrow_counter")
                             }
                             
@@ -1223,15 +1306,27 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             else{
                 
                 if(itemName.containsString("_right")){
+                    if ( self.powerUp.buffTime_Right <= 0 ){
+                        createWall("right_brick", dir: "right")
+                    }
                     self.powerUp.buffTime_Right = BONUS_TIME
                 }
                 else if(itemName.containsString("_left")){
+                    if ( self.powerUp.buffTime_Left <= 0 ){
+                        createWall("left_brick", dir: "left")
+                    }
                     self.powerUp.buffTime_Left = BONUS_TIME
                 }
                 else if(itemName.containsString("_up")){
+                    if ( self.powerUp.buffTime_Up <= 0 ){
+                        createWall("top_brick", dir: "top")
+                    }
                     self.powerUp.buffTime_Up = BONUS_TIME
                 }
                 else if(itemName.containsString("_down")){
+                    if ( self.powerUp.buffTime_Down <= 0 ){
+                        createWall("bottom_brick", dir: "bottom")
+                    }
                     self.powerUp.buffTime_Down = BONUS_TIME
                 }
                 
@@ -1247,6 +1342,10 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     }
     
     func projectileDidCollideWithMonster(player:SKSpriteNode, object:SKSpriteNode) {
+        
+        if (player.name?.containsString("brick") == true || object.name?.containsString("brick") == true){
+            return
+        }
         
         object.removeFromParent()
         
@@ -1335,13 +1434,15 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         //  let reveal = SKTransition.flipHorizontalWithDuration(0.5)
         
         
-               if ( scoreBoard.score >= scorePass){
-                let winScene = GameOver(size: self.size, won: true, score: scoreBoard.score, highscore: highscore, game_mode: self.gameMode!)
+        
+        
+               if ( scoreBoard.score > currHighscore){
+                let winScene = GameOver(size: self.size, containHighscore: true, score: scoreBoard.score, highscore: highscore, game_mode: self.gameMode!)
             self.view?.presentScene(winScene)
         }
             
         else{
-                let loseScene = GameOver(size: self.size, won: false, score: scoreBoard.score, highscore: highscore, game_mode:gameMode!)
+                let loseScene = GameOver(size: self.size, containHighscore: false, score: scoreBoard.score, highscore: highscore, game_mode:gameMode!)
             self.view?.presentScene(loseScene)
         }
     }
@@ -1363,7 +1464,9 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             secondBody = contact.bodyA
         }
         
-        
+        if (firstBody.node?.name?.containsString("brick") == true || secondBody.node?.name?.containsString("brick") == true) {
+          print("first: \(firstBody.node?.name), second: \(secondBody.node?.name)")
+        }
         
      //   if ((firstBody.categoryBitMask & PhysicsCategory.Player != 0) &&
      //       (secondBody.categoryBitMask & PhysicsCategory.Fire != 0)) {

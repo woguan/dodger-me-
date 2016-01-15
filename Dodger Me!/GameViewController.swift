@@ -17,7 +17,6 @@ class GameViewController: UIViewController {
         super.viewDidLoad()
 
        // let FORCERESET = true
-        
         //1 - Updating the documentDirectory
         let documentDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
         let fullPathName = documentDirectory.stringByAppendingPathComponent("dodger.plist") as String

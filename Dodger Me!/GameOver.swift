@@ -24,13 +24,13 @@ class GameOver: SKScene {
     var game_mode:String?
     var points_accumulated:Int = 0
     
-    init(size: CGSize, won:Bool, score:Int, highscore:Int, game_mode:String) {
+    init(size: CGSize, containHighscore:Bool, score:Int, highscore:Int, game_mode:String) {
         
         super.init(size: size)
         
         self.score = score
         self.highscore = highscore
-        self.winResult = won
+        self.winResult = containHighscore
         self.game_mode = game_mode
     }
     
@@ -46,16 +46,16 @@ class GameOver: SKScene {
     scoreLabel.text = String(score)
     scoreLabel.fontSize = 40
     scoreLabel.fontColor = SKColor.blackColor()
-    scoreLabel.position = CGPoint(x: 0, y: 100)
+    scoreLabel.position = CGPoint(x: 0, y: 50)
     addChild(scoreLabel)
     
-    let message = self.winResult ? "You Won!" : "You Lose :["
+    let message = self.winResult ? "New Highscore!" : "You failed!"
     
     
     label.text = message
     label.fontSize = 40
     label.fontColor = SKColor.blackColor()
-    label.position = CGPoint(x: 0, y: 0)
+    label.position = CGPoint(x: 0, y: 150)
     addChild(label)
     
 

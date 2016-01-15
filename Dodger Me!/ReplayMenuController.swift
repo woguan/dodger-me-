@@ -133,7 +133,7 @@ class ReplayMenuController: UIViewController {
         super.didReceiveMemoryWarning()
         // Release any cached data, images, etc that aren't in use.
     }
-    
+   
     @IBAction func continueGame(){
         //print("THE VALUE IS: \(self.paused)")
         

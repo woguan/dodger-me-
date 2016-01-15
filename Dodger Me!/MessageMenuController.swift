@@ -69,17 +69,18 @@ class MessageMenuController: UIViewController {
         continueButton.layer.cornerRadius = 5.0
         view.addSubview(continueButton)
     
-        let yesButton = UIButton (frame: CGRectMake(view.frame.width/4 - 24, view.frame.height/2 + 120,BUTTON_WIDTH,BUTTON_HEIGHT))
+        let yesButton = UIButton (frame: CGRectMake(view.frame.width/4 - 24, view.frame.height/2 + 60,BUTTON_WIDTH,BUTTON_HEIGHT))
         yesButton.setTitle("yes", forState: .Normal)
         //yesButton.center = CGPointMake(view.center.x, view.center.y)
         yesButton.titleLabel?.font = UIFont(name: "Chalkduster", size: BUTTON_LETTER_SIZE)
         yesButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         yesButton.backgroundColor = UIColor.darkGrayColor()
-        yesButton.addTarget(self, action: "yes", forControlEvents: .TouchUpInside)
+        yesButton.addTarget(self, action: "yes:", forControlEvents: .TouchUpInside)
+        yesButton.tag = 2
         yesButton.layer.cornerRadius = 5.0
         view.addSubview(yesButton)
         
-        let noButton = UIButton (frame: CGRectMake(view.frame.width/4 + 60, view.frame.height/2 + 120,BUTTON_WIDTH,BUTTON_HEIGHT))
+        let noButton = UIButton (frame: CGRectMake(view.frame.width/4 + 60, view.frame.height/2 + 60,BUTTON_WIDTH,BUTTON_HEIGHT))
         noButton.setTitle("no", forState: .Normal)
         noButton.titleLabel?.font = UIFont(name: "Chalkduster", size: BUTTON_LETTER_SIZE)
         noButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
@@ -120,13 +121,16 @@ class MessageMenuController: UIViewController {
         // Release any cached data, images, etc that aren't in use.
     }
     
-    @IBAction func yes(){
+    @IBAction func yes(sender: UIButton!){
+       
+        print("the tag is: \(sender.tag)")
         //print("THE VALUE IS: \(self.paused)")
-        delegate?.reset_score("classic")
-        view.removeFromSuperview()
+     //   delegate?.reset_score("classic")
+   //     view.removeFromSuperview()
     }
     
     @IBAction func no(){
+        print("no button clicked")
         //print("THE VALUE IS: \(self.paused)")
        // delegate?.reset_score("insane")
         view.removeFromSuperview()
