@@ -17,15 +17,18 @@ optional func callUnpause()
 
 protocol MessageMenuDelegate{
     func reset_score(mode:String)
+    func setFreezeMode (f:Bool)
 }
 
 
 class MessageMenuController: UIViewController {
     
-    // deinit{
-    //    print(" pausemenu being deInitialized.");D
+     deinit{
+        print(" Diego is an asshole")
     
-    // }
+     }
+    
+
     
     var theMode:String? // the mode
     var delegate:MessageMenuDelegate?
@@ -35,9 +38,21 @@ class MessageMenuController: UIViewController {
     var BUTTON_HEIGHT:CGFloat = 50.0 * 0.7
     var BUTTON_LETTER_SIZE:CGFloat = 15
     
+    
+
+    
+//    init(mode: String){
+//        theMode = mode
+//    }
+//
+//    init(){
+//        
+//    }
+
+   
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         
         let ratio = appDelegate.screenSize.width/appDelegate.screenSize.height
         
@@ -74,8 +89,10 @@ class MessageMenuController: UIViewController {
         //yesButton.center = CGPointMake(view.center.x, view.center.y)
         yesButton.titleLabel?.font = UIFont(name: "Chalkduster", size: BUTTON_LETTER_SIZE)
         yesButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
+        //yesButton.tag = 2
         yesButton.backgroundColor = UIColor.darkGrayColor()
         yesButton.addTarget(self, action: "yes", forControlEvents: .TouchUpInside)
+        //self.yes(yesButton)
         yesButton.layer.cornerRadius = 5.0
         view.addSubview(yesButton)
         
@@ -120,15 +137,20 @@ class MessageMenuController: UIViewController {
         // Release any cached data, images, etc that aren't in use.
     }
     
-    @IBAction func yes(){
+    func yes(){
         //print("THE VALUE IS: \(self.paused)")
-        delegate?.reset_score("classic")
+        
+        //delegate?.reset_score("classic")
+        //if(sender.tag == 2)
+        delegate?.reset_score(theMode!)
+        delegate?.setFreezeMode(false)
         view.removeFromSuperview()
     }
     
-    @IBAction func no(){
-        //print("THE VALUE IS: \(self.paused)")
+    func no(){
+        //print("THE VALUE IS: ", theMode)
        // delegate?.reset_score("insane")
+        delegate?.setFreezeMode(false)
         view.removeFromSuperview()
     }
     
@@ -136,6 +158,10 @@ class MessageMenuController: UIViewController {
         //print("THE VALUE IS: \(self.paused)")
         //   delegate?.restart_scene()
         view.removeFromSuperview()
+    }
+    
+    func setMode(mode: String){
+        self.theMode = mode
     }
     
 }

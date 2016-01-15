@@ -37,6 +37,7 @@ class Highscore: SKScene, MessageMenuDelegate {
     
     var pauseGameViewController = PauseMenuController()
     var messageWindowViewController = MessageMenuController()
+    var freeze = false
 
     
     
@@ -236,6 +237,7 @@ class Highscore: SKScene, MessageMenuDelegate {
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         
+        if(!self.freeze){
         for touch in touches {
             let location = touch.locationInNode(self)
             let sprite = self.nodeAtPoint(location)
@@ -244,14 +246,16 @@ class Highscore: SKScene, MessageMenuDelegate {
                 backGameScene()
             }
             else if (sprite.name == "reset_classic"){
-                messageWindow()
+                messageWindow("classic")
                 //pauseGame()
                 //reset_score("classic")
             }
             else if (sprite.name == "reset_insane"){
-                reset_score("insane")
+                //reset_score("insane")
+                messageWindow("insane")
             }
             
+        }
         }
     }
     
@@ -349,6 +353,8 @@ class Highscore: SKScene, MessageMenuDelegate {
         
       //  presentViewController(refreshAlert, animated: true, completion: nil)
     //    view?.addSubview(refreshAlert)
+        
+
         let scene = Highscore(size: self.size)
         self.view?.presentScene(scene)
     }
@@ -363,26 +369,35 @@ class Highscore: SKScene, MessageMenuDelegate {
         view?.addSubview(pauseGameViewController.view)
     }
     
-    @IBAction func messageWindow() {
+    func messageWindow(mode: String) {
         //let scene = GameScene(size: self.size)
         //isPauseGameCalled = true
         //view?.paused = true
         
-         messageWindowViewController.delegate = self
+
+        messageWindowViewController.delegate = self
+        messageWindowViewController.setMode(mode)
         
-    let scene = messageWindowViewController.view
-       messageWindowViewController.theMode = "classic"
+        let scene = messageWindowViewController.view
+        
+        print("the current mode is: ", mode)
+
+        //if( mode == "insane"){
+        //    messageWindowViewController.no()
+        //}
+        
+        //print(mode)
+        //view?.paused = true
+        //paused = true
+        setFreezeMode(true)
         view?.addSubview(scene)
-        
         
     }
     
-
-
     
-
-    
-    
+    func setFreezeMode(f: Bool){
+        self.freeze = f
+    }
     
     
 }
