@@ -44,7 +44,7 @@ struct Player{
     var HP:Int?
     var isInvincible:Bool?
     var playerImage:SKSpriteNode
-    var isTouched:Bool = false
+   // var isTouched:Bool = false -> removed
     var isTouchable:Bool = true
     var initPosition:CGPoint?
 }
@@ -67,9 +67,9 @@ extension Player{
     func materializeBody(){
         // Setting a physical body to the player
        // playerImage.physicsBody = SKPhysicsBody(rectangleOfSize: playerImage.size)
-        playerImage.physicsBody = SKPhysicsBody(circleOfRadius: playerImage.size.width/2 + 2, center: CGPoint(x: playerImage.position.x, y: playerImage.position.y - 1))
+     //   playerImage.physicsBody = SKPhysicsBody(circleOfRadius: playerImage.size.width/2 + 2, center: CGPoint(x: playerImage.position.x, y: playerImage.position.y - 1))
        
-   //     playerImage.physicsBody =  SKPhysicsBody(texture: playerImage.texture!, size: playerImage.size)
+        playerImage.physicsBody =  SKPhysicsBody(texture: playerImage.texture!, size: playerImage.size)
         playerImage.physicsBody?.dynamic = true // allow physic simulation to move it
         playerImage.physicsBody!.allowsRotation = false // not allow it to rotate
        playerImage.physicsBody?.categoryBitMask = PhysicsCategory.Player
@@ -260,7 +260,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     
     override func didMoveToView(view: SKView){
      
-        view.showsPhysics = true
+        view.showsPhysics = false
       //  print("screen width: \(self.appDelegate.screenSize.width)\n")
       //  print("screen height: \(self.appDelegate.screenSize.height)")
                notificationCenter.addObserver(self, selector: "appMovedToBackground", name: UIApplicationWillResignActiveNotification, object: nil)
@@ -280,7 +280,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         // 1.Classic
         if(gameMode! == "classic"){
             
-            CHANCE_OF_POWERUP = 80
+            CHANCE_OF_POWERUP = 10
             MAX_FIRE_RATE = 0.4 // how often is called
             MAX_DRAGON_RATE = 1.5
             RESPAWN_DRAGON_SCORE = 40000 // default is 40000
@@ -293,11 +293,11 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         }
         // 2.Insane
         else if(gameMode! == "insane"){
-            CHANCE_OF_POWERUP = 15
+            CHANCE_OF_POWERUP = 0  // default is 15
             MAX_FIRE_RATE = 0.2
             MAX_DRAGON_RATE = 1.0
             RESPAWN_DRAGON_SCORE = 30000
-            RATE_SPEED_GROWTH = 0.003
+            RATE_SPEED_GROWTH = 0.1  // default is 0.003
              SPEED_OF_BALL = 140
             SPEED_OF_CLOUD = 140
             INITIAL_FIRE_SPEED_RATE = 1.0
@@ -493,30 +493,17 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         for touch in touches {
             
             let location = touch.locationInNode(self)
-            
-            player.isTouched = true
-            player.initPosition = location
-            /*
-            if ( ((player.playerImage.position.x > location.x - 20 ) && (player.playerImage.position.x < location.x + 20)) && ((player.playerImage.position.y > location.y - 20 ) && (player.playerImage.position.y < location.y + 20))  && player.isTouchable == true){
-               if (self.player.isInvincible == false){
+                player.initPosition = location
+            if (self.player.isInvincible == false){
                 let liftUp = SKAction.scaleTo(1.2, duration: 0.2)
-                player.playerImage.runAction(liftUp)}
-                player.isTouched = true
-                
-            }
-            else{
-                player.isTouched  = false
-              
-            }*/
-
+                player.playerImage.runAction(liftUp)
         }
+    }
     }
     
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         for touch in touches {
             let location = (touch ).locationInNode(self)
-            if (player.isTouched){
-                
                 player.playerImage.position.x += (location.x - player.initPosition!.x)
                 player.playerImage.position.y += (location.y - player.initPosition!.y)
                 
@@ -533,8 +520,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
                 else if ( player.playerImage.position.x > self.appDelegate.screenSize.width/2 * 0.745){
                     player.playerImage.position.x = self.appDelegate.screenSize.width/2 * 0.745
                 }
-                
-            }
         }
     }
     
@@ -1198,7 +1183,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             
             let expand = SKAction.scaleTo(2.5, duration: 0.2)
             let shrink = SKAction.scaleTo(1.0, duration: 0.2)
-            let BONUS_TIME:CGFloat = 103.0
+            let BONUS_TIME:CGFloat = 10.0
             
             self.player.playerImage.runAction(expand)
             self.player.isInvincible = true
@@ -1531,7 +1516,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
      //       (secondBody.categoryBitMask & PhysicsCategory.Fire != 0)) {
                 projectileDidCollideWithMonster(firstBody.node as! SKSpriteNode, object: secondBody.node as! SKSpriteNode)
      //   }
-        
     }
     
     func iAdPopup(){
