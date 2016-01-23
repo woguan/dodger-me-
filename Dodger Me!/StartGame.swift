@@ -27,9 +27,10 @@ struct PhysicsCategory {
     static let None      : UInt32 = 0
     static let Imune       : UInt32 = UInt32.max
     static let Player   :UInt32 = 0b1
-    static let Fire   : UInt32 = 0b10
+    static let Fire   : UInt32 = 0b100
     static let Dragon : UInt32 = 0b100
     static let Food : UInt32 = 0b1000
+    static let Cloud : UInt32 = 0b10000
     static let Wall : UInt32 = 0b11
     
 }
@@ -45,6 +46,7 @@ struct Player{
     var playerImage:SKSpriteNode
     var isTouched:Bool = false
     var isTouchable:Bool = true
+    var initPosition:CGPoint?
 }
 
 /*
@@ -67,8 +69,9 @@ extension Player{
        // playerImage.physicsBody = SKPhysicsBody(rectangleOfSize: playerImage.size)
         playerImage.physicsBody = SKPhysicsBody(circleOfRadius: playerImage.size.width/2 + 2, center: CGPoint(x: playerImage.position.x, y: playerImage.position.y - 1))
        
-       // playerImage.physicsBody =  SKPhysicsBody(texture: playerImage.texture!, size: playerImage.size)
-        playerImage.physicsBody?.dynamic = false
+   //     playerImage.physicsBody =  SKPhysicsBody(texture: playerImage.texture!, size: playerImage.size)
+        playerImage.physicsBody?.dynamic = true // allow physic simulation to move it
+        playerImage.physicsBody!.allowsRotation = false // not allow it to rotate
        playerImage.physicsBody?.categoryBitMask = PhysicsCategory.Player
      //   playerImage.physicsBody?.collisionBitMask = PhysicsCategory.None
     }
@@ -240,33 +243,24 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     var INITIAL_DRAGON_SPEED_RATE:CGFloat?
     var RATE_SPEED_GROWTH:CGFloat?
     var SPEED_OF_BALL:Double?  // added 12/21/2015
+    var SPEED_OF_CLOUD:Double? // added 01/21/2015
    
     
     // Implemented "constants" values to fix the ratio between different iPhones
-  //  var SIZE_LABEL_HS:CGFloat = 40.0
-  //  var SIZE_LABAL_MODE:CGFloat = 20.0
-  //  var SIZE_LABEL_SCORE:CGFloat = 15.0
-    
-    var X_POSITION_OBJECT:CGFloat = 0.0
-    var Y_POSITION_OBJECT:CGFloat = 210.0
-    
     var X_POSITION_TOP_LABEL:CGFloat = 150.0
     var Y_POSITION_TOP_LABEL:CGFloat = 300.0
-    
     let FIX_LABEL_Y:CGFloat = 5.0
-/*  var DISTANCE_BETWEEN_SCORE:CGFloat = 40.0
-    var DISTANCE_X_SEPARATOR:CGFloat =  50.0
     
-    var DISTANCE_X_SEPARATOR_RESET:CGFloat = 6.0
-    
-    var SIZE_RESET_BUTTON_WIDTH:CGFloat = 100.0
-    var SIZE_RESET_BUTTON_HEIGHT:CGFloat = 80.0*/
- 
+    // Implemented "constants" values to fix the spawn powerups
+    var X_MIN_IN_SUBSCREEN: CGFloat = -141
+    var X_MAX_IN_SUBSCREEN: CGFloat = 146
+    var Y_MAX_IN_SUBSCREEN: CGFloat = 272
+    var Y_MIN_IN_SUBSCREEN: CGFloat = -300
     
     
     override func didMoveToView(view: SKView){
      
-      //  view.showsPhysics = true
+        view.showsPhysics = true
       //  print("screen width: \(self.appDelegate.screenSize.width)\n")
       //  print("screen height: \(self.appDelegate.screenSize.height)")
                notificationCenter.addObserver(self, selector: "appMovedToBackground", name: UIApplicationWillResignActiveNotification, object: nil)
@@ -287,11 +281,12 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         if(gameMode! == "classic"){
             
             CHANCE_OF_POWERUP = 80
-            MAX_FIRE_RATE = 0.4
+            MAX_FIRE_RATE = 0.4 // how often is called
             MAX_DRAGON_RATE = 1.5
-            RESPAWN_DRAGON_SCORE = 40000
+            RESPAWN_DRAGON_SCORE = 40000 // default is 40000
             RATE_SPEED_GROWTH = 0.001
             SPEED_OF_BALL = 140
+            SPEED_OF_CLOUD = 140
             INITIAL_FIRE_SPEED_RATE = 1.0
             INITIAL_DRAGON_SPEED_RATE = 1.5
             
@@ -304,6 +299,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             RESPAWN_DRAGON_SCORE = 30000
             RATE_SPEED_GROWTH = 0.003
              SPEED_OF_BALL = 140
+            SPEED_OF_CLOUD = 140
             INITIAL_FIRE_SPEED_RATE = 1.0
             INITIAL_DRAGON_SPEED_RATE = 1.5
         }
@@ -446,6 +442,9 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         point_image.position = CGPoint(x: X_POSITION_TOP_LABEL, y: Y_POSITION_TOP_LABEL)
         self.addChild(point_image)
         
+        // test -> rmeove it later
+        callCloud()
+        
         // Animate Coin
         var alphaBool = true
         runAction(SKAction.repeatActionForever(
@@ -480,7 +479,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         }
     }
     
-    func testSprite() -> [SKTexture]{
+    func dragonMoving() -> [SKTexture]{
   
         //testing
        // dragonMonster.texture = SKTexture(imageNamed: "sprites/draggy/d_001")
@@ -490,17 +489,14 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        
+       
         for touch in touches {
             
-            print("i am pressed")
             let location = touch.locationInNode(self)
             
-         //   let ob:SKNode = self.nodeAtPoint(location)
-            
-        //    print(ob)
-            
-            
+            player.isTouched = true
+            player.initPosition = location
+            /*
             if ( ((player.playerImage.position.x > location.x - 20 ) && (player.playerImage.position.x < location.x + 20)) && ((player.playerImage.position.y > location.y - 20 ) && (player.playerImage.position.y < location.y + 20))  && player.isTouchable == true){
                if (self.player.isInvincible == false){
                 let liftUp = SKAction.scaleTo(1.2, duration: 0.2)
@@ -511,8 +507,8 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             else{
                 player.isTouched  = false
               
-            }
-            
+            }*/
+
         }
     }
     
@@ -521,8 +517,10 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             let location = (touch ).locationInNode(self)
             if (player.isTouched){
                 
-                player.playerImage.position = location
+                player.playerImage.position.x += (location.x - player.initPosition!.x)
+                player.playerImage.position.y += (location.y - player.initPosition!.y)
                 
+                player.initPosition = location
                 if ( player.playerImage.position.y > self.appDelegate.screenSize.height/2 * 0.815){
                     player.playerImage.position.y = self.appDelegate.screenSize.height/2 * 0.815
                 }
@@ -547,6 +545,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             player.playerImage.runAction(liftUp)
             }
         }
+        
     }
     
     
@@ -844,7 +843,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         fireball.physicsBody?.categoryBitMask = PhysicsCategory.Fire // category of bit I defined in the struct
         fireball.physicsBody?.contactTestBitMask = PhysicsCategory.Player // notify when contact Player
         fireball.physicsBody?.collisionBitMask = PhysicsCategory.None // this thing is related to bounce
-        fireball.physicsBody?.usesPreciseCollisionDetection = true
+      //  fireball.physicsBody?.usesPreciseCollisionDetection = true
         
         // calculate the destination position
         
@@ -947,7 +946,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         dragonMonster.physicsBody?.categoryBitMask = PhysicsCategory.Dragon // category of bit I defined in the struct
         dragonMonster.physicsBody?.contactTestBitMask = PhysicsCategory.Player // notify when contact Player
         dragonMonster.physicsBody?.collisionBitMask = PhysicsCategory.None // this thing is related to bounce
-        dragonMonster.physicsBody?.usesPreciseCollisionDetection = true
+       // dragonMonster.physicsBody?.usesPreciseCollisionDetection = true
         
         // Create the actions
         
@@ -959,13 +958,65 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         }
         
         let actionMoveDone = SKAction.removeFromParent()
-        let walk = SKAction.animateWithTextures(testSprite(), timePerFrame: 0.033)
+        let walk = SKAction.animateWithTextures(dragonMoving(), timePerFrame: 0.033)
         
         dragonMonster.runAction(SKAction.repeatActionForever(walk))
         
         dragonMonster.runAction(SKAction.sequence([actionMove, actionMoveDone]))
         
         
+    }
+    
+    func callCloud(){
+        
+        // Create sprite
+        let cloud = SKSpriteNode(imageNamed: "sprites/cloud/white_cloud_1")
+        
+        cloud.name = "spriteCloud"
+        cloud.size = CGSize(width: 50, height: 50)
+        
+        // random Y position respawn
+        let y_respawn = Y_MAX_IN_SUBSCREEN
+        // random X position respawn
+        let x_respawn = random(X_MIN_IN_SUBSCREEN, max: X_MAX_IN_SUBSCREEN)
+        // destination
+        let x_left_bound:CGFloat = X_MIN_IN_SUBSCREEN
+        let x_right_bound:CGFloat = X_MAX_IN_SUBSCREEN
+        
+        cloud.position = CGPoint(x: x_respawn, y: y_respawn)
+        
+        cloud.physicsBody = SKPhysicsBody(circleOfRadius: cloud.size.width/2) // 1
+        
+        cloud.physicsBody?.categoryBitMask = PhysicsCategory.Cloud
+        cloud.physicsBody?.collisionBitMask = PhysicsCategory.Player
+        cloud.physicsBody?.dynamic = false
+        addChild(cloud)
+        
+        // calculate dist
+        // calculate time  t = d/v
+        let dx_right = Double(x_right_bound) - Double(x_respawn)
+        let dx_left = Double(x_left_bound) - Double(x_respawn)
+        let dy = Double(0)
+        let dist_1 = sqrt( (dx_right*dx_right) + (dy*dy) )
+        let dist_2 = sqrt( (dx_left*dx_left) + (dy*dy) )
+        // end calculation
+        
+        // Create the actions
+     //   let actionMove = SKAction.moveTo(CGPoint(x: x_togo, y: y_togo), duration: dist/SPEED_OF_BALL!)
+
+        
+        // Create the actions
+        
+        // by default
+        let actionMoveRight = SKAction.moveTo(CGPoint(x: x_right_bound, y: y_respawn), duration: dist_1/SPEED_OF_CLOUD!)
+        let actiongMoveLeft = SKAction.moveTo(CGPoint(x: x_left_bound, y: y_respawn), duration: dist_2/SPEED_OF_CLOUD!)
+       // let actionMoveDone = SKAction.removeFromParent()
+        
+      //  cloud.runAction(SKAction.sequence([actionMoveRight, actiongMoveLeft, actionMoveDone]))
+        cloud.runAction(SKAction.repeatActionForever(SKAction.sequence([actionMoveRight, actiongMoveLeft])))
+        
+        print("dist_1 = \(dist_1/SPEED_OF_CLOUD!) \n")
+        print("dist_2 = \(dist_2/SPEED_OF_CLOUD!) \n")
     }
     
     func callPowerUp(){
@@ -1029,10 +1080,10 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
        
         
         // random Y position respawn
-        let y_respawn = random( -300, max: 300)
+        let y_respawn = random( Y_MIN_IN_SUBSCREEN, max: Y_MAX_IN_SUBSCREEN)
         
         // destination
-        let x_respawn = random( -150, max: 150)
+        let x_respawn = random( X_MIN_IN_SUBSCREEN, max: X_MAX_IN_SUBSCREEN)
         
         item.position = CGPoint(x: x_respawn, y: y_respawn)
         
@@ -1044,8 +1095,8 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         item.physicsBody?.dynamic = true // physic engine will not control the its movement
         item.physicsBody?.categoryBitMask = PhysicsCategory.Food // category of bit I defined in the struct
         item.physicsBody?.contactTestBitMask = PhysicsCategory.Player // notify when contact Player
-        item.physicsBody?.collisionBitMask = PhysicsCategory.None // this thing is related to bounce
-        item.physicsBody?.usesPreciseCollisionDetection = true
+        item.physicsBody?.collisionBitMask = PhysicsCategory.Food // this thing is related to bounce
+        //item.physicsBody?.usesPreciseCollisionDetection = true
         
         
     }
@@ -1147,7 +1198,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             
             let expand = SKAction.scaleTo(2.5, duration: 0.2)
             let shrink = SKAction.scaleTo(1.0, duration: 0.2)
-            let BONUS_TIME:CGFloat = 100000000.0
+            let BONUS_TIME:CGFloat = 103.0
             
             self.player.playerImage.runAction(expand)
             self.player.isInvincible = true
@@ -1342,9 +1393,10 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     }
     
     func projectileDidCollideWithMonster(player:SKSpriteNode, object:SKSpriteNode) {
-        
-        if (player.name?.containsString("brick") == true || object.name?.containsString("brick") == true){
-            return
+       
+        if (player.name?.containsString("brick") == true) {
+            object.removeFromParent()
+        return
         }
         
         object.removeFromParent()
@@ -1463,10 +1515,17 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             firstBody = contact.bodyB
             secondBody = contact.bodyA
         }
+     
         
-        if (firstBody.node?.name?.containsString("brick") == true || secondBody.node?.name?.containsString("brick") == true) {
-          print("first: \(firstBody.node?.name), second: \(secondBody.node?.name)")
+        // This is to prevent a error when a node is deleted... but this function is called.
+        // I think this function might be called twice when a object touches 2 stuff at a time. So it will be called twice
+        if(contact.bodyA.node == nil || contact.bodyB.node == nil ){
+          //  print("I HAVE BEEN CALLED... IM RETURNING TO AVOID ERROR")
+            return
         }
+     //   if (firstBody.node?.name?.containsString("brick") == true || secondBody.node?.name?.containsString("brick") == true) {
+     //     print("first: \(firstBody.node?.name), second: \(secondBody.node?.name)")
+     //   }
         
      //   if ((firstBody.categoryBitMask & PhysicsCategory.Player != 0) &&
      //       (secondBody.categoryBitMask & PhysicsCategory.Fire != 0)) {
@@ -1526,11 +1585,11 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         
         X_POSITION_TOP_LABEL = X_POSITION_TOP_LABEL * RATIO + FIX_X
         Y_POSITION_TOP_LABEL *= RATIO
-       // Y_POSITION_TOP_LABEL = 270
-        X_POSITION_OBJECT *= RATIO
-        Y_POSITION_OBJECT *= RATIO
         
-        
+        X_MIN_IN_SUBSCREEN *= RATIO
+        X_MAX_IN_SUBSCREEN *= RATIO
+        Y_MIN_IN_SUBSCREEN *= RATIO
+        Y_MAX_IN_SUBSCREEN *= RATIO
         
      //   DISTANCE_BETWEEN_SCORE = DISTANCE_BETWEEN_SCORE * RATIO  + 5.0
         
