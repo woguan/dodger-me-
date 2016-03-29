@@ -190,7 +190,7 @@ struct Scorelabel{
 class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseMenuDelegate, ReplayMenuDelegate, ADInterstitialAdDelegate{
     
    deinit{
-        print("startgame is being deInitialized.");
+        print("STARTGAME is being deInitialized. REMOVE THIS FUNCTION WHEN IT IS SENDING TO APPSTORE");
     }
     
     // Handling case when going to background/foreground
@@ -259,7 +259,10 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     
     
     override func didMoveToView(view: SKView){
-     
+        
+       
+        
+   
         view.showsPhysics = false
       //  print("screen width: \(self.appDelegate.screenSize.width)\n")
       //  print("screen height: \(self.appDelegate.screenSize.height)")
@@ -274,6 +277,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         
         self.anchorPoint = CGPointMake(0.5, 0.5)
      
+    
         
         //load stage settings
         
@@ -308,19 +312,20 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         if (aspect_ratio != 0.5625){
             fixRatio(aspect_ratio)
         }
-        
-        
+       
         // load delegates
         // delegate for Unpause scene
         pauseGameViewController.delegate = self
-        
+
         // load ads
         loadiAd()
         // load objects and other stuff
+
+    
+   
         load();
-        
-        
-        
+  
+   
         // Counts from 3 to 0 and starts showing enemies
       startCountLabel.runAction(SKAction.repeatActionForever(
             SKAction.sequence([
@@ -329,7 +334,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
                 ])
             ), withKey: "start_count")
     
-        
     }
     
     func appMovedToBackground (){
@@ -972,36 +976,50 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         
         cloud.physicsBody = SKPhysicsBody(circleOfRadius: cloud.size.width/2) // 1
         
-        cloud.physicsBody?.categoryBitMask = PhysicsCategory.Cloud
-        cloud.physicsBody?.collisionBitMask = PhysicsCategory.Player
-        cloud.physicsBody?.dynamic = false
+        cloud.physicsBody?.categoryBitMask = PhysicsCategory.Cloud // giving its bitmask
+        cloud.physicsBody?.collisionBitMask = PhysicsCategory.Player // it pushes away player
+        cloud.physicsBody?.dynamic = false // it cant be moved by physic contacts
         addChild(cloud)
         
         // calculate dist
         // calculate time  t = d/v
-        let dx_right = Double(x_right_bound) - Double(x_respawn)
-        let dx_left = Double(x_left_bound) - Double(x_respawn)
+        
+        let dx = Double(x_right_bound) - Double(x_left_bound)
         let dy = Double(0)
-        let dist_1 = sqrt( (dx_right*dx_right) + (dy*dy) )
-        let dist_2 = sqrt( (dx_left*dx_left) + (dy*dy) )
-        // end calculation
+        let dist = sqrt( (dx * dx) + (dy*dy) )
+        let dur = dist / SPEED_OF_CLOUD!  // note: this is the desired duration
         
+        let dx_tmp = Double(x_respawn) - Double(x_left_bound)
+        let dist_tmp = sqrt( (dx_tmp * dx_tmp) + (dy*dy) )
+        let dur_tmp = dist_tmp / SPEED_OF_CLOUD!
         // Create the actions
-     //   let actionMove = SKAction.moveTo(CGPoint(x: x_togo, y: y_togo), duration: dist/SPEED_OF_BALL!)
-
-        
-        // Create the actions
+   
+        var amountTime = random( 40, max: 70 )
         
         // by default
-        let actionMoveRight = SKAction.moveTo(CGPoint(x: x_right_bound, y: y_respawn), duration: dist_1/SPEED_OF_CLOUD!)
-        let actiongMoveLeft = SKAction.moveTo(CGPoint(x: x_left_bound, y: y_respawn), duration: dist_2/SPEED_OF_CLOUD!)
-       // let actionMoveDone = SKAction.removeFromParent()
+        let actionInitialMove = SKAction.moveTo(CGPoint(x: x_right_bound, y: y_respawn), duration: dur - dur_tmp)
+        let actionMoveRight = SKAction.moveTo(CGPoint(x: x_right_bound, y: y_respawn), duration: dur)
+        let actionMoveLeft = SKAction.moveTo(CGPoint(x: x_left_bound, y: y_respawn), duration: dur)
         
-      //  cloud.runAction(SKAction.sequence([actionMoveRight, actiongMoveLeft, actionMoveDone]))
-        cloud.runAction(SKAction.repeatActionForever(SKAction.sequence([actionMoveRight, actiongMoveLeft])))
         
-        print("dist_1 = \(dist_1/SPEED_OF_CLOUD!) \n")
-        print("dist_2 = \(dist_2/SPEED_OF_CLOUD!) \n")
+        // Action moving
+        cloud.runAction(SKAction.sequence([actionInitialMove, SKAction.repeatActionForever(SKAction.sequence([actionMoveLeft, actionMoveRight]))]))
+        
+        // Action duration
+        cloud.runAction(SKAction.repeatActionForever(
+            SKAction.sequence([
+                SKAction.runBlock({
+                    amountTime -= 1
+                    print("\(amountTime)")
+                    
+                    if (amountTime < 0 ){
+                        cloud.removeAllActions()
+                        cloud.removeFromParent()
+                    }
+                    
+                }),SKAction.waitForDuration(NSTimeInterval(1))
+                ])), withKey: "cloud_action")
+        
     }
     
     func callPowerUp(){
@@ -1452,6 +1470,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         removeActionForKey("imune_counter")
         removeActionForKey("imune_counter")*/
         removeAllActions()
+        startCountLabel.removeAllActions()
         
         // remove the strong reference
         //Questions: Why I do not need to do this to other delegates such as:
@@ -1459,6 +1478,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         // Example: the pauseGameController MUST have. Otherwise, it will cause memory leak
         // But.. the others will not cause memory leak
         pauseGameViewController.delegate = nil
+        replayGameViewController.delegate = nil
         
         // delete the listener nsnotification ( since it dont get removed when move to other scenes)
         notificationCenter.removeObserver(self)
