@@ -44,7 +44,7 @@ class Highscore: SKScene, MessageMenuDelegate {
     var SIZE_LABEL_HS:CGFloat = 40.0
     var SIZE_LABAL_MODE:CGFloat = 20.0
     var SIZE_LABEL_SCORE:CGFloat = 15.0
-    
+      
     var X_POSITION_LABEL_HS:CGFloat = 0.0
     var Y_POSITION_LABEL_HS:CGFloat = 210.0
     
@@ -60,6 +60,7 @@ class Highscore: SKScene, MessageMenuDelegate {
     var SIZE_RESET_BUTTON_WIDTH:CGFloat = 100.0
     var SIZE_RESET_BUTTON_HEIGHT:CGFloat = 80.0
     
+    var curr_mode:String? // for MessageMenu -> used for reseting mode
     
     // New format for number 12/20/2015
     // Example:  1234 -> 1,234
@@ -307,6 +308,8 @@ class Highscore: SKScene, MessageMenuDelegate {
     }
     
     func backGameScene(){
+        // remove strong reference
+         messageWindowViewController.delegate = nil
         let scene = GameScene(size: self.size)
             self.view?.presentScene(scene)
     }
@@ -362,9 +365,6 @@ class Highscore: SKScene, MessageMenuDelegate {
   
     
     @IBAction func pauseGame() {
-        //let scene = GameScene(size: self.size)
-        //isPauseGameCalled = true
-        //view?.paused = true
         
         view?.addSubview(pauseGameViewController.view)
     }
@@ -381,7 +381,7 @@ class Highscore: SKScene, MessageMenuDelegate {
         let scene = messageWindowViewController.view
         
         print("the current mode is: ", mode)
-
+        curr_mode = mode
         //if( mode == "insane"){
         //    messageWindowViewController.no()
         //}

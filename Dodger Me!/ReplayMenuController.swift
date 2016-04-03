@@ -26,9 +26,9 @@ protocol ReplayMenuDelegate{
 
 class ReplayMenuController: UIViewController {
     
-     deinit{
+    /* deinit{
         print(" ReplayMenuController being deInitialized.")
-     }
+     }*/
     
     var delegate:ReplayMenuDelegate?
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate // Create reference to the app delegate

@@ -189,9 +189,9 @@ struct Scorelabel{
 
 class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseMenuDelegate, ReplayMenuDelegate, ADInterstitialAdDelegate{
     
-   deinit{
+  /* deinit{
         print("STARTGAME is being deInitialized. REMOVE THIS FUNCTION WHEN IT IS SENDING TO APPSTORE");
-    }
+    }*/
     
     // Handling case when going to background/foreground
     let notificationCenter = NSNotificationCenter.defaultCenter()
@@ -297,7 +297,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         }
         // 2.Insane
         else if(gameMode! == "insane"){
-            CHANCE_OF_POWERUP = 0  // default is 15
+            CHANCE_OF_POWERUP = 15  // default is 15
             MAX_FIRE_RATE = 0.2
             MAX_DRAGON_RATE = 1.0
             RESPAWN_DRAGON_SCORE = 30000
@@ -324,8 +324,8 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     
    
         load();
-  
-   
+
+        
         // Counts from 3 to 0 and starts showing enemies
       startCountLabel.runAction(SKAction.repeatActionForever(
             SKAction.sequence([
@@ -446,9 +446,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         point_image.position = CGPoint(x: X_POSITION_TOP_LABEL, y: Y_POSITION_TOP_LABEL)
         self.addChild(point_image)
         
-        // test -> rmeove it later
-        callCloud()
-        
         // Animate Coin
         var alphaBool = true
         runAction(SKAction.repeatActionForever(
@@ -485,9 +482,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     
     func dragonMoving() -> [SKTexture]{
   
-        //testing
-       // dragonMonster.texture = SKTexture(imageNamed: "sprites/draggy/d_001")
-        //ends
         return [SKTexture(imageNamed: "sprites/draggy/d_001"), SKTexture(imageNamed: "sprites/draggy/d_002"), SKTexture(imageNamed: "sprites/draggy/d_003"), SKTexture(imageNamed: "sprites/draggy/d_004")]
         
     }
@@ -742,8 +736,17 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         else if (obj.type == 2){
             let ram = random(0, max:100)
             if(ram > 100 - CHANCE_OF_POWERUP!){
+            
+                // chance for cloud
+                let ramm = random(0, max:100)
+                if ( ramm >= 90){
+                    callCloud()
+                }
+                else{
             callPowerUp()
+                }
             }
+            
         }
         
         
@@ -826,7 +829,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         
         
         // adding physical body
-        
+       
         fireball.physicsBody = SKPhysicsBody(circleOfRadius: fireball.size.width/2) // 1
         fireball.physicsBody?.dynamic = true // physic engine will not control the movement of the fireball
         fireball.physicsBody?.categoryBitMask = PhysicsCategory.Fire // category of bit I defined in the struct
@@ -992,15 +995,21 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         let dx_tmp = Double(x_respawn) - Double(x_left_bound)
         let dist_tmp = sqrt( (dx_tmp * dx_tmp) + (dy*dy) )
         let dur_tmp = dist_tmp / SPEED_OF_CLOUD!
-        // Create the actions
-   
-        var amountTime = random( 40, max: 70 )
         
+        let whiteTime:CGFloat = 0.5; // 50%
+        let greyTimeA:CGFloat = 0.3; // 20%
+        let greyTimeB:CGFloat = 0.1; // 20%
+        
+        // Create the actions
+        
+        let totalTime = random(40, max: 70)
+        var amountTime = totalTime
         // by default
         let actionInitialMove = SKAction.moveTo(CGPoint(x: x_right_bound, y: y_respawn), duration: dur - dur_tmp)
         let actionMoveRight = SKAction.moveTo(CGPoint(x: x_right_bound, y: y_respawn), duration: dur)
         let actionMoveLeft = SKAction.moveTo(CGPoint(x: x_left_bound, y: y_respawn), duration: dur)
         
+        let whiteAnimation = SKAction.animateWithTextures( [SKTexture(imageNamed: "sprites/cloud/white_cloud_1"),SKTexture(imageNamed: "sprites/cloud/white_cloud_2") ], timePerFrame: 0.5)
         
         // Action moving
         cloud.runAction(SKAction.sequence([actionInitialMove, SKAction.repeatActionForever(SKAction.sequence([actionMoveLeft, actionMoveRight]))]))
@@ -1009,10 +1018,71 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         cloud.runAction(SKAction.repeatActionForever(
             SKAction.sequence([
                 SKAction.runBlock({
-                    amountTime -= 1
-                    print("\(amountTime)")
                     
-                    if (amountTime < 0 ){
+                    
+                    amountTime -= 1
+                //    print("\(amountTime)")
+                    
+                // white
+                    if ( amountTime >= totalTime * whiteTime){
+                    cloud.runAction(whiteAnimation)
+                        
+                        let ram = self.random(0, max:100)
+                        if ( ram > 10){
+                            let coinLoot = SKSpriteNode()
+                            coinLoot.texture = SKTexture(imageNamed: "sprites/coin")
+                            coinLoot.name = "spriteCoin"
+                            coinLoot.size = CGSize(width: 55, height: 55)
+                            coinLoot.position = cloud.position
+                            let move = SKAction.moveToY( -self.appDelegate.screenSize.height/2, duration: 5)
+                            let movedone = SKAction.removeFromParent()
+                            
+                            coinLoot.physicsBody = SKPhysicsBody(circleOfRadius: coinLoot.size.width/2) // 1
+                            coinLoot.physicsBody?.dynamic = true // physic engine will not control the movement of the fireball
+                            coinLoot.physicsBody?.categoryBitMask = PhysicsCategory.Food // category of bit I defined in the struct
+                            coinLoot.physicsBody?.contactTestBitMask = PhysicsCategory.Player // notify when contact Player
+                            coinLoot.physicsBody?.collisionBitMask = PhysicsCategory.None // this thing is related to bounce*/
+                            
+                            self.addChild(coinLoot)
+                            
+                            coinLoot.runAction(SKAction.sequence([move, movedone]))
+
+                        }
+                    }
+                // grey 1
+                    else if ( amountTime >= totalTime * greyTimeA){
+                    cloud.texture = SKTexture(imageNamed: "sprites/cloud/grey_cloud_1")
+                    }
+                    
+                // grey 2
+                    else if ( amountTime >= totalTime * greyTimeB){
+                        cloud.texture = SKTexture(imageNamed: "sprites/cloud/grey_cloud_2")
+                    }
+                // grey 3
+                    else if ( amountTime > 0 ){
+                        cloud.texture = SKTexture(imageNamed: "sprites/cloud/grey_cloud_3")
+                        
+                        
+                        let thunder = SKSpriteNode()
+                        thunder.texture = SKTexture(imageNamed: "sprites/powerUps/energy")
+                        thunder.name = "spriteThunder"
+                        thunder.size = CGSize(width: 20, height: 20)
+                        thunder.position = cloud.position
+                        let move = SKAction.moveToY( -self.appDelegate.screenSize.height/2, duration: 5)
+                        let movedone = SKAction.removeFromParent()
+                        
+                        thunder.physicsBody = SKPhysicsBody(circleOfRadius: thunder.size.width/2) // 1
+                        thunder.physicsBody?.dynamic = true // physic engine will not control the movement of the fireball
+                        thunder.physicsBody?.categoryBitMask = PhysicsCategory.Fire // category of bit I defined in the struct
+                        thunder.physicsBody?.contactTestBitMask = PhysicsCategory.Player // notify when contact Player
+                        thunder.physicsBody?.collisionBitMask = PhysicsCategory.None // this thing is related to bounce*/
+                        
+                        self.addChild(thunder)
+                        
+                        thunder.runAction(SKAction.sequence([move, movedone]))
+                    }
+                    
+                    else{
                         cloud.removeAllActions()
                         cloud.removeFromParent()
                     }
@@ -1389,6 +1459,32 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             }
            
         }
+        
+        else if (itemName.containsString("Coin")){
+            
+            //initialize the virtual plist
+            let documentDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
+            
+            // giving the path?
+            let fullPathName = documentDirectory.stringByAppendingPathComponent("dodger.plist") as String
+            
+            // plistFile is the root ( which is of the type Dictionary )
+            let plistFile = NSMutableDictionary(contentsOfFile:fullPathName)
+            let pointsPlist = plistFile!.valueForKeyPath("Points") as? Int
+            
+            // updating Points
+            
+            // updating virtual plist for points
+            plistFile?.setObject(pointsPlist! + 1, forKey: "Points")
+            
+            // Saving it to the virtual file
+            if !plistFile!.writeToFile(fullPathName, atomically: false){
+                print("FILE FAILED TO SAVE THE CHANGES ---- PLEASE FIX IT IN GameViewController")
+            }
+            
+            updatePoints()
+        }
+            
         else{
             return false
         }
@@ -1448,15 +1544,16 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         playerObtainItem("spriteImune")
         
         // update Points
+       updatePoints()
+    }
+    
+    func updatePoints(){
         let documentDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
         let fullPathName = documentDirectory.stringByAppendingPathComponent("dodger.plist") as String
         let virtualPlist = NSMutableDictionary(contentsOfFile:fullPathName)
         let the_points:Int = virtualPlist?.valueForKey("Points") as! Int
         labelCountPoint.text = "\(the_points)"
-        
     }
-    
-    
     func castEndScene(){
         
         // 1. Display ReplayGameMenu
@@ -1482,6 +1579,13 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         
         // delete the listener nsnotification ( since it dont get removed when move to other scenes)
         notificationCenter.removeObserver(self)
+        
+        // remove children action
+        for sprites in self.children{
+            if ( sprites.name == "spriteCloud"){
+                sprites.removeAllActions()
+            }
+        }
         
         // hide banner iAd
           adBannerView.hidden = true

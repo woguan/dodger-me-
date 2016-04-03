@@ -21,11 +21,11 @@ protocol PauseMenuDelegate{
 
 class PauseMenuController: UIViewController {
     
-   // deinit{
-    //    print(" pausemenu being deInitialized.");D
+  /*  deinit{
+        print(" pausemenu being deInitialized.");
         
-   // }
-    
+    }
+    */
    
     var delegate:PauseMenuDelegate?
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate // Create reference to the app delegate

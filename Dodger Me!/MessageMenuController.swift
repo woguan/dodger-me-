@@ -23,11 +23,14 @@ protocol MessageMenuDelegate{
 
 class MessageMenuController: UIViewController {
     
-     deinit{
-        print(" Diego is an asshole")
+    /* deinit{
+        print("MessageMenu Controller denitialized")
     
-     }
+     }*/
     
+    var SIZE_LABEL:CGFloat = 15.0
+    var X_POSITION_LABEL_FIX:CGFloat = 0.0
+    var Y_POSITION_LABEL_FIX:CGFloat = 0.0
 
     
     var theMode:String? // the mode
@@ -38,18 +41,9 @@ class MessageMenuController: UIViewController {
     var BUTTON_HEIGHT:CGFloat = 50.0 * 0.7
     var BUTTON_LETTER_SIZE:CGFloat = 15
     
+    var DISTANCE_BETWEEN_BUTTONS:CGFloat = 0
     
-
-    
-//    init(mode: String){
-//        theMode = mode
-//    }
-//
-//    init(){
-//        
-//    }
-
-   
+    var label = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,23 +62,21 @@ class MessageMenuController: UIViewController {
         someImage.image = background_img
         
         someImage.contentMode = .ScaleAspectFit
-        //   background_img?.drawInRect(self.view.bounds)
-        //  self.view.backgroundColor = UIColor(patternImage: background_img)
-        
-        //print("view_width: \(view.frame.width), view_height: \(view.frame.height)")
-        //self.view.sendSubviewToBack(someImage)
         self.view.addSubview(someImage)
         
-        let continueButton = UIButton (frame: CGRectMake(view.frame.width/4 + 18, view.frame.height/2,BUTTON_WIDTH,BUTTON_HEIGHT))
-        continueButton.setTitle("CONTINUE", forState: .Normal)
-        continueButton.titleLabel?.font = UIFont(name: "Chalkduster", size: BUTTON_LETTER_SIZE)
-        continueButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
-        continueButton.backgroundColor = UIColor.darkGrayColor()
-        continueButton.addTarget(self, action: "continueGame", forControlEvents: .TouchUpInside)
-        continueButton.layer.cornerRadius = 5.0
-        view.addSubview(continueButton)
-    
-        let yesButton = UIButton (frame: CGRectMake(view.frame.width/4 - 24, view.frame.height/2 + 60,BUTTON_WIDTH,BUTTON_HEIGHT))
+        print(view.frame.width)
+        print(view.frame.height)
+        // Labels
+        label.lineBreakMode = .ByCharWrapping
+        label.numberOfLines = 2
+        label.text = "Reset Highscore?"
+        label.font = UIFont(name: "Chalkduster", size: SIZE_LABEL)
+        label.textColor = UIColor.blackColor()
+        label.frame = CGRect(x: view.frame.width/7 + X_POSITION_LABEL_FIX, y: view.frame.height/11 + Y_POSITION_LABEL_FIX, width: 150, height: 200)
+        view.addSubview(label)
+        
+        // Buttons
+        let yesButton = UIButton (frame: CGRectMake(view.frame.width/4 - 24 + DISTANCE_BETWEEN_BUTTONS, view.frame.height/2 + 60,BUTTON_WIDTH,BUTTON_HEIGHT))
         yesButton.setTitle("yes", forState: .Normal)
         //yesButton.center = CGPointMake(view.center.x, view.center.y)
         yesButton.titleLabel?.font = UIFont(name: "Chalkduster", size: BUTTON_LETTER_SIZE)
@@ -96,7 +88,7 @@ class MessageMenuController: UIViewController {
         yesButton.layer.cornerRadius = 5.0
         view.addSubview(yesButton)
         
-        let noButton = UIButton (frame: CGRectMake(view.frame.width/4 + 60, view.frame.height/2 + 60,BUTTON_WIDTH,BUTTON_HEIGHT))
+        let noButton = UIButton (frame: CGRectMake(view.frame.width/4 + 60 - DISTANCE_BETWEEN_BUTTONS, view.frame.height/2 + 60,BUTTON_WIDTH,BUTTON_HEIGHT))
         noButton.setTitle("no", forState: .Normal)
         noButton.titleLabel?.font = UIFont(name: "Chalkduster", size: BUTTON_LETTER_SIZE)
         noButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
@@ -111,24 +103,29 @@ class MessageMenuController: UIViewController {
         
         var RATIO:CGFloat = 1.0
         
-        //      var FIX_X:CGFloat = 0.0
-        
         // iPhone 4S
         if (curr_ratio > 0.6){
-            RATIO = 0.6333
-            //      FIX_X = 20.0
+            RATIO = 0.63333
+            DISTANCE_BETWEEN_BUTTONS = 12
+            X_POSITION_LABEL_FIX = 8
+            Y_POSITION_LABEL_FIX = -5
+
         }
-            
+        // iPhone 6
         else if (curr_ratio >= 0.562 && curr_ratio < 0.563){
             RATIO = 0.9
         }
+        // iPhone 5
         else{
             RATIO = 0.76
+            DISTANCE_BETWEEN_BUTTONS = 10
         }
         
         BUTTON_WIDTH *= RATIO
         BUTTON_HEIGHT  *= RATIO
         BUTTON_LETTER_SIZE *= RATIO
+        
+        SIZE_LABEL *= RATIO
         
     }
     
@@ -138,25 +135,13 @@ class MessageMenuController: UIViewController {
     }
   
     func yes(){
-        //print("THE VALUE IS: \(self.paused)")
-        
-        //delegate?.reset_score("classic")
-        //if(sender.tag == 2)
         delegate?.reset_score(theMode!)
         delegate?.setFreezeMode(false)
         view.removeFromSuperview()
     }
     
     func no(){
-        //print("THE VALUE IS: ", theMode)
-       // delegate?.reset_score("insane")
         delegate?.setFreezeMode(false)
-        view.removeFromSuperview()
-    }
-    
-    @IBAction func continueGame(){
-        //print("THE VALUE IS: \(self.paused)")
-        //   delegate?.restart_scene()
         view.removeFromSuperview()
     }
     

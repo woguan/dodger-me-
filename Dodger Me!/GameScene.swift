@@ -16,10 +16,10 @@ import SpriteKit
 
 class GameScene: SKScene{
     
-    deinit{
+  /*  deinit{
         print(" gamescene being deInitialized.");
         
-    }
+    }*/
 
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate // Create reference to the app delegate
     var score = 0;
@@ -30,6 +30,11 @@ class GameScene: SKScene{
         let width = 250
         
         self.backgroundColor = SKColor.lightGrayColor()
+        
+        // Clean UI Buttons
+        for view in view.subviews{
+            view.removeFromSuperview()
+        }
         
         //initialize the virtual plist
         let documentDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
@@ -63,7 +68,14 @@ class GameScene: SKScene{
         HighscoreButton.layer.cornerRadius = 5.0
         view.addSubview(HighscoreButton)
         
-        
+        let InstructionButton = UIButton (frame: CGRectMake(0, 0, CGFloat(width), CGFloat(height)))
+        InstructionButton.center = CGPointMake(view.center.x, view.center.y + 180)
+        InstructionButton.setTitle("INSTRUCTION", forState:  .Normal)
+        InstructionButton.titleLabel?.font = UIFont (name: "Chalkduster", size: 30)
+        InstructionButton.setTitleColor(UIColor.lightGrayColor(), forState:  .Normal)
+        InstructionButton.backgroundColor = UIColor.darkGrayColor()
+        InstructionButton.addTarget(self, action: "instruction_action", forControlEvents: .TouchUpInside)
+        view.addSubview(InstructionButton)
         
         
      
@@ -135,6 +147,11 @@ class GameScene: SKScene{
         view?.presentScene(scene)
         
         
+    }
+    
+    @IBAction func instruction_action(){
+        let scene = InstructionScene(size: self.size)
+        view?.presentScene(scene)
     }
     
      override func willMoveFromView(view: SKView) {

@@ -23,6 +23,7 @@
 		F1AB1E5E1BB66E01003BA666 /* dragons.png in Resources */ = {isa = PBXBuildFile; fileRef = F1AB1E5D1BB66E01003BA666 /* dragons.png */; };
 		F1AB1E691BB7F6EB003BA666 /* StartGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1AB1E681BB7F6EB003BA666 /* StartGame.swift */; };
 		F1AB1E6E1BBA283D003BA666 /* sprites in Resources */ = {isa = PBXBuildFile; fileRef = F1AB1E6D1BBA283D003BA666 /* sprites */; };
+		F1D758A81CACA72B00701FE0 /* InstructionScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D758A71CACA72B00701FE0 /* InstructionScene.swift */; };
 		F1EA7F911B72BCCE00444610 /* LevelMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EA7F901B72BCCE00444610 /* LevelMenu.swift */; };
 		F1EAFBB81C2A5DCB00337069 /* ReplayMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EAFBB71C2A5DCB00337069 /* ReplayMenuController.swift */; };
 /* End PBXBuildFile section */
@@ -58,6 +59,7 @@
 		F1AB1E5D1BB66E01003BA666 /* dragons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dragons.png; sourceTree = "<group>"; };
 		F1AB1E681BB7F6EB003BA666 /* StartGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartGame.swift; sourceTree = "<group>"; };
 		F1AB1E6D1BBA283D003BA666 /* sprites */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sprites; sourceTree = "<group>"; };
+		F1D758A71CACA72B00701FE0 /* InstructionScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstructionScene.swift; sourceTree = "<group>"; };
 		F1EA7F901B72BCCE00444610 /* LevelMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LevelMenu.swift; sourceTree = "<group>"; };
 		F1EAFBB71C2A5DCB00337069 /* ReplayMenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplayMenuController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -109,6 +111,7 @@
 				B75C571F1C3EEBC000256E98 /* MessageMenuController.swift */,
 				F137C25F1A955D8200FC70EA /* PauseMenuController.swift */,
 				F137C20B1A81C03C00FC70EA /* GameScene.swift */,
+				F1D758A71CACA72B00701FE0 /* InstructionScene.swift */,
 				F1EA7F901B72BCCE00444610 /* LevelMenu.swift */,
 				F10B57991C26450500313A31 /* Highscore.swift */,
 				F1AB1E681BB7F6EB003BA666 /* StartGame.swift */,
@@ -258,6 +261,7 @@
 				F1AB1E691BB7F6EB003BA666 /* StartGame.swift in Sources */,
 				F1EA7F911B72BCCE00444610 /* LevelMenu.swift in Sources */,
 				B75C57201C3EEBC000256E98 /* MessageMenuController.swift in Sources */,
+				F1D758A81CACA72B00701FE0 /* InstructionScene.swift in Sources */,
 				F137C20C1A81C03C00FC70EA /* GameScene.swift in Sources */,
 				F137C20E1A81C03C00FC70EA /* GameViewController.swift in Sources */,
 				F137C2361A8278C600FC70EA /* GameOver.swift in Sources */,
