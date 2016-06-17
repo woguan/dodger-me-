@@ -22,19 +22,6 @@ class Highscore: SKScene, MessageMenuDelegate {
     var label_Insane = SKLabelNode(fontNamed: "Chalkduster")
     var Label_Highscore = SKLabelNode(fontNamed: "Chalkduster")
     
-    var label_classic_1 = SKLabelNode(fontNamed: "Chalkduster")
-    var label_classic_2 = SKLabelNode(fontNamed: "Chalkduster")
-    var label_classic_3 = SKLabelNode(fontNamed: "Chalkduster")
-    var label_classic_4 = SKLabelNode(fontNamed: "Chalkduster")
-    var label_classic_5 = SKLabelNode(fontNamed: "Chalkduster")
-    
-    var label_insane_1 = SKLabelNode(fontNamed: "Chalkduster")
-    var label_insane_2 = SKLabelNode(fontNamed: "Chalkduster")
-    var label_insane_3 = SKLabelNode(fontNamed: "Chalkduster")
-    var label_insane_4 = SKLabelNode(fontNamed: "Chalkduster")
-    var label_insane_5 = SKLabelNode(fontNamed: "Chalkduster")
-    
-    
     var pauseGameViewController = PauseMenuController()
     var messageWindowViewController = MessageMenuController()
     var freeze = false
@@ -67,20 +54,6 @@ class Highscore: SKScene, MessageMenuDelegate {
     let numberFormatter = NSNumberFormatter()
 
        override func didMoveToView(view: SKView) {
-       
-        
-        
-      /*  let y_up_bound:CGFloat = self.appDelegate.screenSize.height/2
-        let y_down_bound:CGFloat = -self.appDelegate.screenSize.height/2
-        let x_left_bound:CGFloat = -self.appDelegate.screenSize.width/2
-        let x_right_bound:CGFloat = self.appDelegate.screenSize.width/2*/
-        
-        /*     print(y_up_bound)
-        print(y_down_bound)
-        print(x_left_bound)
-        print(x_right_bound)
-        print("aspect ratio: \(aspect_ratio)")*/
-        
         
         let aspect_ratio:CGFloat = self.appDelegate.screenSize.width/self.appDelegate.screenSize.height
         
@@ -88,7 +61,6 @@ class Highscore: SKScene, MessageMenuDelegate {
             fixRatio(aspect_ratio)
         }
        
-   
         // Load score from pList
         let documentDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
         let fullPathName = documentDirectory.stringByAppendingPathComponent("dodger.plist") as String
@@ -126,89 +98,28 @@ class Highscore: SKScene, MessageMenuDelegate {
         label_Insane.position = CGPoint(x: X_POSITION_LABEL_MODE, y: Y_POSITION_LABEL_MODE)
         addChild(label_Insane)
         
-        // Label Classic Scores
-        label_classic_1.text = "1. \(formatScore(hs_classic.objectAtIndex(0) as! Int))"
-        label_classic_1.fontSize = SIZE_LABEL_SCORE
-        label_classic_1.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Left
-        label_classic_1.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Bottom;
-        label_classic_1.fontColor = SKColor.blackColor()
-        label_classic_1.position = CGPoint(x: -X_POSITION_LABEL_MODE - DISTANCE_X_SEPARATOR, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE)
-        addChild(label_classic_1)
-        
-        label_classic_2.text = "2. \(formatScore(hs_classic.objectAtIndex(1) as! Int))"
-        label_classic_2.fontSize = SIZE_LABEL_SCORE
-        label_classic_2.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Left
-        label_classic_2.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Bottom;
-        label_classic_2.fontColor = SKColor.blackColor()
-        label_classic_2.position = CGPoint(x: -X_POSITION_LABEL_MODE - DISTANCE_X_SEPARATOR, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE * 2)
-        addChild(label_classic_2)
-        
-        
-        label_classic_3.text = "3. \(formatScore(hs_classic.objectAtIndex(2) as! Int))"
-        label_classic_3.fontSize = SIZE_LABEL_SCORE
-        label_classic_3.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Left
-        label_classic_3.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Bottom;
-        label_classic_3.fontColor = SKColor.blackColor()
-        label_classic_3.position = CGPoint(x: -X_POSITION_LABEL_MODE - DISTANCE_X_SEPARATOR, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE * 3)
-        addChild(label_classic_3)
-        
-        label_classic_4.text = "4. \(formatScore(hs_classic.objectAtIndex(3) as! Int))"
-        label_classic_4.fontSize = SIZE_LABEL_SCORE
-        label_classic_4.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Left
-        label_classic_4.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Bottom;
-        label_classic_4.fontColor = SKColor.blackColor()
-        label_classic_4.position = CGPoint(x: -X_POSITION_LABEL_MODE - DISTANCE_X_SEPARATOR, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE * 4)
-        addChild(label_classic_4)
-        
-        label_classic_5.text = "5. \(formatScore(hs_classic.objectAtIndex(4) as! Int))"
-        label_classic_5.fontSize = SIZE_LABEL_SCORE
-        label_classic_5.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Left
-        label_classic_5.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Bottom;
-        label_classic_5.fontColor = SKColor.blackColor()
-        label_classic_5.position = CGPoint(x: -X_POSITION_LABEL_MODE - DISTANCE_X_SEPARATOR, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE * 5)
-        addChild(label_classic_5)
-        
-        // Label Insane Scores
-        label_insane_1.text = "1. \(formatScore(hs_insane.objectAtIndex(0) as! Int))"
-        label_insane_1.fontSize = SIZE_LABEL_SCORE
-        label_insane_1.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Left
-        label_insane_1.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Bottom;
-        label_insane_1.fontColor = SKColor.blackColor()
-        label_insane_1.position = CGPoint(x: X_POSITION_LABEL_MODE - DISTANCE_X_SEPARATOR, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE)
-        addChild(label_insane_1)
-        
-        label_insane_2.text = "2. \(formatScore(hs_insane.objectAtIndex(1) as! Int))"
-        label_insane_2.fontSize = SIZE_LABEL_SCORE
-        label_insane_2.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Left
-        label_insane_2.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Bottom;
-        label_insane_2.fontColor = SKColor.blackColor()
-        label_insane_2.position = CGPoint(x: X_POSITION_LABEL_MODE - DISTANCE_X_SEPARATOR, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE * 2)
-        addChild(label_insane_2)
-        
-        
-        label_insane_3.text = "3. \(formatScore(hs_insane.objectAtIndex(2) as! Int))"
-        label_insane_3.fontSize = SIZE_LABEL_SCORE
-        label_insane_3.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Left
-        label_insane_3.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Bottom;
-        label_insane_3.fontColor = SKColor.blackColor()
-        label_insane_3.position = CGPoint(x: X_POSITION_LABEL_MODE - DISTANCE_X_SEPARATOR, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE * 3)
-        addChild(label_insane_3)
-        
-        label_insane_4.text = "4. \(formatScore(hs_insane.objectAtIndex(3) as! Int))"
-        label_insane_4.fontSize = SIZE_LABEL_SCORE
-        label_insane_4.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Left
-        label_insane_4.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Bottom;
-        label_insane_4.fontColor = SKColor.blackColor()
-        label_insane_4.position = CGPoint(x: X_POSITION_LABEL_MODE - DISTANCE_X_SEPARATOR, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE * 4)
-        addChild(label_insane_4)
-        
-        label_insane_5.text = "5. \(formatScore(hs_insane.objectAtIndex(4) as! Int))"
-        label_insane_5.fontSize = SIZE_LABEL_SCORE
-        label_insane_5.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Left
-        label_insane_5.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Bottom;
-        label_insane_5.fontColor = SKColor.blackColor()
-        label_insane_5.position = CGPoint(x: X_POSITION_LABEL_MODE - DISTANCE_X_SEPARATOR, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE * 5)
-        addChild(label_insane_5)
+        // Using for loop to create labels 4/3/2016
+        for nums in 1...5 {
+             // Label Classic Scores
+            let new_label_classic = SKLabelNode(fontNamed: "Chalkduster")
+            new_label_classic.text = "\(nums). \(formatScore(hs_classic.objectAtIndex(nums - 1) as! Int))"
+            new_label_classic.fontSize = SIZE_LABEL_SCORE
+            new_label_classic.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Left
+            new_label_classic.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Bottom;
+            new_label_classic.fontColor = SKColor.blackColor()
+            new_label_classic.position = CGPoint(x: -X_POSITION_LABEL_MODE - DISTANCE_X_SEPARATOR, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE * CGFloat(nums))
+            addChild(new_label_classic)
+            
+             // Label Insane Scores
+            let new_label_insane = SKLabelNode(fontNamed: "Chalkduster")
+            new_label_insane.text = "\(nums). \(formatScore(hs_insane.objectAtIndex(nums - 1) as! Int))"
+            new_label_insane.fontSize = SIZE_LABEL_SCORE
+            new_label_insane.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Left
+            new_label_insane.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Bottom;
+            new_label_insane.fontColor = SKColor.blackColor()
+            new_label_insane.position = CGPoint(x: X_POSITION_LABEL_MODE - DISTANCE_X_SEPARATOR, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE * CGFloat(nums))
+            addChild(new_label_insane)
+        }
         
         // Reset Classic
         let reset_classic = SKSpriteNode(imageNamed: "sprites/reset_button")
@@ -216,8 +127,8 @@ class Highscore: SKScene, MessageMenuDelegate {
         reset_classic.name = "reset_classic"
         reset_classic.size = CGSize(width: SIZE_RESET_BUTTON_WIDTH, height: SIZE_RESET_BUTTON_HEIGHT)
         reset_classic.position = CGPoint(x: -X_POSITION_LABEL_MODE - DISTANCE_X_SEPARATOR_RESET, y: Y_POSITION_LABEL_MODE - DISTANCE_BETWEEN_SCORE * 6)
-        
          addChild(reset_classic)
+        
         // Reset Insane
         let reset_insane = SKSpriteNode(imageNamed: "sprites/reset_button")
         reset_insane.name = "reset_insane"
@@ -248,11 +159,8 @@ class Highscore: SKScene, MessageMenuDelegate {
             }
             else if (sprite.name == "reset_classic"){
                 messageWindow("classic")
-                //pauseGame()
-                //reset_score("classic")
             }
             else if (sprite.name == "reset_insane"){
-                //reset_score("insane")
                 messageWindow("insane")
             }
             
@@ -261,17 +169,6 @@ class Highscore: SKScene, MessageMenuDelegate {
     }
     
     func fixRatio(curr_ratio:CGFloat){
-    /*     SIZE_LABEL_HS  = 40.0
-        SIZE_LABAL_MODE = 20.0
-        SIZE_LABEL_SCORE = 15.0
-        
-        X_POSITION_LABEL_MODE = 80.0
-        Y_POSITION_LABEL_MODE = 150.0
-        
-        
-       DISTANCE_BETWEEN_SCORE = 40.0
-        DISTANCE_X_SEPARATOR =  50.0*/
-        
         var RATIO:CGFloat = 1.0
         
         if (curr_ratio > 0.6){
@@ -343,61 +240,33 @@ class Highscore: SKScene, MessageMenuDelegate {
     }
     
     func restart_scene(){
-        
-   /*     var refreshAlert = UIAlertController(title: "Refresh", message: "All data will be lost.", preferredStyle: UIAlertControllerStyle.Alert)
-        
-        refreshAlert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { (action: UIAlertAction!) in
-            print("Handle Ok logic here")
-        }))
-        
-        refreshAlert.addAction(UIAlertAction(title: "Cancel", style: .Default, handler: { (action: UIAlertAction!) in
-            print("Handle Cancel Logic here")
-        }))*/
-        
-      //  presentViewController(refreshAlert, animated: true, completion: nil)
-    //    view?.addSubview(refreshAlert)
-        
-
         let scene = Highscore(size: self.size)
         self.view?.presentScene(scene)
     }
     
-  
-    
-    @IBAction func pauseGame() {
-        
-        view?.addSubview(pauseGameViewController.view)
-    }
-    
     func messageWindow(mode: String) {
-        //let scene = GameScene(size: self.size)
-        //isPauseGameCalled = true
-        //view?.paused = true
         
-
         messageWindowViewController.delegate = self
         messageWindowViewController.setMode(mode)
+        messageWindowViewController.label.text = "Reset \(mode)\nHighscore?"
         
         let scene = messageWindowViewController.view
         
-        print("the current mode is: ", mode)
         curr_mode = mode
-        //if( mode == "insane"){
-        //    messageWindowViewController.no()
-        //}
-        
-        //print(mode)
-        //view?.paused = true
-        //paused = true
         setFreezeMode(true)
         view?.addSubview(scene)
         
     }
     
-    
     func setFreezeMode(f: Bool){
         self.freeze = f
     }
+    
+    @IBAction func pauseGame() {
+        view?.addSubview(pauseGameViewController.view)
+    }
+    
+
     
     
 }

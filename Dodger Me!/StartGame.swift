@@ -65,15 +65,10 @@ extension Player{
         self.playerImage.position = CGPointMake( 0, 0)
     }
     func materializeBody(){
-        // Setting a physical body to the player
-       // playerImage.physicsBody = SKPhysicsBody(rectangleOfSize: playerImage.size)
-     //   playerImage.physicsBody = SKPhysicsBody(circleOfRadius: playerImage.size.width/2 + 2, center: CGPoint(x: playerImage.position.x, y: playerImage.position.y - 1))
-       
         playerImage.physicsBody =  SKPhysicsBody(texture: playerImage.texture!, size: playerImage.size)
         playerImage.physicsBody?.dynamic = true // allow physic simulation to move it
         playerImage.physicsBody!.allowsRotation = false // not allow it to rotate
        playerImage.physicsBody?.categoryBitMask = PhysicsCategory.Player
-     //   playerImage.physicsBody?.collisionBitMask = PhysicsCategory.None
     }
 }
 
@@ -831,14 +826,12 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         // adding physical body
        
         fireball.physicsBody = SKPhysicsBody(circleOfRadius: fireball.size.width/2) // 1
-        fireball.physicsBody?.dynamic = true // physic engine will not control the movement of the fireball
+        fireball.physicsBody?.dynamic = false // physic engine will not control the movement of the fireball
         fireball.physicsBody?.categoryBitMask = PhysicsCategory.Fire // category of bit I defined in the struct
         fireball.physicsBody?.contactTestBitMask = PhysicsCategory.Player // notify when contact Player
         fireball.physicsBody?.collisionBitMask = PhysicsCategory.None // this thing is related to bounce
-      //  fireball.physicsBody?.usesPreciseCollisionDetection = true
         
         // calculate the destination position
-        
         
         // 1. Getting the final destination of coordinate y or x :
         
@@ -938,7 +931,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         dragonMonster.physicsBody?.categoryBitMask = PhysicsCategory.Dragon // category of bit I defined in the struct
         dragonMonster.physicsBody?.contactTestBitMask = PhysicsCategory.Player // notify when contact Player
         dragonMonster.physicsBody?.collisionBitMask = PhysicsCategory.None // this thing is related to bounce
-       // dragonMonster.physicsBody?.usesPreciseCollisionDetection = true
         
         // Create the actions
         

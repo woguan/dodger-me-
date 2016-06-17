@@ -27,7 +27,6 @@ class GameOver: SKScene {
     init(size: CGSize, containHighscore:Bool, score:Int, highscore:Int, game_mode:String) {
         
         super.init(size: size)
-        
         self.score = score
         self.highscore = highscore
         self.winResult = containHighscore

@@ -69,7 +69,7 @@ class MessageMenuController: UIViewController {
         // Labels
         label.lineBreakMode = .ByCharWrapping
         label.numberOfLines = 2
-        label.text = "Reset Highscore?"
+       // label.text = "Reset Highscore?"  // it will be set on highscore
         label.font = UIFont(name: "Chalkduster", size: SIZE_LABEL)
         label.textColor = UIColor.blackColor()
         label.frame = CGRect(x: view.frame.width/7 + X_POSITION_LABEL_FIX, y: view.frame.height/11 + Y_POSITION_LABEL_FIX, width: 150, height: 200)
@@ -78,7 +78,6 @@ class MessageMenuController: UIViewController {
         // Buttons
         let yesButton = UIButton (frame: CGRectMake(view.frame.width/4 - 24 + DISTANCE_BETWEEN_BUTTONS, view.frame.height/2 + 60,BUTTON_WIDTH,BUTTON_HEIGHT))
         yesButton.setTitle("yes", forState: .Normal)
-        //yesButton.center = CGPointMake(view.center.x, view.center.y)
         yesButton.titleLabel?.font = UIFont(name: "Chalkduster", size: BUTTON_LETTER_SIZE)
         yesButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         //yesButton.tag = 2
