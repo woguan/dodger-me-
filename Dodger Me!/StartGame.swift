@@ -89,6 +89,7 @@ struct Object{
         self.objImage.position = CGPointMake( 0, 0)
     }*/
     
+    // Why mutating? Explanation can be found below
     mutating func incDelay(amount:CGFloat){
         delay += amount
     }
@@ -159,7 +160,7 @@ struct PowerUPS{
 ** Note: Class = reference type ,  Struct = Value type
 */
 struct Scorelabel{
-    var node:SKLabelNode =  SKLabelNode(fontNamed: "Courier")  // score board
+    var node:SKLabelNode =  SKLabelNode(fontNamed: "Chalkduster")  // score board
     var score = 0
     
     func load(x: CGFloat, y: CGFloat){
@@ -229,7 +230,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     var dragon = Object()
     var powerUp = PowerUPS()
     
-    // Implemented "constant" values for differents modes 12/18/2015
+    // Implemented "constant" constant values for differents modes 12/18/2015
     var CHANCE_OF_POWERUP:CGFloat? // Percentage of respawing each second
     var MAX_FIRE_RATE:CGFloat?
     var MAX_DRAGON_RATE:CGFloat?
@@ -255,25 +256,21 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     
     override func didMoveToView(view: SKView){
         
-       
-        
-   
         view.showsPhysics = false
       //  print("screen width: \(self.appDelegate.screenSize.width)\n")
       //  print("screen height: \(self.appDelegate.screenSize.height)")
-               notificationCenter.addObserver(self, selector: "appMovedToBackground", name: UIApplicationWillResignActiveNotification, object: nil)
-        notificationCenter.addObserver(self, selector: "appMovedToForeground", name: UIApplicationWillEnterForegroundNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(StartGame.appMovedToBackground), name: UIApplicationWillResignActiveNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(StartGame.appMovedToForeground), name: UIApplicationWillEnterForegroundNotification, object: nil)
         let aspect_ratio:CGFloat = self.appDelegate.screenSize.width/self.appDelegate.screenSize.height
         
-        // delete subviews if previous didnt called
+        // delete subviews if previous didnt called clean it
         for view in view.subviews {
             view.removeFromSuperview()
         }
         
+        // Do not remove this.
         self.anchorPoint = CGPointMake(0.5, 0.5)
      
-    
-        
         //load stage settings
         
         // 1.Classic
@@ -297,13 +294,13 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             MAX_DRAGON_RATE = 1.0
             RESPAWN_DRAGON_SCORE = 30000
             RATE_SPEED_GROWTH = 0.1  // default is 0.003
-             SPEED_OF_BALL = 140
+            SPEED_OF_BALL = 140
             SPEED_OF_CLOUD = 140
             INITIAL_FIRE_SPEED_RATE = 1.0
             INITIAL_DRAGON_SPEED_RATE = 1.5
         }
         
-        // fix ratios
+        // fix ratios for different iPhones models
         if (aspect_ratio != 0.5625){
             fixRatio(aspect_ratio)
         }
@@ -315,12 +312,8 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         // load ads
         loadiAd()
         // load objects and other stuff
+        load()
 
-    
-   
-        load();
-
-        
         // Counts from 3 to 0 and starts showing enemies
       startCountLabel.runAction(SKAction.repeatActionForever(
             SKAction.sequence([
@@ -370,11 +363,9 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     
     
     func loadiAd(){
-       
-        
         /*
         ** Remove this function and put in another place.
-        ** So it can be used multiple times in a single game
+        ** So it don't have to be called multiple times
         */
         
         adBannerView = ADBannerView(frame: CGRect.zero)
@@ -553,8 +544,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         pauseGame()
         }
         return true
-        
-        
     }
     
     func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
@@ -563,8 +552,8 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     }
     
     
-    // finish iAd functions
-    
+    // finish iAd Banner functions
+   
     
     // iAD interstitial pop up
     
@@ -578,7 +567,8 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
       // it is being called twice when closing the iAD.... WHY?!?!
        // print("is it called twice?")
        // print("DID FINISH CALLING....")
-        // this funcion is also called when it is going to background
+        // this funcion is also called when it is going to background - not good.
+        
         if(self.interstitialAds.loaded && movingToBackground == false){
            self.interstitialAdView.removeFromSuperview()
             if(gameover == true){
@@ -611,8 +601,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     }
     
     // finish iAd pop up functions
-    
-    
     
     // good function helper for random a CGFloat datatype
     
@@ -682,7 +670,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
             startCountLabel.removeFromParent()
         }
         
-        timerCount--
+        timerCount -= 1
        
     }
     
@@ -1064,10 +1052,10 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
                         let movedone = SKAction.removeFromParent()
                         
                         thunder.physicsBody = SKPhysicsBody(circleOfRadius: thunder.size.width/2) // 1
-                        thunder.physicsBody?.dynamic = true // physic engine will not control the movement of the fireball
+                        thunder.physicsBody?.dynamic = true // physic engine will not control the movement of the thunder
                         thunder.physicsBody?.categoryBitMask = PhysicsCategory.Fire // category of bit I defined in the struct
                         thunder.physicsBody?.contactTestBitMask = PhysicsCategory.Player // notify when contact Player
-                        thunder.physicsBody?.collisionBitMask = PhysicsCategory.None // this thing is related to bounce*/
+                        thunder.physicsBody?.collisionBitMask = PhysicsCategory.None
                         
                         self.addChild(thunder)
                         
@@ -1085,8 +1073,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
     }
     
     func callPowerUp(){
-        
-        // change to this later after debug
         
         // 10% :  Imune item
         // 20% :  block side
@@ -1206,7 +1192,8 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         if (dir == "bottom"){
             value_y *= -1
         }
-        for (var s:CGFloat = 0; s <= self.appDelegate.screenSize.height; s = s + 40){
+        
+        for (var s:CGFloat = 0; s <= self.appDelegate.screenSize.height; s += 40){
             let redWall:SKSpriteNode = SKSpriteNode()
             redWall.size = CGSize(width: 50, height: 40)
             redWall.texture = SKTexture(imageNamed: "sprites/grey_wall")
@@ -1587,8 +1574,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         //  let reveal = SKTransition.flipHorizontalWithDuration(0.5)
         
         
-        
-        
                if ( scoreBoard.score > currHighscore){
                 let winScene = GameOver(size: self.size, containHighscore: true, score: scoreBoard.score, highscore: highscore, game_mode: self.gameMode!)
             self.view?.presentScene(winScene)
@@ -1618,20 +1603,14 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         }
      
         
-        // This is to prevent a error when a node is deleted... but this function is called.
+        // This is to prevent a error when a node is deleted...
         // I think this function might be called twice when a object touches 2 stuff at a time. So it will be called twice
         if(contact.bodyA.node == nil || contact.bodyB.node == nil ){
           //  print("I HAVE BEEN CALLED... IM RETURNING TO AVOID ERROR")
             return
         }
-     //   if (firstBody.node?.name?.containsString("brick") == true || secondBody.node?.name?.containsString("brick") == true) {
-     //     print("first: \(firstBody.node?.name), second: \(secondBody.node?.name)")
-     //   }
         
-     //   if ((firstBody.categoryBitMask & PhysicsCategory.Player != 0) &&
-     //       (secondBody.categoryBitMask & PhysicsCategory.Fire != 0)) {
-                projectileDidCollideWithMonster(firstBody.node as! SKSpriteNode, object: secondBody.node as! SKSpriteNode)
-     //   }
+        projectileDidCollideWithMonster(firstBody.node as! SKSpriteNode, object: secondBody.node as! SKSpriteNode)
     }
     
     func iAdPopup(){
@@ -1639,7 +1618,6 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         self.interstitialAdView.frame = self.view!.bounds
            self.interstitialAds.delegate = self
            view!.addSubview(self.interstitialAdView)
-//
         
         self.interstitialAds.presentInView(self.interstitialAdView)
         UIViewController.prepareInterstitialAds()
@@ -1653,7 +1631,7 @@ class StartGame: SKScene, SKPhysicsContactDelegate, ADBannerViewDelegate, PauseM
         view?.addSubview(pauseGameViewController.view)
     }
     
-    // It is only called by delegate. If you plan to use for this Class.. please, review the logic of the boolean
+    // It is only called by delegate. If you plan to use for this Class.. please, review the logic
     func callUnpause(){
         isPauseGameCalled = false
         view?.paused = false

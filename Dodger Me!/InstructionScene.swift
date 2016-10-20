@@ -78,7 +78,7 @@ class InstructionScene: SKScene{
         backButton.titleLabel?.font = UIFont(name: "Chalkduster", size: LETTER_SIZE)
         backButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         backButton.backgroundColor = UIColor.darkGrayColor()
-        backButton.addTarget(self, action: "back", forControlEvents: .TouchUpInside)
+        backButton.addTarget(self, action: #selector(InstructionScene.back), forControlEvents: .TouchUpInside)
         backButton.layer.cornerRadius = 5.0
         view!.addSubview(backButton)
         
@@ -89,7 +89,7 @@ class InstructionScene: SKScene{
         switchButton.titleLabel?.font = UIFont(name: "Chalkduster", size: LETTER_SIZE)
         switchButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         switchButton.backgroundColor = UIColor.darkGrayColor()
-        switchButton.addTarget(self, action: "switcher", forControlEvents: .TouchDown)
+        switchButton.addTarget(self, action: #selector(InstructionScene.switcher), forControlEvents: .TouchDown)
         switchButton.layer.cornerRadius = 5.0
         view!.addSubview(switchButton)
         
@@ -100,7 +100,7 @@ class InstructionScene: SKScene{
         previousButton.titleLabel?.font = UIFont(name: "Chalkduster", size: LETTER_SIZE)
         previousButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         previousButton.backgroundColor = UIColor.darkGrayColor()
-        previousButton.addTarget(self, action: "prev", forControlEvents: .TouchDown)
+        previousButton.addTarget(self, action: #selector(InstructionScene.prev), forControlEvents: .TouchDown)
         previousButton.hidden = true
         view!.addSubview(previousButton)
         
@@ -111,7 +111,7 @@ class InstructionScene: SKScene{
         nextButton.titleLabel?.font = UIFont(name: "Chalkduster", size: LETTER_SIZE)
         nextButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         nextButton.backgroundColor = UIColor.darkGrayColor()
-        nextButton.addTarget(self, action: "next", forControlEvents: .TouchDown)
+        nextButton.addTarget(self, action: #selector(InstructionScene.next), forControlEvents: .TouchDown)
         view!.addSubview(nextButton)
         
     
@@ -248,7 +248,7 @@ class InstructionScene: SKScene{
     @IBAction func prev(){
         
         if ( currType == "good"){
-            goodTrack--
+            goodTrack -= 1
             if (goodTrack < 0 ){
                 goodTrack = 0
                 return
@@ -256,7 +256,7 @@ class InstructionScene: SKScene{
         }
         
         else if(currType == "bad"){
-            badTrack--
+            badTrack -= 1
             if (badTrack < 0 ){
                 badTrack = 0
                 return
@@ -273,7 +273,7 @@ class InstructionScene: SKScene{
         previousButton.hidden = false
         
         if ( currType == "good"){
-            goodTrack++
+            goodTrack += 1
             if (goodTrack > goodArray.count - 1){
                 goodTrack = goodArray.count - 1
                 return
@@ -281,7 +281,7 @@ class InstructionScene: SKScene{
         }
             
         else if(currType == "bad"){
-            badTrack++
+            badTrack += 1
             if (badTrack > badArray.count - 1 ){
                 badTrack = badArray.count - 1
                 return

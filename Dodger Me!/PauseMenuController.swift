@@ -64,7 +64,7 @@ class PauseMenuController: UIViewController {
         continueButton.titleLabel?.font = UIFont(name: "Chalkduster", size: BUTTON_LETTER_SIZE)
         continueButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         continueButton.backgroundColor = UIColor.darkGrayColor()
-        continueButton.addTarget(self, action: "continueGame", forControlEvents: .TouchUpInside)
+        continueButton.addTarget(self, action: #selector(PauseMenuController.continueGame), forControlEvents: .TouchUpInside)
         continueButton.layer.cornerRadius = 5.0
         view.addSubview(continueButton)
     }

@@ -78,7 +78,7 @@ class ReplayMenuController: UIViewController {
         
         if ( virtualPlist?.valueForKey("Points") as! Int >= pointsNeeded){
                     continueButton.alpha = 1.0
-            continueButton.addTarget(self, action: "continueGame", forControlEvents: .TouchUpInside)
+            continueButton.addTarget(self, action: #selector(ReplayMenuController.continueGame), forControlEvents: .TouchUpInside)
         }
         else{
                     continueButton.alpha = 0.5
@@ -92,7 +92,7 @@ class ReplayMenuController: UIViewController {
         endButton.titleLabel?.font = UIFont(name: "Chalkduster", size: BUTTON_LETTER_SIZE)
         endButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         endButton.backgroundColor = UIColor.darkGrayColor()
-        endButton.addTarget(self, action: "endGame", forControlEvents: .TouchUpInside)
+        endButton.addTarget(self, action: #selector(ReplayMenuController.endGame), forControlEvents: .TouchUpInside)
         endButton.layer.cornerRadius = 5.0
         view.addSubview(endButton)
     }

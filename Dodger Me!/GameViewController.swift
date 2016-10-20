@@ -28,7 +28,7 @@ class GameViewController: UIViewController {
         //3 - Checking if there exists one
         if !fileManager.fileExistsAtPath(fullPathName) {
             
-            //4 - Copying the original to the "fake" one
+            //4 - Copying the original to the "fake"/"virtual" one
             if  let sourceFilePath = NSBundle.mainBundle().pathForResource("dodger", ofType: "plist") {
     
                     print("virtualPlist updated. REASON: virtualPlist do not exist")
@@ -60,7 +60,7 @@ class GameViewController: UIViewController {
         
         let skView = self.view as! SKView
             skView.showsFPS = true
-            skView.showsNodeCount = true
+            skView.showsNodeCount = false
             /* Sprite Kit applies additional optimizations to improve rendering performance */
             skView.ignoresSiblingOrder = false
             
@@ -100,9 +100,9 @@ class GameViewController: UIViewController {
                  virtualPlist = originalPlist
                 
                 // The logic example:
-                // stuffs.key = Highscore_Classic  stuff.value = Highscore_Classic values - both of them are AnyObject
+                // stuff.key = Highscore_Classic  stuff.value = Highscore_Classic values - both of them are AnyObject
                 // virtual now is reseted
-                // update the virtual with the info os temporaryVirtualPlist
+                // update the virtual with the info of temporaryVirtualPlist
                 for stuffs in temporaryVirtualPlist!{
                     virtualPlist?.setObject(stuffs.value, forKey: stuffs.key as! String)
                 }
@@ -116,9 +116,12 @@ class GameViewController: UIViewController {
             // if the virtual list has more elements... reset it
             else if ( virtualPlist!.count >  originalPlist!.count) {
                 print("virtualPlist updated. REASON: the original plist has more elements")
-                
+            
                 // RESET IT
                 virtualPlist = originalPlist
+                
+                // Note: This is a bad practice. Later on, try to save as much data as possible. For now, 
+                // Just reset it to prevent critical error.
                 
                 // Saving the virtual plist
                 if !virtualPlist!.writeToFile(fullPathName, atomically: false){

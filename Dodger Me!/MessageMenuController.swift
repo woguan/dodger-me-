@@ -82,7 +82,7 @@ class MessageMenuController: UIViewController {
         yesButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         //yesButton.tag = 2
         yesButton.backgroundColor = UIColor.darkGrayColor()
-        yesButton.addTarget(self, action: "yes", forControlEvents: .TouchUpInside)
+        yesButton.addTarget(self, action: #selector(MessageMenuController.yes), forControlEvents: .TouchUpInside)
         //self.yes(yesButton)
         yesButton.layer.cornerRadius = 5.0
         view.addSubview(yesButton)
@@ -92,7 +92,7 @@ class MessageMenuController: UIViewController {
         noButton.titleLabel?.font = UIFont(name: "Chalkduster", size: BUTTON_LETTER_SIZE)
         noButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         noButton.backgroundColor = UIColor.darkGrayColor()
-        noButton.addTarget(self, action: "no", forControlEvents: .TouchUpInside)
+        noButton.addTarget(self, action: #selector(MessageMenuController.no), forControlEvents: .TouchUpInside)
         noButton.layer.cornerRadius = 5.0
         view.addSubview(noButton)
     }

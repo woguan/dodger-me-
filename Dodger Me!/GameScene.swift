@@ -54,7 +54,7 @@ class GameScene: SKScene{
         newGameButton.titleLabel?.font = UIFont(name: "Chalkduster", size: 30)
         newGameButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         newGameButton.backgroundColor = UIColor.darkGrayColor()
-        newGameButton.addTarget(self, action: "startGame", forControlEvents: .TouchUpInside)
+        newGameButton.addTarget(self, action: #selector(GameScene.startGame), forControlEvents: .TouchUpInside)
         newGameButton.layer.cornerRadius = 5.0
         view.addSubview(newGameButton)
         
@@ -64,7 +64,7 @@ class GameScene: SKScene{
         HighscoreButton.titleLabel?.font = UIFont(name: "Chalkduster", size: 30)
         HighscoreButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         HighscoreButton.backgroundColor = UIColor.darkGrayColor()
-        HighscoreButton.addTarget(self, action: "highScore_action", forControlEvents: .TouchUpInside)
+        HighscoreButton.addTarget(self, action: #selector(GameScene.highScore_action), forControlEvents: .TouchUpInside)
         HighscoreButton.layer.cornerRadius = 5.0
         view.addSubview(HighscoreButton)
         
@@ -74,7 +74,7 @@ class GameScene: SKScene{
         InstructionButton.titleLabel?.font = UIFont (name: "Chalkduster", size: 30)
         InstructionButton.setTitleColor(UIColor.lightGrayColor(), forState:  .Normal)
         InstructionButton.backgroundColor = UIColor.darkGrayColor()
-        InstructionButton.addTarget(self, action: "instruction_action", forControlEvents: .TouchUpInside)
+        InstructionButton.addTarget(self, action: #selector(GameScene.instruction_action), forControlEvents: .TouchUpInside)
         view.addSubview(InstructionButton)
         
         

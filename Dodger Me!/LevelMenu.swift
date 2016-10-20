@@ -26,21 +26,21 @@ class LevelMenu: SKScene{
         setUpButton(level_Button1)
         level_Button1.center = CGPointMake(view.center.x - 90, view.center.y)
         level_Button1.setTitle("Classic\nMode", forState: .Normal)
-        level_Button1.addTarget(self, action: "Mode_1", forControlEvents: .TouchUpInside)
+        level_Button1.addTarget(self, action: #selector(LevelMenu.Mode_1), forControlEvents: .TouchUpInside)
         view.addSubview(level_Button1)
     
         let  level_Button2 = UIButton()
         setUpButton(level_Button2)
         level_Button2.center = CGPointMake(view.center.x + 90, view.center.y)
         level_Button2.setTitle("Insane\nMode", forState: .Normal)
-        level_Button2.addTarget(self, action: "Mode_2", forControlEvents: .TouchUpInside)
+        level_Button2.addTarget(self, action: #selector(LevelMenu.Mode_2), forControlEvents: .TouchUpInside)
         view.addSubview(level_Button2)
         
         let  level_Button4 = UIButton()
         setUpButton(level_Button4)
         level_Button4.center = CGPointMake(view.center.x, view.center.y + 120)
         level_Button4.setTitle("Back", forState: .Normal)
-        level_Button4.addTarget(self, action: "back", forControlEvents: .TouchUpInside)
+        level_Button4.addTarget(self, action: #selector(LevelMenu.back), forControlEvents: .TouchUpInside)
         view.addSubview(level_Button4)
         
         
